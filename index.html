@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Pessoal IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('fundo.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark overlay */
+        }
+        .container {
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .input-item {
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background-color: #6b8e23; /* Olive Green */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #556b2f; /* Darker Olive Green */
+        }
+        .recipe-list {
+            display: grid;
+            gap: 2rem;
+        }
+        .recipe-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        #image-preview-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #a0a0a0; /* Darker gray border */
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        #image-preview {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0.5rem;
+        }
+        .overlay-text {
+            position: absolute;
+            color: #606060; /* Darker gray text */
+            font-size: 1.125rem;
+            pointer-events: none;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6b8e23; /* Olive Green */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center py-10 sm:py-4">
+    <div class="container w-full md:w-3/4 lg:w-2/3 p-8 rounded-2xl shadow-xl mx-auto sm:px-4">
+        <div class="text-center mb-6">
+            <img src="logo01.png" alt="Logo Chef Pessoal IA" class="mx-auto mb-4" style="max-width: 250px;">
+            <p class="text-gray-600">
+                Seu assistente de receitas pessoais, pronto para criar magia com os ingredientes que você tem.
+            </p>
+        </div>
+
+        <!-- Seção de Upload de Imagem -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Envie uma foto dos seus ingredientes
+            </label>
+            <div id="image-preview-container" class="relative">
+                <input type="file" id="image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
+                <img id="image-preview" src="#" alt="Pré-visualização da imagem" class="hidden">
+                <span id="upload-text" class="overlay-text">Clique para enviar ou tirar uma foto</span>
+            </div>
+        </div>
+
+        <div class="text-center mb-8">
+            <button id="get-recipes" class="btn-primary" disabled>
+                Gerar Receitas
+            </button>
+        </div>
+
+        <div id="loading" class="hidden text-center text-gray-500">
+            <div class="loader mx-auto"></div>
+            <p class="mt-2">Analisando seus ingredientes...</p>
+        </div>
+
+        <div id="error-message" class="hidden text-center text-red-500 font-medium">
+            Ocorreu um erro ao processar a imagem. Por favor, tente novamente.
+        </div>
+
+        <div id="results" class="hidden">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
+            <div id="recipe-list" class="recipe-list"></div>
+            <div id="general-notes" class="mt-6 p-4 bg-gray-50 rounded-lg text-gray-600"></div>
+        </div>
+    </div>
+
+    <script>
+        const imageUpload = document.getElementById('image-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const uploadText = document.getElementById('upload-text');
+        const getRecipesBtn = document.getElementById('get-recipes');
+        const loadingDiv = document.getElementById('loading');
+        const resultsDiv = document.getElementById('results');
+        const errorMessageDiv = document.getElementById('error-message');
+        const recipeListDiv = document.getElementById('recipe-list');
+        const generalNotesDiv = document.getElementById('general-notes');
+        let imageFile = null;
+
+        imageUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                imageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    uploadText.classList.add('hidden');
+                    getRecipesBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        getRecipesBtn.addEventListener('click', async () => {
+            if (!imageFile) return;
+
+            // Limpa resultados e mensagens anteriores
+            recipeListDiv.innerHTML = '';
+            generalNotesDiv.innerHTML = '';
+            resultsDiv.classList.add('hidden');
+            errorMessageDiv.classList.add('hidden');
+            loadingDiv.classList.remove('hidden');
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            try {
+                const response = await fetch('/api/receitas', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                const data = await response.json();
+
+                loadingDiv.classList.add('hidden');
+                resultsDiv.classList.remove('hidden');
+
+                const recipes = data.receitas;
+                recipes.forEach(recipe => {
+                    const recipeCard = document.createElement('div');
+                    recipeCard.className = 'recipe-card';
+                    recipeCard.innerHTML = `
+                        <h3 class="text-xl font-bold text-indigo-700 mb-2">${recipe.nome}</h3>
+                        <div class="mb-4">
+                            <p class="font-semibold text-gray-700">Ingredientes:</p>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                ${recipe.ingredientes_disponiveis.map(ing => `<span class="input-item text-green-700 bg-green-100">${ing} (disponível)</span>`).join('')}
+                                ${recipe.ingredientes_adicionais.map(ing => `<span class="input-item">${ing}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <p class="font-semibold text-gray-700">Modo de Preparo:</p>
+                            <ul class="list-disc list-inside mt-1 text-gray-600">
+                                ${recipe.modo_preparo.map(step => `<li>${step}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="flex justify-between items-center text-sm font-medium text-gray-500 mb-4">
+                            <span>Tempo: <span class="text-gray-800">${recipe.tempo_preparo}</span></span>
+                            <span>Dificuldade: <span class="text-gray-800">${recipe.dificuldade}</span></span>
+                        </div>
+                        <p class="text-sm italic text-gray-500">
+                            <span class="font-semibold">Dica do Chef:</span> ${recipe.dica_chef}
+                        </p>
+                    `;
+                    recipeListDiv.appendChild(recipeCard);
+                });
+
+                generalNotesDiv.innerHTML = `<p class="font-semibold">Observações Gerais:</p><p>${data.observacoes_gerais}</p>`;
+
+                // Reset for next submission (only clear the file input value and imageFile variable)
+                imageFile = null;
+                imageUpload.value = '';
+                getRecipesBtn.disabled = false; // Keep button enabled to re-analyze same image
+
+            } catch (error) {
+                console.error("Erro:", error);
+                loadingDiv.classList.add('hidden');
+                errorMessageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
