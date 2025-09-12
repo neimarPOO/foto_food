@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const fileType = require('file-type');
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 
 const app = express();
@@ -32,43 +32,35 @@ app.post('/api/receitas', upload.single('image'), async (req, res) => {
     const base64Image = imageBuffer.toString('base64');
     const mimeType = type.mime;
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
+    const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
+      "model": "qwen/qwen2.5-vl-32b-instruct:free",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Analise a imagem dos ingredientes e sugira 2-3 receitas. A resposta deve ser um JSON com a seguinte estrutura: {\"receitas\": [{\"nome\": \"...\", \"ingredientes_disponiveis\": [\"...\"], \"ingredientes_adicionais\": [\"...\"], \"modo_preparo\": [\"...\"], \"tempo_preparo\": \"...\"}], \"observacoes_gerais\": \"...\"}. Responda APENAS com o JSON válido, sem texto adicional antes ou depois."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": `data:${mimeType};base64,${base64Image}`
+              }
+            }
+          ]
+        }
+      ]
+    }, {
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "HTTP-Referer": "https://receitas-com-ia.vercel.app",
+        "HTTP-Referer": "https://receitas-com-ia.vercel.app", // You might want to change this to your Netlify URL
         "X-Title": "Receitas com IA",
         "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        "model": "qwen/qwen2.5-vl-32b-instruct:free",
-        "messages": [
-          {
-            "role": "user",
-            "content": [
-              {
-                "type": "text",
-                "text": "Analise a imagem dos ingredientes e sugira 2-3 receitas. A resposta deve ser um JSON com a seguinte estrutura: {\"receitas\": [{\"nome\": \"...\", \"ingredientes_disponiveis\": [\"...\"], \"ingredientes_adicionais\": [\"...\"], \"modo_preparo\": [\"...\"], \"tempo_preparo\": \"...\"}], \"observacoes_gerais\": \"...\"}. Responda APENAS com o JSON válido, sem texto adicional antes ou depois."
-              },
-              {
-                "type": "image_url",
-                "image_url": {
-                  "url": `data:${mimeType};base64,${base64Image}`
-                }
-              }
-            ]
-          }
-        ]
-      })
+      }
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error from OpenRouter API:", errorData);
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    const completion = await response.json();
+    const completion = response.data;
 
     rawResponseContent = completion.choices[0].message.content;
 

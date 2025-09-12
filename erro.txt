@@ -1,6 +1,0 @@
-/api/receitas:1 
- Failed to load resource: the server responded with a status of 404 ()
-
-VM16:94 Erro: Error: API request failed
-    at HTMLButtonElement.<anonymous> (VM16:48:27)
-(anônimo)	@	VM16:94
