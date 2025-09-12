@@ -3,12 +3,12 @@ const cors = require('cors');
 const multer = require('multer');
 const fileType = require('file-type');
 const fetch = require('node-fetch');
-require('dotenv').config();
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.'));
+
 
 const upload = multer({
   storage: multer.memoryStorage(),

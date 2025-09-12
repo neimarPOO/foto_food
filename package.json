@@ -2,9 +2,9 @@
   "name": "receitas-com-ia",
   "version": "1.0.0",
   "description": "Um aplicativo que sugere receitas com base nos ingredientes que você tem em casa.",
-  "main": "api/index.js",
+  "main": "netlify/functions/api.js",
   "scripts": {
-    "start": "node api/index.js"
+    "start": "netlify dev"
   },
   "dependencies": {
     "cors": "^2.8.5",
