@@ -52,10 +52,8 @@ app.post('/api/receitas', upload.single('image'), async (req, res) => {
           "content": [
             {
               "type": "text",
-              "text": "# Prompt Melhorado para Análise de Ingredientes e Sugestão de Receitas"
+              "text": `# Prompt Melhorado para Análise de Ingredientes e Sugestão de Receitas
 
-// ... (seu prompt longo aqui, mantido como estava) ...
-`
 Você é um chef experiente e nutricionista especializado em aproveitamento máximo de ingredientes. Analise meticulosamente a imagem dos ingredientes disponíveis e sugira 2-3 receitas otimizadas seguindo estas diretrizes:
 
 ## ANÁLISE DETALHADA DOS INGREDIENTES:
