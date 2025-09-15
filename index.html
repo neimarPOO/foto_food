@@ -168,6 +168,7 @@ const ui = {
 // --- LÓGICA DO MODAL, ESTADO E UI ---
 
 function openModal() {
+    console.log('openModal() executed.');
     switchModalTab(state.modalMode);
     ui.modal.backdrop.classList.remove('hidden');
     ui.modal.backdrop.classList.add('flex');
@@ -217,7 +218,7 @@ function showError(message) {
 
 // --- EVENT LISTENERS ---
 
-ui.startBtn.addEventListener('click', openModal);
+ui.startBtn.addEventListener('click', () => { console.log('Botão Começar clicado.'); openModal(); });
 ui.addMoreBtn.addEventListener('click', openModal);
 ui.modal.closeBtn.addEventListener('click', closeModal);
 ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
