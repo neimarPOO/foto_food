@@ -8,179 +8,235 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0, 0, 0, 0.5); }
-        .container { max-width: 800px; background-color: rgba(255, 255, 255, 0.95); border-radius: 1rem; }
-        .tab-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
-        .tab-btn.active { background-color: #6b8e23; color: white; border-color: #6b8e23; }
-        .tab-btn:not(.active) { background-color: #f3f4f6; color: #4b5563; }
+        .container { max-width: 800px; background-color: rgba(255, 255, 255, 0.98); border-radius: 1rem; }
         .btn-primary { background-color: #6b8e23; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
         .btn-primary:hover:not(:disabled) { background-color: #556b2f; }
         .btn-primary:disabled { background-color: #a0a0a0; cursor: not-allowed; }
         .btn-secondary { background-color: #f3f4f6; color: #4b5563; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-        .btn-secondary:hover { background-color: #e5e7eb; }
-        #image-preview-container { border: 2px dashed #a0a0a0; border-radius: 0.5rem; cursor: pointer; }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #6b8e23; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4">
     <div class="container w-full md:w-3/4 lg:w-2/3 p-8 rounded-2xl shadow-xl mx-auto sm:px-4">
-        <div class="text-center mb-6">
-            <img src="logo01.png" alt="Logo Chef Pessoal IA" class="mx-auto mb-4" style="max-width: 250px;">
-            <p class="text-gray-600">Seu assistente para criar magia com os ingredientes que você tem em mãos.</p>
-        </div>
-
-        <div class="flex justify-center gap-4 mb-6">
-            <button id="tab-image" class="tab-btn">Analisar Imagem</button>
-            <button id="tab-audio" class="tab-btn">Analisar Áudio</button>
-        </div>
-
-        <div id="content-image" class="hidden">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Envie uma foto dos seus ingredientes</label>
-            <div id="image-preview-container" class="relative h-48 flex items-center justify-center">
-                <input type="file" id="image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
-                <img id="image-preview" src="#" alt="Pré-visualização" class="hidden max-w-full max-h-full rounded-md">
-                <span id="upload-text" class="text-gray-500">Clique para enviar ou tirar uma foto</span>
+        <!-- Tela Inicial e Resultados -->
+        <div id="main-content">
+            <div class="text-center mb-6">
+                <img src="logo01.png" alt="Logo Chef Pessoal IA" class="mx-auto mb-4" style="max-width: 250px;">
+                <p class="text-gray-600">Seu assistente para criar magia com os ingredientes que você tem em mãos.</p>
             </div>
-            <div class="text-center mt-4"><button id="image-submit-btn" class="btn-primary" disabled>Gerar Receitas da Imagem</button></div>
-        </div>
 
-        <div id="content-audio" class="hidden text-center">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Grave os ingredientes que você possui</label>
-            <button id="record-btn" class="btn-primary">Iniciar Gravação</button>
-            <div id="audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
-        </div>
+            <div id="start-section" class="text-center my-8">
+                <button id="start-btn" class="btn-primary text-lg">Começar a Criar Receitas</button>
+            </div>
 
-        <div id="transcription-preview" class="hidden mt-6 p-4 bg-gray-100 rounded-lg">
-            <p class="font-semibold text-gray-800">Texto Transcrito:</p>
-            <p id="transcribed-text" class="my-2 text-gray-700"></p>
-            <div class="flex gap-4 justify-center">
-                <button id="confirm-transcription-btn" class="btn-primary">Confirmar e Gerar Receitas</button>
-                <button id="retry-audio-btn" class="btn-secondary">Gravar Novamente</button>
+            <div id="loading" class="hidden text-center text-gray-500 my-8">
+                <div class="loader mx-auto"></div>
+                <p id="loading-text" class="mt-2">Analisando...</p>
+            </div>
+
+            <div id="error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
+
+            <div id="results" class="hidden">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
+                <div id="current-ingredients-display" class="mb-4 p-3 bg-green-50 rounded-lg">
+                    <p class="font-semibold">Ingredientes na sua lista:</p>
+                    <div id="current-ingredients-list" class="flex flex-wrap gap-2 mt-2"></div>
+                </div>
+                <div id="recipe-list" class="grid gap-6"></div>
+                <div id="general-notes" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-700"></div>
+                
+                <!-- Seção para Adicionar Mais Ingredientes -->
+                <div id="add-more-section" class="mt-8 pt-6 border-t-2 border-gray-200 text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Adicionar mais ingredientes?</h3>
+                    <button id="add-more-btn" class="btn-primary">Adicionar e Refazer Receitas</button>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div id="loading" class="hidden text-center text-gray-500 my-8">
-            <div class="loader mx-auto"></div>
-            <p id="loading-text" class="mt-2">Analisando...</p>
-        </div>
-
-        <div id="error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
-
-        <div id="results" class="hidden">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
-            <div id="transcription-result-display" class="hidden mb-4 p-3 bg-gray-100 rounded-lg">
-                <p class="font-semibold">Ingredientes informados (áudio):</p>
-                <p id="final-transcribed-text" class="text-gray-700"></p>
+    <!-- Modal de Entrada -->
+    <div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div id="modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Adicionar Ingredientes</h2>
+            
+            <div class="flex justify-center gap-4 mb-6 border-b pb-4">
+                <button data-mode="image" class="modal-tab-btn">Imagem</button>
+                <button data-mode="audio" class="modal-tab-btn">Áudio</button>
+                <button data-mode="text" class="modal-tab-btn">Texto</button>
             </div>
-            <div id="recipe-list" class="grid gap-6"></div>
-            <div id="general-notes" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-700"></div>
+
+            <!-- Conteúdo do Modal -->
+            <div id="modal-content-image" class="hidden">
+                <div id="image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+                    <input type="file" id="image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
+                    <img id="image-preview" src="#" class="hidden max-w-full max-h-full rounded-md">
+                    <span id="upload-text">Clique para enviar ou tirar uma foto</span>
+                </div>
+                <div class="text-center mt-4"><button id="image-submit-btn" class="btn-primary" disabled>Adicionar da Imagem</button></div>
+            </div>
+
+            <div id="modal-content-audio" class="hidden text-center">
+                <button id="record-btn" class="btn-primary">Iniciar Gravação</button>
+                <div id="audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
+            </div>
+
+            <div id="modal-content-text" class="hidden">
+                <textarea id="text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Digite os ingredientes separados por vírgula..."></textarea>
+                <div class="text-center mt-4"><button id="text-submit-btn" class="btn-primary">Adicionar do Texto</button></div>
+            </div>
+
+            <div id="modal-transcription-preview" class="hidden mt-6 p-4 bg-gray-100 rounded-lg">
+                <p class="font-semibold">Texto Transcrito:</p>
+                <p id="transcribed-text" class="my-2"></p>
+                <div class="flex gap-4 justify-center">
+                    <button id="confirm-transcription-btn" class="btn-primary">Confirmar e Adicionar</button>
+                    <button id="retry-audio-btn" class="btn-secondary">Gravar Novamente</button>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
+            </div>
         </div>
     </div>
 
 <script>
-// --- ELEMENTOS DA UI ---
-const ui = {
-    tabs: { image: document.getElementById('tab-image'), audio: document.getElementById('tab-audio') },
-    content: { image: document.getElementById('content-image'), audio: document.getElementById('content-audio') },
-    image: { upload: document.getElementById('image-upload'), preview: document.getElementById('image-preview'), text: document.getElementById('upload-text'), submitBtn: document.getElementById('image-submit-btn') },
-    audio: { recordBtn: document.getElementById('record-btn'), status: document.getElementById('audio-status') },
-    transcription: { container: document.getElementById('transcription-preview'), text: document.getElementById('transcribed-text'), confirmBtn: document.getElementById('confirm-transcription-btn'), retryBtn: document.getElementById('retry-audio-btn') },
-    common: { loading: document.getElementById('loading'), loadingText: document.getElementById('loading-text'), error: document.getElementById('error-message') },
-    results: { container: document.getElementById('results'), list: document.getElementById('recipe-list'), notes: document.getElementById('general-notes'), transcriptionDisplay: document.getElementById('transcription-result-display'), finalTranscribedText: document.getElementById('final-transcribed-text') }
-};
-
-// --- ESTADO DA APLICAÇÃO ---
+// --- ESTADO GLOBAL ---
 let state = {
-    mode: 'image', // 'image' ou 'audio'
-    imageFile: null,
-    audioBlob: null,
-    transcribedText: null,
+    currentIngredients: [],
     isRecording: false,
     recorder: null,
-    timerInterval: null
+    timerInterval: null,
+    modalMode: 'image'
 };
 
-// --- LÓGICA PRINCIPAL ---
-
-ui.tabs.image.addEventListener('click', () => switchMode('image'));
-ui.tabs.audio.addEventListener('click', () => switchMode('audio'));
-
-function switchMode(mode) {
-    state.mode = mode;
-    resetUI();
-    if (mode === 'image') {
-        ui.tabs.image.classList.add('active');
-        ui.tabs.audio.classList.remove('active');
-        ui.content.image.classList.remove('hidden');
-    } else {
-        ui.tabs.audio.classList.add('active');
-        ui.tabs.image.classList.remove('active');
-        ui.content.audio.classList.remove('hidden');
+// --- ELEMENTOS DA UI ---
+const ui = {
+    main: document.getElementById('main-content'),
+    startBtn: document.getElementById('start-btn'),
+    addMoreBtn: document.getElementById('add-more-btn'),
+    loading: document.getElementById('loading'),
+    loadingText: document.getElementById('loading-text'),
+    error: document.getElementById('error-message'),
+    results: {
+        container: document.getElementById('results'),
+        list: document.getElementById('recipe-list'),
+        notes: document.getElementById('general-notes'),
+        ingredientsDisplay: document.getElementById('current-ingredients-display'),
+        ingredientsList: document.getElementById('current-ingredients-list')
+    },
+    modal: {
+        backdrop: document.getElementById('modal-backdrop'),
+        content: document.getElementById('modal-content'),
+        closeBtn: document.getElementById('close-modal-btn'),
+        tabs: document.querySelectorAll('.modal-tab-btn'),
+        contentImage: document.getElementById('modal-content-image'),
+        contentAudio: document.getElementById('modal-content-audio'),
+        contentText: document.getElementById('modal-content-text'),
+        transcriptionPreview: document.getElementById('modal-transcription-preview')
+    },
+    inputs: {
+        imageUpload: document.getElementById('image-upload'),
+        imagePreview: document.getElementById('image-preview'),
+        uploadText: document.getElementById('upload-text'),
+        imageSubmitBtn: document.getElementById('image-submit-btn'),
+        recordBtn: document.getElementById('record-btn'),
+        audioStatus: document.getElementById('audio-status'),
+        textInput: document.getElementById('text-input'),
+        textSubmitBtn: document.getElementById('text-submit-btn'),
+        transcribedText: document.getElementById('transcribed-text'),
+        confirmTranscriptionBtn: document.getElementById('confirm-transcription-btn'),
+        retryAudioBtn: document.getElementById('retry-audio-btn')
     }
+};
+
+// --- LÓGICA DO MODAL E ESTADO ---
+
+function openModal() {
+    switchModalTab(state.modalMode);
+    ui.modal.backdrop.classList.remove('hidden');
+    ui.modal.backdrop.classList.add('flex');
+    setTimeout(() => {
+        ui.modal.content.classList.remove('scale-95', 'opacity-0');
+    }, 50);
 }
 
-function resetUI() {
-    ui.content.image.classList.add('hidden');
-    ui.content.audio.classList.add('hidden');
-    ui.transcription.container.classList.add('hidden');
-    ui.results.container.classList.add('hidden');
-    ui.common.error.classList.add('hidden');
-    ui.common.loading.classList.add('hidden');
-    ui.audio.recordBtn.disabled = false;
-    ui.audio.recordBtn.textContent = 'Iniciar Gravação';
-    ui.audio.status.textContent = '';
+function closeModal() {
+    ui.modal.content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        ui.modal.backdrop.classList.add('hidden');
+        ui.modal.backdrop.classList.remove('flex');
+    }, 200);
+}
+
+function switchModalTab(mode) {
+    state.modalMode = mode;
+    ui.modal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+    ui.modal.contentImage.classList.toggle('hidden', mode !== 'image');
+    ui.modal.contentAudio.classList.toggle('hidden', mode !== 'audio');
+    ui.modal.contentText.classList.toggle('hidden', mode !== 'text');
+    ui.modal.transcriptionPreview.classList.add('hidden');
 }
 
 function setLoading(isLoading, message = '') {
-    if (isLoading) {
-        resetUI();
-        ui.common.loading.classList.remove('hidden');
-        ui.common.loadingText.textContent = message;
-    } else {
-        ui.common.loading.classList.add('hidden');
-    }
+    ui.startBtn.classList.toggle('hidden', isLoading);
+    ui.results.container.classList.add('hidden');
+    ui.error.classList.add('hidden');
+    ui.loading.classList.toggle('hidden', !isLoading);
+    ui.loadingText.textContent = message;
 }
 
 function showError(message) {
     setLoading(false);
-    ui.common.error.textContent = message;
-    ui.common.error.classList.remove('hidden');
+    ui.error.textContent = message;
+    ui.error.classList.remove('hidden');
+    ui.startBtn.classList.remove('hidden');
 }
 
-// --- LÓGICA DE IMAGEM ---
-ui.image.upload.addEventListener('change', (event) => {
+// --- EVENT LISTENERS ---
+
+ui.startBtn.addEventListener('click', openModal);
+ui.addMoreBtn.addEventListener('click', openModal);
+ui.modal.closeBtn.addEventListener('click', closeModal);
+ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
+
+// Image
+ui.inputs.imageUpload.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    state.imageFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
-        ui.image.preview.src = e.target.result;
-        ui.image.preview.classList.remove('hidden');
-        ui.image.text.classList.add('hidden');
+        ui.inputs.imagePreview.src = e.target.result;
+        ui.inputs.imagePreview.classList.remove('hidden');
+        ui.inputs.uploadText.classList.add('hidden');
     };
     reader.readAsDataURL(file);
-    ui.image.submitBtn.disabled = false;
+    ui.inputs.imageSubmitBtn.disabled = false;
 });
 
-ui.image.submitBtn.addEventListener('click', () => {
-    if (!state.imageFile) return;
+ui.inputs.imageSubmitBtn.addEventListener('click', () => {
+    const file = ui.inputs.imageUpload.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onloadend = () => {
         const base64Image = reader.result.split(',')[1];
         getRecipes({ type: 'image', data: base64Image });
     };
-    reader.readAsDataURL(state.imageFile);
+    reader.readAsDataURL(file);
 });
 
-// --- LÓGICA DE ÁUDIO ---
-ui.audio.recordBtn.addEventListener('click', () => {
-    state.isRecording ? stopRecording() : startRecording();
+// Text
+ui.inputs.textSubmitBtn.addEventListener('click', () => {
+    const text = ui.inputs.textInput.value;
+    if (!text.trim()) return;
+    getRecipes({ type: 'text', data: text });
 });
 
-ui.transcription.retryBtn.addEventListener('click', () => {
-    resetUI();
-    switchMode('audio');
-});
+// Audio
+ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
+ui.inputs.retryAudioBtn.addEventListener('click', () => switchModalTab('audio'));
 
 async function startRecording() {
     try {
@@ -191,23 +247,21 @@ async function startRecording() {
 
         state.recorder.ondataavailable = e => chunks.push(e.data);
         state.recorder.onstop = () => {
-            state.audioBlob = new Blob(chunks, { type: 'audio/webm' });
+            const audioBlob = new Blob(chunks, { type: 'audio/webm' });
             stream.getTracks().forEach(track => track.stop());
-            getTranscription();
+            getTranscription(audioBlob);
         };
 
         state.recorder.start();
         state.isRecording = true;
-        ui.audio.recordBtn.textContent = 'Parar Gravação';
-        ui.audio.status.textContent = 'Gravando: 0s';
+        ui.inputs.recordBtn.textContent = 'Parar Gravação';
+        ui.inputs.audioStatus.textContent = 'Gravando: 0s';
         state.timerInterval = setInterval(() => {
             seconds++;
-            ui.audio.status.textContent = `Gravando: ${seconds}s`;
+            ui.inputs.audioStatus.textContent = `Gravando: ${seconds}s`;
         }, 1000);
 
-    } catch (err) {
-        showError('Não foi possível acessar o microfone. Por favor, conceda a permissão.');
-    }
+    } catch (err) { showError('Não foi possível acessar o microfone.'); }
 }
 
 function stopRecording() {
@@ -215,69 +269,61 @@ function stopRecording() {
         state.recorder.stop();
         state.isRecording = false;
         clearInterval(state.timerInterval);
-        ui.audio.recordBtn.textContent = 'Iniciar Gravação';
-        ui.audio.status.textContent = 'Gravação parada.';
+        ui.inputs.recordBtn.textContent = 'Iniciar Gravação';
+        ui.inputs.audioStatus.textContent = 'Gravação parada.';
     }
 }
 
-async function getTranscription() {
-    if (!state.audioBlob) return;
+async function getTranscription(audioBlob) {
+    closeModal();
     setLoading(true, 'Transcrevendo seu áudio...');
     const formData = new FormData();
-    formData.append('audio', state.audioBlob, 'audio.webm');
+    formData.append('audio', audioBlob, 'audio.webm');
 
     try {
         const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
+        
+        getRecipes({ type: 'text', data: data.transcribedText });
 
-        state.transcribedText = data.transcribedText;
-        setLoading(false);
-        ui.content.audio.classList.add('hidden');
-        ui.transcription.container.classList.remove('hidden');
-        ui.transcription.text.textContent = `"${state.transcribedText}"`;
-    } catch (err) {
-        showError(err.message);
-    }
+    } catch (err) { showError(err.message); }
 }
 
-ui.transcription.confirmBtn.addEventListener('click', () => {
-    if (state.transcribedText) {
-        getRecipes({ type: 'text', data: state.transcribedText });
-    }
-});
+// --- API CALL & DISPLAY RESULTS ---
 
-// --- LÓGICA DE GERAÇÃO DE RECEITAS ---
 async function getRecipes(payload) {
+    closeModal();
     setLoading(true, 'Criando receitas para você...');
-    ui.transcription.container.classList.add('hidden');
+
+    const body = {
+        ...payload.type === 'text' ? { text: payload.data } : { image: payload.data },
+        currentIngredients: state.currentIngredients
+    };
 
     try {
         const response = await fetch('/api/receitas', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload.type === 'text' ? { text: payload.data } : { image: payload.data })
+            body: JSON.stringify(body)
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
 
-        displayResults(data, payload.type === 'text' ? payload.data : null);
-    } catch (err) {
-        showError(err.message);
-    }
+        displayResults(data);
+    } catch (err) { showError(err.message); }
 }
 
-function displayResults(data, transcribedText) {
+function displayResults(data) {
     setLoading(false);
     ui.results.container.classList.remove('hidden');
     ui.results.list.innerHTML = '';
 
-    if (transcribedText) {
-        ui.results.transcriptionDisplay.classList.remove('hidden');
-        ui.results.finalTranscribedText.textContent = `"${transcribedText}"`;
-    } else {
-        ui.results.transcriptionDisplay.classList.add('hidden');
-    }
+    // Update and display current ingredients
+    const newIngredients = data.receitas.flatMap(r => r.ingredientes_disponiveis || []);
+    state.currentIngredients = [...new Set([...state.currentIngredients, ...newIngredients])];
+    ui.results.ingredientsList.innerHTML = state.currentIngredients.map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('');
+    ui.results.ingredientsDisplay.classList.remove('hidden');
 
     data.receitas.forEach(recipe => {
         const recipeCard = document.createElement('div');
@@ -306,7 +352,7 @@ function displayResults(data, transcribedText) {
 }
 
 // --- INICIALIZAÇÃO ---
-switchMode('image');
+switchModalTab('image'); // Set initial tab in modal
 
 </script>
 </body>
