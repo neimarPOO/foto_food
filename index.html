@@ -6,6 +6,8 @@
     <title>Chef Pessoal IA</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Shepherd.js Tutorial Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
     <style>
         body { font-family: 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0, 0, 0, 0.5); }
         .container { max-width: 800px; background-color: rgba(255, 255, 255, 0.98); border-radius: 1rem; }
@@ -16,11 +18,19 @@
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #6b8e23; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
+        /* Custom Shepherd Styles */
+        .shepherd-element { background: #333; color: white; border-radius: 0.5rem; max-width: 350px; }
+        .shepherd-header { background: #444; padding: 0.75rem; border-radius: 0.5rem 0.5rem 0 0; }
+        .shepherd-title { color: white; font-weight: bold; }
+        .shepherd-text { padding: 1rem; font-size: 0.9rem; line-height: 1.5; }
+        .shepherd-button { background: #6b8e23; color: white; border-radius: 0.25rem; padding: 0.5rem 1rem; }
+        .shepherd-button:not(:disabled):hover { background: #556b2f; }
+        .shepherd-button.shepherd-button-secondary { background: #555; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4">
     <div class="container w-full md:w-3/4 lg:w-2/3 p-8 rounded-2xl shadow-xl mx-auto sm:px-4">
-        <!-- Tela Inicial e Resultados -->
+        <!-- Conteúdo principal movido para dentro para o tutorial poder achar -->
         <div id="main-content">
             <div class="text-center mb-6">
                 <img src="logo01.png" alt="Logo Chef Pessoal IA" class="mx-auto mb-4" style="max-width: 250px;">
@@ -33,21 +43,19 @@
 
             <div id="loading" class="hidden text-center text-gray-500 my-8">
                 <div class="loader mx-auto"></div>
-                <p id="loading-text" class="mt-2">Analisando...</p>
+                <p id="loading-text" class="mt-2 h-10">Analisando...</p>
             </div>
 
             <div id="error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
 
             <div id="results" class="hidden">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
+                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
                 <div id="current-ingredients-display" class="mb-4 p-3 bg-green-50 rounded-lg">
                     <p class="font-semibold">Ingredientes na sua lista:</p>
                     <div id="current-ingredients-list" class="flex flex-wrap gap-2 mt-2"></div>
                 </div>
                 <div id="recipe-list" class="grid gap-6"></div>
                 <div id="general-notes" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-700"></div>
-                
-                <!-- Seção para Adicionar Mais Ingredientes -->
                 <div id="add-more-section" class="mt-8 pt-6 border-t-2 border-gray-200 text-center">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Adicionar mais ingredientes?</h3>
                     <button id="add-more-btn" class="btn-primary">Adicionar e Refazer Receitas</button>
@@ -60,57 +68,65 @@
     <div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
         <div id="modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Adicionar Ingredientes</h2>
-            
-            <div class="flex justify-center gap-4 mb-6 border-b pb-4">
+            <div id="modal-tabs" class="flex justify-center gap-4 mb-6 border-b pb-4">
                 <button data-mode="image" class="modal-tab-btn">Imagem</button>
                 <button data-mode="audio" class="modal-tab-btn">Áudio</button>
                 <button data-mode="text" class="modal-tab-btn">Texto</button>
             </div>
-
-            <!-- Conteúdo do Modal -->
             <div id="modal-content-image" class="hidden">
-                <div id="image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+                 <div id="image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
                     <input type="file" id="image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
                     <img id="image-preview" src="#" class="hidden max-w-full max-h-full rounded-md">
                     <span id="upload-text">Clique para enviar ou tirar uma foto</span>
                 </div>
                 <div class="text-center mt-4"><button id="image-submit-btn" class="btn-primary" disabled>Adicionar da Imagem</button></div>
             </div>
-
             <div id="modal-content-audio" class="hidden text-center">
                 <button id="record-btn" class="btn-primary">Iniciar Gravação</button>
                 <div id="audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
             </div>
-
             <div id="modal-content-text" class="hidden">
                 <textarea id="text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Digite os ingredientes separados por vírgula..."></textarea>
                 <div class="text-center mt-4"><button id="text-submit-btn" class="btn-primary">Adicionar do Texto</button></div>
             </div>
-
-            <div id="modal-transcription-preview" class="hidden mt-6 p-4 bg-gray-100 rounded-lg">
-                <p class="font-semibold">Texto Transcrito:</p>
-                <p id="transcribed-text" class="my-2"></p>
-                <div class="flex gap-4 justify-center">
-                    <button id="confirm-transcription-btn" class="btn-primary">Confirmar e Adicionar</button>
-                    <button id="retry-audio-btn" class="btn-secondary">Gravar Novamente</button>
-                </div>
-            </div>
-
-            <div class="text-center mt-6">
-                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
-            </div>
+            <div class="text-center mt-6"><button id="close-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
         </div>
     </div>
 
-<script>
-// --- ESTADO GLOBAL ---
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <script>
+    // --- ESTADO GLOBAL & CONSTANTES ---
+    let state = { currentIngredients: [], isRecording: false, recorder: null, timerInterval: null, modalMode: 'image', loadingInterval: null };
+    const loadingMessages = [
+        "Procurando as combinações mais saborosas...",
+        "Despertando a criatividade na sua cozinha...",
+        "Um momento, o chef está pensando...",
+        "Transformando ingredientes em obras de arte.",
+        "Seu assistente para criar magia com os ingredientes que você tem em mãos."
+    ];
+
+    // --- ELEMENTOS DA UI (simplificado para brevidade) ---
+    const ui = { /* ... Mesmo objeto ui de antes, omitido para não repetir ... */ };
+    // --- CÓDIGO COMPLETO DO SCRIPT ESTÁ ABAIXO ---
+    </script>
+    <script>
+// --- ESTADO GLOBAL & CONSTANTES ---
 let state = {
     currentIngredients: [],
     isRecording: false,
     recorder: null,
     timerInterval: null,
-    modalMode: 'image'
+    modalMode: 'image',
+    loadingInterval: null
 };
+
+const loadingMessages = [
+    "Procurando as combinações mais saborosas...",
+    "Despertando a criatividade na sua cozinha...",
+    "Um momento, o chef está pensando...",
+    "Transformando ingredientes em obras de arte.",
+    "Seu assistente para criar magia com os ingredientes que você tem em mãos."
+];
 
 // --- ELEMENTOS DA UI ---
 const ui = {
@@ -131,11 +147,11 @@ const ui = {
         backdrop: document.getElementById('modal-backdrop'),
         content: document.getElementById('modal-content'),
         closeBtn: document.getElementById('close-modal-btn'),
+        tabsContainer: document.getElementById('modal-tabs'),
         tabs: document.querySelectorAll('.modal-tab-btn'),
         contentImage: document.getElementById('modal-content-image'),
         contentAudio: document.getElementById('modal-content-audio'),
-        contentText: document.getElementById('modal-content-text'),
-        transcriptionPreview: document.getElementById('modal-transcription-preview')
+        contentText: document.getElementById('modal-content-text')
     },
     inputs: {
         imageUpload: document.getElementById('image-upload'),
@@ -145,22 +161,17 @@ const ui = {
         recordBtn: document.getElementById('record-btn'),
         audioStatus: document.getElementById('audio-status'),
         textInput: document.getElementById('text-input'),
-        textSubmitBtn: document.getElementById('text-submit-btn'),
-        transcribedText: document.getElementById('transcribed-text'),
-        confirmTranscriptionBtn: document.getElementById('confirm-transcription-btn'),
-        retryAudioBtn: document.getElementById('retry-audio-btn')
+        textSubmitBtn: document.getElementById('text-submit-btn')
     }
 };
 
-// --- LÓGICA DO MODAL E ESTADO ---
+// --- LÓGICA DO MODAL, ESTADO E UI ---
 
 function openModal() {
     switchModalTab(state.modalMode);
     ui.modal.backdrop.classList.remove('hidden');
     ui.modal.backdrop.classList.add('flex');
-    setTimeout(() => {
-        ui.modal.content.classList.remove('scale-95', 'opacity-0');
-    }, 50);
+    setTimeout(() => { ui.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
 }
 
 function closeModal() {
@@ -174,18 +185,27 @@ function closeModal() {
 function switchModalTab(mode) {
     state.modalMode = mode;
     ui.modal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
-    ui.modal.contentImage.classList.toggle('hidden', mode !== 'image');
-    ui.modal.contentAudio.classList.toggle('hidden', mode !== 'audio');
-    ui.modal.contentText.classList.toggle('hidden', mode !== 'text');
-    ui.modal.transcriptionPreview.classList.add('hidden');
+    Object.values(ui.modal).forEach(el => {
+        if (el.id && el.id.startsWith('modal-content-')) el.classList.add('hidden');
+    });
+    document.getElementById(`modal-content-${mode}`).classList.remove('hidden');
 }
 
-function setLoading(isLoading, message = '') {
+function setLoading(isLoading) {
+    clearInterval(state.loadingInterval);
     ui.startBtn.classList.toggle('hidden', isLoading);
     ui.results.container.classList.add('hidden');
     ui.error.classList.add('hidden');
     ui.loading.classList.toggle('hidden', !isLoading);
-    ui.loadingText.textContent = message;
+
+    if (isLoading) {
+        let msgIndex = 0;
+        ui.loadingText.textContent = loadingMessages[msgIndex];
+        state.loadingInterval = setInterval(() => {
+            msgIndex = (msgIndex + 1) % loadingMessages.length;
+            ui.loadingText.textContent = loadingMessages[msgIndex];
+        }, 3000);
+    } 
 }
 
 function showError(message) {
@@ -236,7 +256,6 @@ ui.inputs.textSubmitBtn.addEventListener('click', () => {
 
 // Audio
 ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
-ui.inputs.retryAudioBtn.addEventListener('click', () => switchModalTab('audio'));
 
 async function startRecording() {
     try {
@@ -276,7 +295,8 @@ function stopRecording() {
 
 async function getTranscription(audioBlob) {
     closeModal();
-    setLoading(true, 'Transcrevendo seu áudio...');
+    setLoading(true);
+
     const formData = new FormData();
     formData.append('audio', audioBlob, 'audio.webm');
 
@@ -294,7 +314,7 @@ async function getTranscription(audioBlob) {
 
 async function getRecipes(payload) {
     closeModal();
-    setLoading(true, 'Criando receitas para você...');
+    setLoading(true);
 
     const body = {
         ...payload.type === 'text' ? { text: payload.data } : { image: payload.data },
@@ -319,7 +339,6 @@ function displayResults(data) {
     ui.results.container.classList.remove('hidden');
     ui.results.list.innerHTML = '';
 
-    // Update and display current ingredients
     const newIngredients = data.receitas.flatMap(r => r.ingredientes_disponiveis || []);
     state.currentIngredients = [...new Set([...state.currentIngredients, ...newIngredients])];
     ui.results.ingredientsList.innerHTML = state.currentIngredients.map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('');
@@ -330,19 +349,13 @@ function displayResults(data) {
         recipeCard.className = 'p-4 bg-white rounded-lg shadow';
         recipeCard.innerHTML = `
             <h3 class="text-xl font-bold text-gray-800 mb-2">${recipe.nome}</h3>
-            <div class="mb-4">
-                <p class="font-semibold">Ingredientes:</p>
-                <div class="flex flex-wrap gap-2 mt-1">
-                    ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
-                    ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded-full">${ing}</span>`).join('')}
-                </div>
-            </div>
-            <div>
-                <p class="font-semibold">Modo de Preparo:</p>
-                <ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                    ${(recipe.modo_preparo || []).map(step => `<li>${step}</li>`).join('')}
-                </ul>
-            </div>
+            <div class="mb-4"><p class="font-semibold">Ingredientes:</p><div class="flex flex-wrap gap-2 mt-1">
+                ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
+                ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded-full">${ing}</span>`).join('')}
+            </div></div>
+            <div><p class="font-semibold">Modo de Preparo:</p><ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                ${(recipe.modo_preparo || []).map(step => `<li>${step}</li>`).join('')}
+            </ul></div>
             ${recipe.tempo_preparo ? `<p class="text-sm text-gray-500 mt-3"><b>Tempo:</b> ${recipe.tempo_preparo}</p>` : ''}
         `;
         ui.results.list.appendChild(recipeCard);
@@ -351,8 +364,67 @@ function displayResults(data) {
     ui.results.notes.innerHTML = data.observacoes_gerais ? `<p class="font-semibold">Observações Gerais:</p><p>${data.observacoes_gerais}</p>` : '';
 }
 
+// --- TUTORIAL ---
+function startTutorial() {
+    const tour = new Shepherd.Tour({
+        useModalOverlay: true,
+        defaultStepOptions: {
+            classes: 'shadow-md bg-purple-900',
+            scrollTo: true
+        }
+    });
+
+    tour.addStep({
+        id: 'step-1',
+        text: 'Bem-vindo ao Chef Pessoal IA! Clique aqui para começar a adicionar seus ingredientes.',
+        attachTo: { element: '#start-btn', on: 'bottom' },
+        buttons: [{ text: 'Próximo', action: tour.next }]
+    });
+
+    tour.addStep({
+        id: 'step-2',
+        text: 'O modal de adição de ingredientes irá abrir.',
+        buttons: [{
+            text: 'Ok',
+            action: () => {
+                openModal();
+                tour.next();
+            }
+        }]
+    });
+
+    tour.addStep({
+        id: 'step-3',
+        text: 'Você pode adicionar ingredientes de três formas: enviando uma IMAGEM, gravando um ÁUDIO ou digitando TEXTO.',
+        attachTo: { element: '#modal-tabs', on: 'bottom' },
+        buttons: [{ text: 'Entendi', action: tour.next }]
+    });
+    
+    tour.addStep({
+        id: 'step-4',
+        text: 'Depois de gerar uma receita, você pode adicionar mais ingredientes para refinar os resultados. Divirta-se!',
+        attachTo: { element: '#close-modal-btn', on: 'bottom' },
+        buttons: [{ text: 'Concluir', action: tour.complete }]
+    });
+
+    tour.on('complete', () => {
+        localStorage.setItem('recipeAppTourCompleted', 'true');
+        closeModal();
+    });
+    tour.on('cancel', () => {
+        localStorage.setItem('recipeAppTourCompleted', 'true');
+        closeModal();
+    });
+
+    tour.start();
+}
+
 // --- INICIALIZAÇÃO ---
-switchModalTab('image'); // Set initial tab in modal
+switchModalTab('image');
+if (!localStorage.getItem('recipeAppTourCompleted')) {
+    // Atraso para garantir que a página esteja totalmente renderizada
+    setTimeout(startTutorial, 500);
+}
 
 </script>
 </body>
