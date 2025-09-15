@@ -116,8 +116,19 @@ app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
         res.json({ transcribedText });
 
     } catch (error) {
-        console.error("Erro em /api/transcribe:", error.message);
-        res.status(500).json({ error: error.message });
+        console.error("--- ERRO DETALHADO EM /api/transcribe ---");
+        if (error.response) {
+            console.error("Data:", error.response.data);
+            console.error("Status:", error.response.status);
+            const errorMessage = error.response.data.error || error.message;
+            res.status(500).json({ error: `Erro da API de Transcrição: ${errorMessage}` });
+        } else if (error.request) {
+            console.error("Request:", error.request);
+            res.status(500).json({ error: "Nenhuma resposta recebida da API de transcrição." });
+        } else {
+            console.error("Error", error.message);
+            res.status(500).json({ error: error.message });
+        }
     }
 });
 
