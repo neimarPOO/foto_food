@@ -81,7 +81,7 @@ async function getRecipesFromAI(prompt) {
     }
 
     const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
-        "model": "qwen/qwen2.5-vl-32b-instruct:free",
+        "model": "google/gemma-3-4b-it:free",
         "messages": [ { "role": "user", "content": prompt } ]
     }, {
         headers: {
