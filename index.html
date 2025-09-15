@@ -19,13 +19,20 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
         /* Custom Shepherd Styles */
-        .shepherd-element { background: #333; color: white; border-radius: 0.5rem; max-width: 350px; }
-        .shepherd-header { background: #444; padding: 0.75rem; border-radius: 0.5rem 0.5rem 0 0; }
-        .shepherd-title { color: white; font-weight: bold; }
-        .shepherd-text { padding: 1rem; font-size: 0.9rem; line-height: 1.5; }
+        .shepherd-element { background: #f8f8f8; color: #333; border-radius: 0.5rem; max-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .shepherd-header { background: #eee; padding: 0.75rem; border-radius: 0.5rem 0.5rem 0 0; border-bottom: 1px solid #ddd; }
+        .shepherd-title { color: #222; font-weight: bold; font-size: 1.1rem; }
+        .shepherd-text { padding: 1rem; font-size: 1rem; line-height: 1.6; color: #444; }
         .shepherd-button { background: #6b8e23; color: white; border-radius: 0.25rem; padding: 0.5rem 1rem; }
         .shepherd-button:not(:disabled):hover { background: #556b2f; }
         .shepherd-button.shepherd-button-secondary { background: #555; }
+        /* Arrow styling for light background */
+        .shepherd-element .shepherd-arrow::before {
+            background: #f8f8f8;
+        }
+        .shepherd-element.shepherd-has-title .shepherd-arrow::before {
+            background: #eee;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4">
