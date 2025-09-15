@@ -114,6 +114,7 @@ A resposta deve ser um JSON com a seguinte estrutura: {"receitas": [{"nome": "..
 
     console.log("Requisição para a OpenRouter bem-sucedida.");
     const completion = response.data;
+    console.log("Resposta completa da IA:", JSON.stringify(completion, null, 2));
 
     if (completion.choices && completion.choices.length > 0 && completion.choices[0].message) {
       rawResponseContent = completion.choices[0].message.content;
