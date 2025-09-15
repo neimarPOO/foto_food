@@ -69,7 +69,7 @@ async function transcribeAudio(audioBuffer) {
   const assemblyai_api = axios.create({ baseURL: "https://api.assemblyai.com/v2", headers: { "authorization": assemblyai_key } });
 
   const uploadResponse = await assemblyai_api.post("/upload", audioBuffer);
-  const transcriptResponse = await assemblyai_api.post("/transcript", { audio_url: uploadResponse.data.upload_url, language_code: "pt_BR" });
+  const transcriptResponse = await assemblyai_api.post("/transcript", { audio_url: uploadResponse.data.upload_url, language_code: "pt" });
 
   const transcriptId = transcriptResponse.data.id;
   while (true) {
