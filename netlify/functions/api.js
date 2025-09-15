@@ -4,11 +4,9 @@ const multer = require('multer');
 const fileType = require('file-type');
 const axios = require('axios');
 
-
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -16,22 +14,36 @@ const upload = multer({
 });
 
 app.post('/api/receitas', upload.single('image'), async (req, res) => {
+  console.log("Iniciando o processamento da receita...");
+
+  // 1. Verificar a chave da API
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("A variável de ambiente OPENAI_API_KEY não está definida.");
+    return res.status(500).json({ error: 'Erro de configuração do servidor: a chave da API não foi encontrada.' });
+  }
+  console.log("Chave da API encontrada.");
+
   let rawResponseContent = '';
   try {
     if (!req.file) {
+      console.log("Nenhum arquivo de imagem enviado.");
       return res.status(400).json({ error: 'Nenhuma imagem enviada.' });
     }
+    console.log("Arquivo de imagem recebido.");
 
     const imageBuffer = req.file.buffer;
     const type = await fileType.fromBuffer(imageBuffer);
 
     if (!type) {
-        return res.status(400).json({ error: 'Não foi possível determinar o tipo do arquivo.' });
+      console.log("Não foi possível determinar o tipo do arquivo.");
+      return res.status(400).json({ error: 'Não foi possível determinar o tipo do arquivo.' });
     }
+    console.log(`Tipo de arquivo detectado: ${type.mime}`);
 
     const base64Image = imageBuffer.toString('base64');
     const mimeType = type.mime;
 
+    console.log("Enviando requisição para a API da OpenRouter...");
     const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
       "model": "qwen/qwen2.5-vl-32b-instruct:free",
       "messages": [
@@ -42,7 +54,8 @@ app.post('/api/receitas', upload.single('image'), async (req, res) => {
               "type": "text",
               "text": "# Prompt Melhorado para Análise de Ingredientes e Sugestão de Receitas"
 
-```
+// ... (seu prompt longo aqui, mantido como estava) ...
+`
 Você é um chef experiente e nutricionista especializado em aproveitamento máximo de ingredientes. Analise meticulosamente a imagem dos ingredientes disponíveis e sugira 2-3 receitas otimizadas seguindo estas diretrizes:
 
 ## ANÁLISE DETALHADA DOS INGREDIENTES:
@@ -81,7 +94,8 @@ Você é um chef experiente e nutricionista especializado em aproveitamento máx
 A resposta deve ser um JSON com a seguinte estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}. 
 
 **IMPORTANTE**: Responda APENAS com o JSON válido, sem texto adicional, explicações ou formatação markdown antes ou depois.
-```            },
+`
+            },
             {
               "type": "image_url",
               "image_url": {
@@ -100,41 +114,73 @@ A resposta deve ser um JSON com a seguinte estrutura: {"receitas": [{"nome": "..
       }
     });
 
+    console.log("Requisição para a OpenRouter bem-sucedida.");
     const completion = response.data;
 
-    rawResponseContent = completion.choices[0].message.content;
+    if (completion.choices && completion.choices.length > 0 && completion.choices[0].message) {
+      rawResponseContent = completion.choices[0].message.content;
+      console.log("Conteúdo bruto da resposta da IA recebido.");
+      // Log a snippet of the response to avoid flooding logs
+      console.log("Início da resposta da IA:", rawResponseContent.substring(0, 100));
+    } else {
+      console.error("Resposta da IA em formato inesperado:", completion);
+      throw new Error("Formato de resposta da IA inválido.");
+    }
 
     // Custom JSON parsing logic
     let parsedJson;
     try {
+      console.log("Tentando extrair e analisar o JSON da resposta.");
       const startIndex = rawResponseContent.indexOf('{');
       const endIndex = rawResponseContent.lastIndexOf('}');
       if (startIndex !== -1 && endIndex !== -1) {
         const jsonSubstring = rawResponseContent.substring(startIndex, endIndex + 1);
         parsedJson = JSON.parse(jsonSubstring);
+        console.log("JSON analisado com sucesso.");
       } else {
-        throw new Error('JSON object not found in response.');
+        console.error("Nenhum objeto JSON encontrado na resposta da IA.");
+        throw new Error('Objeto JSON não encontrado na resposta.');
       }
     } catch (jsonError) {
-      console.error("Error parsing JSON from raw response:", jsonError);
-      console.error("Raw response content:", rawResponseContent);
-      throw new Error('Resposta da IA não é um JSON válido ou está incompleta.');
+      console.error("Erro ao analisar o JSON da resposta bruta:", jsonError);
+      console.error("Conteúdo bruto que falhou na análise:", rawResponseContent);
+      throw new Error('A resposta da IA não é um JSON válido ou está incompleta.');
     }
 
     res.json(parsedJson);
 
   } catch (error) {
+    console.error("--- ERRO GERAL NO CATCH ---");
     if (error instanceof multer.MulterError) {
+      console.error("Erro do Multer:", error.message);
       return res.status(400).json({ error: `Erro no upload da imagem: ${error.message}` });
     }
-    console.error("Error in /api/receitas:", error);
-    console.error("Raw response content (if available):", rawResponseContent);
-    res.status(500).json({ error: 'Erro ao processar a resposta da IA. Tente uma imagem diferente.' });
+    
+    // Log de erro do Axios
+    if (error.isAxiosError) {
+      console.error("Erro do Axios ao chamar a API externa.");
+      if (error.response) {
+        // A requisição foi feita e o servidor respondeu com um status code fora do range 2xx
+        console.error('Status:', error.response.status);
+        console.error('Data:', error.response.data);
+        console.error('Headers:', error.response.headers);
+      } else if (error.request) {
+        // A requisição foi feita mas nenhuma resposta foi recebida
+        console.error('Request:', error.request);
+      } else {
+        // Algo aconteceu ao configurar a requisição que acionou um erro
+        console.error('Erro de configuração do Axios:', error.message);
+      }
+    } else {
+      // Log de outros erros
+      console.error("Erro não relacionado ao Axios:", error);
+    }
+
+    console.error("Conteúdo bruto da resposta (se disponível no momento do erro):", rawResponseContent);
+    res.status(500).json({ error: 'Erro interno ao processar a sua requisição. Verifique os logs da função para mais detalhes.' });
   }
 });
 
 const serverless = require('serverless-http');
-
-const PORT = process.env.PORT || 3000;
-
 module.exports.handler = serverless(app);
+
