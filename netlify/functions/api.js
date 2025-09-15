@@ -52,47 +52,18 @@ app.post('/api/receitas', upload.single('image'), async (req, res) => {
           "content": [
             {
               "type": "text",
-              "text": `# Prompt Melhorado para Análise de Ingredientes e Sugestão de Receitas
+              "text": `Você é um chef e nutricionista. Analise a imagem em anexo e siga as instruções abaixo.
 
-Você é um chef experiente e nutricionista especializado em aproveitamento máximo de ingredientes. Analise meticulosamente a imagem dos ingredientes disponíveis e sugira 2-3 receitas otimizadas seguindo estas diretrizes:
+1.  **Análise de Imagem:** Identifique cada ingrediente na imagem, estime a quantidade e avalie a qualidade/frescor.
+2.  **Sugestão de Receitas:** Com base na análise, sugira 2 receitas que usem o máximo dos ingredientes disponíveis.
+3.  **Formato da Resposta:** A sua resposta deve ser um objeto JSON, e NADA MAIS. O JSON deve ter a seguinte estrutura:
 
-## ANÁLISE DETALHADA DOS INGREDIENTES:
-1. **Identificação precisa**: Reconheça cada ingrediente, incluindo variedades específicas (ex: "tomate italiano" vs "tomate cereja")
-2. **Estado e qualidade**: Avalie frescor, maturação e condições visuais dos ingredientes
-3. **Quantidades estimadas**: Estime porções baseando-se em referências visuais e proporções
-4. **Potencial culinário**: Identifique sabores, texturas e técnicas de preparo mais adequadas para cada item
-5. **Combinações sinérgicas**: Reconheça ingredientes que se complementam em sabor, textura e valor nutricional
+{"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}
 
-## CRITÉRIOS PARA SUGESTÃO DE RECEITAS:
-- **Máximo aproveitamento**: Priorize receitas que usem a maior quantidade possível dos ingredientes disponíveis
-- **Harmonia gastronômica**: Garanta que os sabores se complementem e não compitam entre si
-- **Viabilidade técnica**: Considere métodos de preparo compatíveis com ingredientes domésticos típicos
-- **Equilíbrio nutricional**: Balance proteínas, carboidratos, fibras e micronutrientes quando possível
-- **Praticidade**: Sugira receitas com complexidade adequada aos ingredientes disponíveis
-- **Versatilidade**: Inclua opções para diferentes ocasiões (refeição principal, lanche, acompanhamento)
-
-## INGREDIENTES ADICIONAIS ESTRATÉGICOS:
-- Sugira apenas itens essenciais e comuns que elevem significativamente o prato
-- Priorize temperos básicos, bases aromáticas e ingredientes de "ligação"
-- Considere alternativas quando possível (ex: "azeite ou óleo vegetal")
-- Mantenha a lista enxuta - máximo 5 ingredientes adicionais por receita
-
-## MODO DE PREPARO DETALHADO:
-- Use verbos de ação específicos e técnicas culinárias precisas
-- Inclua temperaturas, tempos e pontos de referência visuais
-- Ordene etapas logicamente para otimizar tempo e resultado
-- Mencione técnicas para realçar sabores naturais dos ingredientes
-
-## OBSERVAÇÕES ESTRATÉGICAS:
-- Destaque características nutritivas dos pratos sugeridos
-- Mencione possíveis variações ou substituições
-- Indique dicas para maximizar sabor e apresentação
-- Sugira acompanhamentos que complementem as receitas
-
-A resposta deve ser um JSON com a seguinte estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}. 
-
-**IMPORTANTE**: Responda APENAS com o JSON válido, sem texto adicional, explicações ou formatação markdown antes ou depois.
-`
+**Regras Adicionais:**
+*   Para cada receita, liste no máximo 5 ingredientes adicionais que sejam comuns (sal, pimenta, azeite, etc.).
+*   O "modo_preparo" deve ser uma lista de passos claros e concisos.
+*   Responda APENAS com o JSON. Não inclua texto antes ou depois do objeto JSON.`
             },
             {
               "type": "image_url",
