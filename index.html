@@ -102,6 +102,9 @@ let state = {
 
 // --- LÓGICA PRINCIPAL ---
 
+ui.tabs.image.addEventListener('click', () => switchMode('image'));
+ui.tabs.audio.addEventListener('click', () => switchMode('audio'));
+
 function switchMode(mode) {
     state.mode = mode;
     resetUI();
