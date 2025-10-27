@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <!-- Shepherd.js Tutorial Library -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
     <style>
@@ -16,7 +17,7 @@
             --md-accent-color: #FFC107;
             --md-text-color: #212121;
         }
-        body { font-family: 'Roboto', 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0, 0, 0, 0.5); color: var(--md-text-color); }
+        body { font-family: 'Oswald', 'Roboto', 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0, 0, 0, 0.5); color: var(--md-text-color); }
         .container { max-width: 800px; background-color: rgba(255, 255, 255, 0.98); border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.1); }
         
         /* Material Design Buttons */
@@ -32,8 +33,19 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #modal-backdrop { background-color: rgba(0, 0, 0, 0.6); }
-        #modal-content { border-radius: 8px; box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2); }
+        #modal-content { 
+            border-radius: 12px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
         
+        #modal-content h2 {
+            font-family: 'Caprasimo', cursive;
+            font-size: 2.5rem;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
         /* Material Design Tabs */
         .modal-tab-btn { padding: 0.5rem 1rem; cursor: pointer; color: #757575; font-weight: 600; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
         .modal-tab-btn.active { color: var(--md-primary-color); border-bottom-color: var(--md-primary-color); }
