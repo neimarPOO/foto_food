@@ -48,6 +48,14 @@
                 <button id="start-btn" class="btn-primary text-lg">Começar a Criar Receitas</button>
             </div>
 
+            <div id="top-buttons" class="hidden text-center my-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Adicionar mais ingredientes?</h3>
+                <div class="flex justify-center items-center space-x-4">
+                    <button id="add-more-btn" class="btn-primary">Adicionar e Refazer Receitas</button>
+                    <button id="start-new-recipe-btn" class="btn-secondary">Começar Nova Receita</button>
+                </div>
+            </div>
+
             <div id="loading" class="hidden text-center text-gray-500 my-8">
                 <div class="loader mx-auto"></div>
                 <p id="loading-text" class="mt-2 h-10">Analisando...</p>
@@ -67,13 +75,6 @@
                 </div>
                 <div id="recipe-list" class="grid gap-6"></div>
                 <div id="general-notes" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-700"></div>
-                <div id="add-more-section" class="mt-8 pt-6 border-t-2 border-gray-200 text-center">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Adicionar mais ingredientes?</h3>
-                    <button id="add-more-btn" class="btn-primary">Adicionar e Refazer Receitas</button>
-                </div>
-                <div class="mt-4 text-center">
-                    <button id="start-new-recipe-btn" class="btn-secondary">Começar Nova Receita</button>
-                </div>
             </div>
         </div>
     </div>
@@ -132,6 +133,8 @@ const loadingMessages = [
 const ui = {
     main: document.getElementById('main-content'),
     startBtn: document.getElementById('start-btn'),
+    startSection: document.getElementById('start-section'),
+    topButtons: document.getElementById('top-buttons'),
     addMoreBtn: document.getElementById('add-more-btn'),
     loading: document.getElementById('loading'),
     loadingText: document.getElementById('loading-text'),
@@ -233,6 +236,9 @@ document.getElementById('start-new-recipe-btn').addEventListener('click', () => 
     ui.results.ingredientsList.innerHTML = '';
     ui.results.inputImagesList.innerHTML = '';
     ui.results.inputImagesDisplay.classList.add('hidden');
+    ui.results.container.classList.add('hidden');
+    ui.startSection.classList.remove('hidden');
+    ui.topButtons.classList.add('hidden');
     openModal();
 });
 
@@ -352,6 +358,8 @@ async function getRecipes(payload) {
 
 function displayResults(data) {
     setLoading(false);
+    ui.startSection.classList.add('hidden');
+    ui.topButtons.classList.remove('hidden');
     ui.results.container.classList.remove('hidden');
     ui.results.list.innerHTML = '';
 
