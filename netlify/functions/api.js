@@ -102,22 +102,6 @@ async function getRecipesFromAI(promptContent) {
     return JSON.parse(content.substring(startIndex, endIndex + 1));
 }
 
-async function generateImage(prompt) {
-    try {
-        const response = await axios.post("https://t2i.mcpcore.xyz/api/free/generate", {
-            prompt: prompt,
-            model: "turbo"
-        }, {
-            headers: { "Content-Type": "application/json" }
-        });
-        // Assuming the API returns a JSON response with an `imageUrl` field
-        return response.data.imageUrl;
-    } catch (error) {
-        console.error("Image generation failed:", error.message);
-        return null; // Return null if image generation fails
-    }
-}
-
 // --- API Endpoints ---
 
 // Endpoint to transcribe audio and validate ingredients
@@ -175,12 +159,6 @@ app.post('/api/receitas', async (req, res) => {
             }
         } else {
             return res.status(400).json({ error: 'Requisição inválida. Forneça texto ou imagem.' });
-        }
-
-        if (recipeJson.receitas && recipeJson.receitas.length > 0) {
-            const recipeName = recipeJson.receitas[0].nome;
-            const imageUrl = await generateImage(`Uma foto de um prato de ${recipeName}, estilo hyper-realista`);
-            recipeJson.receitas[0].imageUrl = imageUrl;
         }
 
         res.json(recipeJson);
