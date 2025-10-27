@@ -61,11 +61,18 @@
                     <p class="font-semibold">Ingredientes na sua lista:</p>
                     <div id="current-ingredients-list" class="flex flex-wrap gap-2 mt-2"></div>
                 </div>
+                <div id="input-images-display" class="mb-4 p-3 bg-blue-50 rounded-lg hidden">
+                    <p class="font-semibold">Imagens de Ingredientes:</p>
+                    <div id="input-images-list" class="flex flex-wrap gap-2 mt-2"></div>
+                </div>
                 <div id="recipe-list" class="grid gap-6"></div>
                 <div id="general-notes" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-700"></div>
                 <div id="add-more-section" class="mt-8 pt-6 border-t-2 border-gray-200 text-center">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Adicionar mais ingredientes?</h3>
                     <button id="add-more-btn" class="btn-primary">Adicionar e Refazer Receitas</button>
+                </div>
+                <div class="mt-4 text-center">
+                    <button id="start-new-recipe-btn" class="btn-secondary">Começar Nova Receita</button>
                 </div>
             </div>
         </div>
@@ -105,6 +112,7 @@
 // --- ESTADO GLOBAL & CONSTANTES ---
 let state = {
     currentIngredients: [],
+    inputImages: [], // New: To store base64 images provided by the user
     isRecording: false,
     recorder: null,
     timerInterval: null,
@@ -133,7 +141,9 @@ const ui = {
         list: document.getElementById('recipe-list'),
         notes: document.getElementById('general-notes'),
         ingredientsDisplay: document.getElementById('current-ingredients-display'),
-        ingredientsList: document.getElementById('current-ingredients-list')
+        ingredientsList: document.getElementById('current-ingredients-list'),
+        inputImagesDisplay: document.getElementById('input-images-display'), // New: To display input image thumbnails
+        inputImagesList: document.getElementById('input-images-list') // New: To display input image thumbnails
     },
     modal: {
         backdrop: document.getElementById('modal-backdrop'),
@@ -215,6 +225,17 @@ ui.addMoreBtn.addEventListener('click', openModal);
 ui.modal.closeBtn.addEventListener('click', closeModal);
 ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
 
+// New: Start New Recipe Button
+document.getElementById('start-new-recipe-btn').addEventListener('click', () => {
+    state.currentIngredients = [];
+    state.inputImages = [];
+    sessionStorage.removeItem('inputImages');
+    ui.results.ingredientsList.innerHTML = '';
+    ui.results.inputImagesList.innerHTML = '';
+    ui.results.inputImagesDisplay.classList.add('hidden');
+    openModal();
+});
+
 // Image
 ui.inputs.imageUpload.addEventListener('change', (event) => {
     const file = event.target.files[0];
@@ -234,8 +255,10 @@ ui.inputs.imageSubmitBtn.addEventListener('click', () => {
     if (!file) return;
     const reader = new FileReader();
     reader.onloadend = () => {
-        const base64Image = reader.result.split(',')[1];
-        getRecipes({ type: 'image', data: base64Image });
+        const base64Image = reader.result;
+        state.inputImages.push(base64Image); // Store full base64 string
+        sessionStorage.setItem('inputImages', JSON.stringify(state.inputImages));
+        getRecipes({ type: 'image', data: base64Image.split(',')[1] }); // Send only the base64 part to backend
     };
     reader.readAsDataURL(file);
 });
@@ -337,6 +360,14 @@ function displayResults(data) {
     ui.results.ingredientsList.innerHTML = state.currentIngredients.map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('');
     ui.results.ingredientsDisplay.classList.remove('hidden');
 
+    // Display input image thumbnails
+    if (state.inputImages.length > 0) {
+        ui.results.inputImagesList.innerHTML = state.inputImages.map(img => `<img src="${img}" class="w-24 h-24 object-cover rounded-md shadow-md">`).join('');
+        ui.results.inputImagesDisplay.classList.remove('hidden');
+    } else {
+        ui.results.inputImagesDisplay.classList.add('hidden');
+    }
+
     data.receitas.forEach(recipe => {
         const recipeCard = document.createElement('div');
         recipeCard.className = 'p-4 bg-white rounded-lg shadow';
@@ -413,6 +444,12 @@ function startTutorial() {
 }
 
 // --- INICIALIZAÇÃO ---
+// Load input images from sessionStorage on initialization
+const storedImages = sessionStorage.getItem('inputImages');
+if (storedImages) {
+    state.inputImages = JSON.parse(storedImages);
+}
+
 switchModalTab('image');
 if (!localStorage.getItem('recipeAppTourCompleted')) {
     // Atraso para garantir que a página esteja totalmente renderizada

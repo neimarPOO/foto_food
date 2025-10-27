@@ -153,6 +153,7 @@ app.post('/api/receitas', async (req, res) => {
                 { type: "image_url", image_url: { url: `data:${type.mime};base64,${image}` } }
             ];
             recipeJson = await getRecipesFromAI(promptContent);
+            recipeJson.inputImage = `data:${type.mime};base64,${image}`;
 
             if (!recipeJson.receitas || recipeJson.receitas.length === 0 || !recipeJson.receitas[0].ingredientes_disponiveis || recipeJson.receitas[0].ingredientes_disponiveis.length === 0) {
                 return res.status(400).json({ error: "A imagem não parece conter ingredientes culinários. Por favor, envie uma foto mais clara." });
