@@ -17,7 +17,18 @@
             --md-text-color: #5a4b3f; /* Dark brown from reference */
         }
         body { font-family: 'Oswald', 'Roboto', 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0, 0, 0, 0.5); color: var(--md-text-color); }
-        .container { max-width: 800px; background-color: rgba(255, 255, 255, 0.98); border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1), 0 6px 20px rgba(0,0,0,0.1); }
+        .container {
+            background-color: #f9f2e3;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 800px;
+            border: 2px solid #a68c6e;
+            outline: 1px dashed #d1c0a8;
+            outline-offset: -8px;
+            margin: auto;
+        }
         
         /* Material Design Buttons (adapted with new colors) */
         .btn { text-transform: uppercase; font-weight: bold; border-radius: 8px; padding: 15px 30px; transition: all 0.2s ease-in-out; letter-spacing: 0.5px; font-family: 'Oswald', sans-serif; }
@@ -32,8 +43,8 @@
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--md-primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        #modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
-        #modal-content { 
+        #modal-backdrop, #recipe-modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
+        #modal-content, #recipe-modal-content { 
             background-color: #f9f2e3;
             padding: 30px 40px;
             border-radius: 15px;
@@ -45,12 +56,24 @@
             outline-offset: -8px;
         }
         
-        #modal-content h2 {
+        #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2 {
             font-family: 'Caprasimo', cursive;
             color: #5a4b3f;
             font-size: 2.2em;
             margin: 0 0 15px 0;
             line-height: 1;
+        }
+
+        #add-content-modal-content { 
+            background-color: #f9f2e3;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 550px;
+            border: 2px solid #a68c6e;
+            outline: 1px dashed #d1c0a8;
+            outline-offset: -8px;
         }
 
         /* Material Design Tabs (adapted) */
@@ -62,8 +85,8 @@
         #text-input:focus { outline: none; border: 1px solid var(--md-text-color); }
 
         /* Recipe Card */
-        .recipe-card { background-color: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: box-shadow 0.2s; }
-        .recipe-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .recipe-card { background-color: #fff; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; padding: 20px; text-align: center; border: 2px solid #a68c6e; }
+        .recipe-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.2); transform: translateY(-5px); }
 
         /* Custom Shepherd Styles (to match new theme) */
         .shepherd-element { background: #f9f2e3; color: var(--md-text-color); border-radius: 15px; max-width: 350px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); border: 2px solid #a68c6e; }
@@ -78,7 +101,7 @@
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4">
-    <div class="container w-full md:w-3/4 lg:w-2/3 p-8 rounded-2xl shadow-xl mx-auto sm:px-4">
+    <div class="container w-full md:w-3/4 lg:w-2/3 mx-auto">
         <!-- Conteúdo principal movido para dentro para o tutorial poder achar -->
         <div id="main-content">
             <div class="text-center mb-6">
@@ -150,6 +173,43 @@
         </div>
     </div>
 
+    <!-- Modal de Detalhes da Receita -->
+    <div id="recipe-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div id="recipe-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+            <!-- O conteúdo da receita será inserido aqui dinamicamente -->
+        </div>
+    </div>
+
+    <!-- Modal de Adicionar Conteúdo -->
+    <div id="add-content-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div id="add-content-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Adicionar à Receita</h2>
+            <div id="add-content-modal-tabs" class="flex justify-center gap-4 mb-6 border-b pb-4">
+                <button data-mode="image" class="add-content-modal-tab-btn">Imagem</button>
+                <button data-mode="audio" class="add-content-modal-tab-btn">Áudio</button>
+                <button data-mode="text" class="add-content-modal-tab-btn">Texto</button>
+            </div>
+            <div id="add-content-modal-content-image" class="hidden">
+                 <div id="add-content-image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+                    <input type="file" id="add-content-image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
+                    <img id="add-content-image-preview" src="#" class="hidden max-w-full max-h-full rounded-md">
+                    <span id="add-content-upload-text">Clique para enviar ou tirar uma foto</span>
+                </div>
+                <div class="text-center mt-4"><button id="add-content-image-submit-btn" class="btn btn-primary" disabled>Adicionar Imagem</button></div>
+            </div>
+            <div id="add-content-modal-content-audio" class="hidden text-center">
+                <button id="add-content-record-btn" class="btn btn-primary">Iniciar Gravação</button>
+                <div id="add-content-audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
+            </div>
+            <div id="add-content-modal-content-text" class="hidden">
+                <textarea id="add-content-text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Digite o texto..."></textarea>
+                <div class="text-center mt-4"><button id="add-content-text-submit-btn" class="btn btn-primary">Adicionar Texto</button></div>
+            </div>
+            <div class="text-center mt-6"><button id="close-add-content-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
     <script>
 // --- ESTADO GLOBAL & CONSTANTES ---
@@ -160,7 +220,9 @@ let state = {
     recorder: null,
     timerInterval: null,
     modalMode: 'image',
-    loadingInterval: null
+    loadingInterval: null,
+    recipes: [], // To store the generated recipes
+    currentRecipeId: null
 };
 
 const loadingMessages = [
@@ -187,8 +249,8 @@ const ui = {
         notes: document.getElementById('general-notes'),
         ingredientsDisplay: document.getElementById('current-ingredients-display'),
         ingredientsList: document.getElementById('current-ingredients-list'),
-        inputImagesDisplay: document.getElementById('input-images-display'), // New: To display input image thumbnails
-        inputImagesList: document.getElementById('input-images-list') // New: To display input image thumbnails
+        inputImagesDisplay: document.getElementById('input-images-display'),
+        inputImagesList: document.getElementById('input-images-list')
     },
     modal: {
         backdrop: document.getElementById('modal-backdrop'),
@@ -199,6 +261,24 @@ const ui = {
         contentImage: document.getElementById('modal-content-image'),
         contentAudio: document.getElementById('modal-content-audio'),
         contentText: document.getElementById('modal-content-text')
+    },
+    recipeModal: {
+        backdrop: document.getElementById('recipe-modal-backdrop'),
+        content: document.getElementById('recipe-modal-content')
+    },
+    addContentModal: {
+        backdrop: document.getElementById('add-content-modal-backdrop'),
+        content: document.getElementById('add-content-modal-content'),
+        closeBtn: document.getElementById('close-add-content-modal-btn'),
+        tabs: document.querySelectorAll('.add-content-modal-tab-btn'),
+        imagePreview: document.getElementById('add-content-image-preview'),
+        uploadText: document.getElementById('add-content-upload-text'),
+        imageUpload: document.getElementById('add-content-image-upload'),
+        imageSubmitBtn: document.getElementById('add-content-image-submit-btn'),
+        recordBtn: document.getElementById('add-content-record-btn'),
+        audioStatus: document.getElementById('add-content-audio-status'),
+        textInput: document.getElementById('add-content-text-input'),
+        textSubmitBtn: document.getElementById('add-content-text-submit-btn')
     },
     inputs: {
         imageUpload: document.getElementById('image-upload'),
@@ -228,6 +308,99 @@ function closeModal() {
         ui.modal.backdrop.classList.add('hidden');
         ui.modal.backdrop.classList.remove('flex');
     }, 200);
+}
+
+function openRecipeModal(recipeId) {
+    const recipe = state.recipes.find(r => r.id === recipeId);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    ui.recipeModal.content.innerHTML = `
+        <h2 class="text-3xl font-bold text-center mb-4" style="font-family: 'Caprasimo', cursive;">${recipe.nome}</h2>
+        <div class="mb-4 text-left">
+            <p class="font-semibold">Ingredientes:</p>
+            <div class="flex flex-wrap gap-2 mt-1">
+                ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
+                ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded-full">${ing}</span>`).join('')}
+            </div>
+        </div>
+        <div class="text-left">
+            <p class="font-semibold">Modo de Preparo:</p>
+            <ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                ${(recipe.modo_preparo || []).map(step => `<li>${step}</li>`).join('')}
+            </ul>
+        </div>
+        ${recipe.tempo_preparo ? `<p class="text-sm text-gray-500 mt-3 text-left"><b>Tempo:</b> ${recipe.tempo_preparo}</p>` : ''}
+        <div class="flex justify-center items-center space-x-4 mt-6">
+            <button id="download-pdf-btn" class="btn btn-primary">Baixar PDF</button>
+            <button id="close-recipe-modal-btn" class="btn btn-secondary">Fechar</button>
+        </div>
+        <div class="flex justify-center items-center space-x-4 mt-4">
+            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(recipe.nome + ' - ' + window.location.href)}" target="_blank" class="text-green-500 hover:text-green-700">WhatsApp</a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" class="text-blue-600 hover:text-blue-800">Facebook</a>
+            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(recipe.nome)}" target="_blank" class="text-blue-400 hover:text-blue-600">Twitter</a>
+        </div>
+    `;
+
+    ui.recipeModal.backdrop.classList.remove('hidden');
+    ui.recipeModal.backdrop.classList.add('flex');
+    setTimeout(() => { ui.recipeModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+
+    document.getElementById('close-recipe-modal-btn').addEventListener('click', closeRecipeModal);
+    document.getElementById('download-pdf-btn').addEventListener('click', () => {
+        doc.text(recipe.nome, 10, 10);
+        doc.text('Ingredientes:', 10, 20);
+        let y = 30;
+        (recipe.ingredientes_disponiveis || []).forEach(ing => {
+            doc.text('- ' + ing, 10, y);
+            y += 10;
+        });
+        (recipe.ingredientes_adicionais || []).forEach(ing => {
+            doc.text('- ' + ing, 10, y);
+            y += 10;
+        });
+        doc.text('Modo de Preparo:', 10, y);
+        y += 10;
+        (recipe.modo_preparo || []).forEach(step => {
+            doc.text('- ' + step, 10, y);
+            y += 10;
+        });
+        if (recipe.tempo_preparo) {
+            doc.text('Tempo: ' + recipe.tempo_preparo, 10, y);
+        }
+        doc.save(recipe.nome + '.pdf');
+    });
+}
+
+function closeRecipeModal() {
+    ui.recipeModal.content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        ui.recipeModal.backdrop.classList.add('hidden');
+        ui.recipeModal.backdrop.classList.remove('flex');
+    }, 200);
+}
+
+function openAddContentModal(recipeId, mode) {
+    state.currentRecipeId = recipeId;
+    switchAddContentModalTab(mode);
+    ui.addContentModal.backdrop.classList.remove('hidden');
+    ui.addContentModal.backdrop.classList.add('flex');
+    setTimeout(() => { ui.addContentModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+}
+
+function closeAddContentModal() {
+    ui.addContentModal.content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        ui.addContentModal.backdrop.classList.add('hidden');
+        ui.addContentModal.backdrop.classList.remove('flex');
+    }, 200);
+}
+
+function switchAddContentModalTab(mode) {
+    ui.addContentModal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+    ['image', 'audio', 'text'].forEach(m => {
+        document.getElementById(`add-content-modal-content-${m}`).classList.toggle('hidden', m !== mode);
+    });
 }
 
 function switchModalTab(mode) {
@@ -269,12 +442,16 @@ ui.startBtn.addEventListener('click', () => { console.log('Botão Começar clica
 ui.addMoreBtn.addEventListener('click', openModal);
 ui.modal.closeBtn.addEventListener('click', closeModal);
 ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
+ui.addContentModal.closeBtn.addEventListener('click', closeAddContentModal);
+ui.addContentModal.tabs.forEach(tab => tab.addEventListener('click', () => switchAddContentModalTab(tab.dataset.mode)));
 
 // New: Start New Recipe Button
 document.getElementById('start-new-recipe-btn').addEventListener('click', () => {
     state.currentIngredients = [];
     state.inputImages = [];
+    state.recipes = [];
     sessionStorage.removeItem('inputImages');
+    sessionStorage.removeItem('recipes');
     ui.results.ingredientsList.innerHTML = '';
     ui.results.inputImagesList.innerHTML = '';
     ui.results.inputImagesDisplay.classList.add('hidden');
@@ -304,9 +481,9 @@ ui.inputs.imageSubmitBtn.addEventListener('click', () => {
     const reader = new FileReader();
     reader.onloadend = () => {
         const base64Image = reader.result;
-        state.inputImages.push(base64Image); // Store full base64 string
+        state.inputImages.push(base64Image);
         sessionStorage.setItem('inputImages', JSON.stringify(state.inputImages));
-        getRecipes({ type: 'image', data: base64Image.split(',')[1] }); // Send only the base64 part to backend
+        getRecipes({ type: 'image', data: base64Image.split(',')[1] });
     };
     reader.readAsDataURL(file);
 });
@@ -320,6 +497,47 @@ ui.inputs.textSubmitBtn.addEventListener('click', () => {
 
 // Audio
 ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
+
+// Add Content Modal
+ui.addContentModal.imageUpload.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        ui.addContentModal.imagePreview.src = e.target.result;
+        ui.addContentModal.imagePreview.classList.remove('hidden');
+        ui.addContentModal.uploadText.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+    ui.addContentModal.imageSubmitBtn.disabled = false;
+});
+
+ui.addContentModal.imageSubmitBtn.addEventListener('click', () => {
+    const file = ui.addContentModal.imageUpload.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        const base64Image = reader.result;
+        const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
+        if (recipe) {
+            recipe.additionalImages.push(base64Image);
+            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+            closeAddContentModal();
+        }
+    };
+    reader.readAsDataURL(file);
+});
+
+ui.addContentModal.textSubmitBtn.addEventListener('click', () => {
+    const text = ui.addContentModal.textInput.value;
+    if (!text.trim()) return;
+    const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
+    if (recipe) {
+        recipe.additionalTexts.push(text);
+        sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+        closeAddContentModal();
+    }
+});
 
 async function startRecording() {
     try {
@@ -394,7 +612,16 @@ async function getRecipes(payload) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
 
-        displayResults(data);
+        state.recipes = data.receitas.map((recipe, index) => ({
+            ...recipe,
+            id: Date.now() + index, // Simple unique ID
+            additionalImages: [],
+            additionalTexts: [],
+            additionalAudios: []
+        }));
+        sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+        displayResults({ ...data, receitas: state.recipes });
+
     } catch (err) { showError(err.message); }
 }
 
@@ -422,16 +649,14 @@ function displayResults(data) {
         const recipeCard = document.createElement('div');
         recipeCard.className = 'p-4 recipe-card';
         recipeCard.innerHTML = `
-            <h3 class="text-xl font-bold text-gray-800 mb-2">${recipe.nome}</h3>
-            <div class="mb-4"><p class="font-semibold">Ingredientes:</p><div class="flex flex-wrap gap-2 mt-1">
-                ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
-                ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded-full">${ing}</span>`).join('')}
-            </div></div>
-            <div><p class="font-semibold">Modo de Preparo:</p><ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                ${(recipe.modo_preparo || []).map(step => `<li>${step}</li>`).join('')}
-            </ul></div>
-            ${recipe.tempo_preparo ? `<p class="text-sm text-gray-500 mt-3"><b>Tempo:</b> ${recipe.tempo_preparo}</p>` : ''}
+            <h3 class="text-2xl font-bold text-center" style="font-family: 'Caprasimo', cursive;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
+            <div class="flex justify-center items-center space-x-4 mt-4">
+                <button class="btn btn-secondary" onclick="openAddContentModal(${recipe.id}, 'image')">Add Image</button>
+                <button class="btn btn-secondary" onclick="openAddContentModal(${recipe.id}, 'text')">Add Text</button>
+                <button class="btn btn-secondary" onclick="openAddContentModal(${recipe.id}, 'audio')">Add Audio</button>
+            </div>
         `;
+        
         ui.results.list.appendChild(recipeCard);
     });
 
@@ -494,11 +719,17 @@ function startTutorial() {
 }
 
 // --- INICIALIZAÇÃO ---
-// Load input images from sessionStorage on initialization
+// Load data from sessionStorage on initialization
 const storedImages = sessionStorage.getItem('inputImages');
 if (storedImages) {
     state.inputImages = JSON.parse(storedImages);
 }
+const storedRecipes = sessionStorage.getItem('recipes');
+if (storedRecipes) {
+    state.recipes = JSON.parse(storedRecipes);
+    displayResults({ receitas: state.recipes, observacoes_gerais: '' });
+}
+
 
 switchModalTab('image');
 if (!localStorage.getItem('recipeAppTourCompleted')) {
