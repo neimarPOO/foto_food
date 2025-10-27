@@ -341,6 +341,7 @@ function displayResults(data) {
         const recipeCard = document.createElement('div');
         recipeCard.className = 'p-4 bg-white rounded-lg shadow';
         recipeCard.innerHTML = `
+            ${recipe.imageUrl ? `<img src="${recipe.imageUrl}" alt="Foto de ${recipe.nome}" class="w-full h-48 object-cover rounded-t-lg mb-4">` : ''}
             <h3 class="text-xl font-bold text-gray-800 mb-2">${recipe.nome}</h3>
             <div class="mb-4"><p class="font-semibold">Ingredientes:</p><div class="flex flex-wrap gap-2 mt-1">
                 ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
