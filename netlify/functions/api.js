@@ -141,7 +141,7 @@ app.post('/api/receitas', async (req, res) => {
 
         if (text) {
             const ingredients = [...new Set([...currentIngredients, ...text.split(/, | e /)])].join(', ');
-            promptContent = `Você é um chef e nutricionista. A partir da seguinte lista de ingredientes: "${ingredients}", sugira 2 receitas. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}`;
+            promptContent = `Você é um chef e nutricionista. A partir da seguinte lista de ingredientes: "${ingredients}", sugira 3 receitas. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}`;
             recipeJson = await getRecipesFromAI(promptContent);
         } else if (image) {
             const imageBuffer = Buffer.from(image, 'base64');
@@ -149,7 +149,7 @@ app.post('/api/receitas', async (req, res) => {
             if (!type) return res.status(400).json({ error: 'Tipo de arquivo de imagem inválido.' });
 
             promptContent = [
-                { type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 2 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}` },
+                { type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 3 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}` },
                 { type: "image_url", image_url: { url: `data:${type.mime};base64,${image}` } }
             ];
             recipeJson = await getRecipesFromAI(promptContent);
