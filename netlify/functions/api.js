@@ -98,9 +98,17 @@ async function getRecipesFromAI(promptContent) {
 
     const startIndex = content.indexOf('{');
     const endIndex = content.lastIndexOf('}');
-    if (startIndex === -1 || endIndex === -1) throw new Error("Nenhum JSON válido encontrado na resposta da IA.");
+    if (startIndex === -1 || endIndex === -1) {
+        console.error("AI response did not contain valid JSON structure:", content); // Log the problematic content
+        throw new Error("Nenhum JSON válido encontrado na resposta da IA. Resposta completa: " + content);
+    }
     
-    return JSON.parse(content.substring(startIndex, endIndex + 1));
+    try {
+        return JSON.parse(content.substring(startIndex, endIndex + 1));
+    } catch (jsonError) {
+        console.error("Failed to parse AI response as JSON:", jsonError, "Raw content:", content); // Log parsing error
+        throw new Error("Falha ao analisar a resposta da IA como JSON. Erro: " + jsonError.message + ". Resposta completa: " + content);
+    }
 }
 
 // --- API Endpoints ---
