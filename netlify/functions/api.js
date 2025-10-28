@@ -85,12 +85,26 @@ async function getRecipesFromAI(promptContent) {
     const openrouter_key = process.env.OPENAI_API_KEY;
     if (!openrouter_key) throw new Error('Chave da API da OpenRouter não configurada.');
 
-    const response = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
-        model: "google/gemma-3-4b-it:free",
-        messages: [{ role: "user", content: promptContent }]
-    }, {
-        headers: { Authorization: `Bearer ${openrouter_key}`, "Content-Type": "application/json" }
-    });
+    let response;
+    try {
+        response = await axios.post("https://openrouter.ai/api/v1/chat/completions", {
+            model: "google/gemma-3-4b-it:free",
+            messages: [{ role: "user", content: promptContent }]
+        }, {
+            headers: { Authorization: `Bearer ${openrouter_key}`, "Content-Type": "application/json" }
+        });
+    } catch (axiosError) {
+        console.error("OpenRouter API Request Failed:", axiosError.message);
+        if (axiosError.response) {
+            console.error("OpenRouter Response Data:", axiosError.response.data);
+            console.error("OpenRouter Response Status:", axiosError.response.status);
+            throw new Error(`OpenRouter API Error: ${axiosError.response.status} - ${axiosError.response.data.message || axiosError.message}`);
+        } else if (axiosError.request) {
+            throw new Error("OpenRouter API Error: No response received from API.");
+        } else {
+            throw new Error("OpenRouter API Error: " + axiosError.message);
+        }
+    }
     
     const content = response.data.choices[0].message.content;
     console.log("AI Raw Response Content:", content); // Added for debugging
