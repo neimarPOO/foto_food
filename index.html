@@ -382,23 +382,11 @@ function openRecipeModal(recipeId) {
             <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(recipe.nome + ' - ' + window.location.href)}" target="_blank" class="text-green-500 hover:text-green-700">WhatsApp</a>
             <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" class="text-blue-600 hover:text-blue-800">Facebook</a>
             <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(recipe.nome)}" target="_blank" class="text-blue-400 hover:text-blue-600">Twitter</a>
+            <a href="https://www.instagram.com/share?url=${encodeURIComponent(window.location.href)}&caption=${encodeURIComponent(recipe.nome)}" target="_blank" class="text-pink-500 hover:text-pink-700">Instagram</a>
         </div>
         <div class="flex justify-center items-center space-x-4 mt-6">
-            <button class="btn btn-secondary p-2" onclick="openAddContentModal(${recipe.id}, \'image\')" title="Adicionar Imagem">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-            </button>
-            <button class="btn btn-secondary p-2" onclick="openAddContentModal(${recipe.id}, \'text\')" title="Adicionar Texto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-            </button>
-            <button class="btn btn-secondary p-2" onclick="openAddContentModal(${recipe.id}, \'audio\')" title="Adicionar Áudio">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-            </button>
+            <button id="add-content-to-recipe-btn" class="btn btn-primary" onclick="openAddContentModal(${recipe.id}, 'image')">Adicionar</button>
+            <button id="update-recipe-btn" class="btn btn-secondary" onclick="updateRecipe(${recipe.id})">Atualizar</button>
         </div>
     `;
 
@@ -438,6 +426,47 @@ function closeRecipeModal() {
         ui.recipeModal.backdrop.classList.add('hidden');
         ui.recipeModal.backdrop.classList.remove('flex');
     }, 200);
+}
+
+async function updateRecipe(recipeId) {
+    const recipe = state.recipes.find(r => r.id === recipeId);
+    if (!recipe) return;
+
+    closeRecipeModal();
+    setLoading(true);
+
+    const payload = {
+        currentIngredients: recipe.ingredientes_disponiveis, // Use existing ingredients
+        additionalImages: recipe.additionalImages,
+        additionalTexts: recipe.additionalTexts
+        // additionalAudios: recipe.additionalAudios // Uncomment if audio is to be re-processed
+    };
+
+    try {
+        const response = await fetch('/api/receitas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+
+        // Update the specific recipe in the state
+        const updatedRecipeIndex = state.recipes.findIndex(r => r.id === recipeId);
+        if (updatedRecipeIndex !== -1) {
+            state.recipes[updatedRecipeIndex] = {
+                ...data.receitas[0], // Assuming the API returns one updated recipe
+                id: recipeId, // Keep the original ID
+                additionalImages: recipe.additionalImages,
+                additionalTexts: recipe.additionalTexts
+            };
+            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+            displayResults({ receitas: state.recipes, observacoes_gerais: data.observacoes_gerais });
+        }
+
+    } catch (err) {
+        showError(err.message);
+    }
 }
 
 function openAddContentModal(recipeId, mode) {
