@@ -436,11 +436,18 @@ async function updateRecipe(recipeId) {
     setLoading(true);
 
     const payload = {
-        currentIngredients: recipe.ingredientes_disponiveis, // Use existing ingredients
-        additionalImages: recipe.additionalImages,
-        additionalTexts: recipe.additionalTexts
-        // additionalAudios: recipe.additionalAudios // Uncomment if audio is to be re-processed
+        currentIngredients: recipe.ingredientes_disponiveis,
     };
+
+    if (recipe.additionalTexts && recipe.additionalTexts.length > 0) {
+        payload.text = recipe.additionalTexts.join(', '); // Combine all additional texts
+    } else if (recipe.additionalImages && recipe.additionalImages.length > 0) {
+        // Assuming the API can handle one image at a time, or the last one added
+        payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1]; // Send the last added image
+    } else {
+        // If no additional text or image, send currentIngredients as text
+        payload.text = recipe.ingredientes_disponiveis.join(', ');
+    }
 
     try {
         const response = await fetch('/api/receitas', {
