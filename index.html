@@ -591,6 +591,49 @@ function showError(message) {
     ui.startBtn.classList.remove('hidden');
 }
 
+async function processImageAndGetBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let width = img.width;
+                let height = img.height;
+                const maxWidth = 1024; // Max width for resized image
+                const maxHeight = 768; // Max height for resized image
+
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height *= maxWidth / width;
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width *= maxHeight / height;
+                        height = maxHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Get resized image as JPEG with 70% quality
+                const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                resolve(resizedDataUrl);
+            };
+            img.onerror = (error) => reject(error);
+            img.src = dataUrl;
+        };
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
 // --- EVENT LISTENERS ---
 
 ui.startBtn.addEventListener('click', () => { console.log('Botão Começar clicado.'); openModal(); });
@@ -617,30 +660,36 @@ document.getElementById('start-new-recipe-btn').addEventListener('click', () => 
 });
 
 // Image
-ui.inputs.imageUpload.addEventListener('change', (event) => {
+ui.inputs.imageUpload.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        ui.inputs.imagePreview.src = e.target.result;
+
+    try {
+        const resizedDataUrl = await processImageAndGetBase64(file);
+        ui.inputs.imagePreview.src = resizedDataUrl;
         ui.inputs.imagePreview.classList.remove('hidden');
         ui.inputs.uploadText.classList.add('hidden');
-    };
-    reader.readAsDataURL(file);
-    ui.inputs.imageSubmitBtn.disabled = false;
+        ui.inputs.imageSubmitBtn.disabled = false;
+    } catch (error) {
+        console.error("Error processing image for preview:", error);
+        showError("Erro ao processar imagem para pré-visualização.");
+        ui.inputs.imageSubmitBtn.disabled = true;
+    }
 });
 
-ui.inputs.imageSubmitBtn.addEventListener('click', () => {
-    const file = ui.inputs.imageUpload.files[0];
+ui.inputs.imageSubmitBtn.addEventListener('click', async () => {
+    const file = ui.inputs.imageUpload.files[0]; // Access file from ui.inputs
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        const base64Image = reader.result;
-        state.inputImages.push(base64Image);
+
+    try {
+        const resizedDataUrl = await processImageAndGetBase64(file);
+        state.inputImages.push(resizedDataUrl);
         sessionStorage.setItem('inputImages', JSON.stringify(state.inputImages));
-        getRecipes({ type: 'image', data: base64Image.split(',')[1] });
-    };
-    reader.readAsDataURL(file);
+        getRecipes({ type: 'image', data: resizedDataUrl.split(',')[1] });
+    } catch (error) {
+        console.error("Error processing image for submission:", error);
+        showError("Erro ao processar imagem para envio.");
+    }
 });
 
 // Text
@@ -654,33 +703,38 @@ ui.inputs.textSubmitBtn.addEventListener('click', () => {
 ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
 
 // Add Content Modal
-ui.addContentModal.imageUpload.addEventListener('change', (event) => {
+ui.addContentModal.imageUpload.addEventListener('change', async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        ui.addContentModal.imagePreview.src = e.target.result;
+
+    try {
+        const resizedDataUrl = await processImageAndGetBase64(file);
+        ui.addContentModal.imagePreview.src = resizedDataUrl;
         ui.addContentModal.imagePreview.classList.remove('hidden');
         ui.addContentModal.uploadText.classList.add('hidden');
-    };
-    reader.readAsDataURL(file);
-    ui.addContentModal.imageSubmitBtn.disabled = false;
+    } catch (error) {
+        console.error("Error processing image for add content preview:", error);
+        showError("Erro ao processar imagem para pré-visualização de conteúdo adicional.");
+        ui.addContentModal.imageSubmitBtn.disabled = true;
+    }
 });
 
-ui.addContentModal.imageSubmitBtn.addEventListener('click', () => {
+ui.addContentModal.imageSubmitBtn.addEventListener('click', async () => {
     const file = ui.addContentModal.imageUpload.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        const base64Image = reader.result;
+
+    try {
+        const resizedDataUrl = await processImageAndGetBase64(file);
         const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
         if (recipe) {
-            recipe.additionalImages.push(base64Image);
+            recipe.additionalImages.push(resizedDataUrl);
             sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
             closeAddContentModal();
         }
-    };
-    reader.readAsDataURL(file);
+    } catch (error) {
+        console.error("Error processing image for add content submission:", error);
+        showError("Erro ao processar imagem para envio de conteúdo adicional.");
+    }
 });
 
 ui.addContentModal.recordBtn.addEventListener('click', () => state.isRecording ? stopAddContentRecording() : startAddContentRecording());
