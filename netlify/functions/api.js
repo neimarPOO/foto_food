@@ -93,6 +93,7 @@ async function getRecipesFromAI(promptContent) {
     });
     
     const content = response.data.choices[0].message.content;
+    console.log("AI Raw Response Content:", content); // Added for debugging
     if (!content) throw new Error("A resposta da IA estava vazia.");
 
     const startIndex = content.indexOf('{');
