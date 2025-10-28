@@ -403,7 +403,7 @@ function openRecipeModal(recipeId) {
         </div>
         <div class="flex justify-center items-center space-x-4 mt-6">
             <button id="add-content-to-recipe-btn" class="btn btn-primary" onclick="openAddContentModal(${recipe.id}, 'image')">Adicionar</button>
-            <button id="update-recipe-btn" class="btn btn-secondary" onclick="updateRecipe(${recipe.id})">Atualizar</button>
+            <button id="update-recipe-btn" class="btn btn-secondary">Atualizar</button>
         </div>
     `;
 
@@ -435,6 +435,8 @@ function openRecipeModal(recipeId) {
         }
         doc.save(recipe.nome + '.pdf');
     });
+
+    document.getElementById('update-recipe-btn').addEventListener('click', () => updateRecipe(recipe.id));
 }
 
 function closeRecipeModal() {
