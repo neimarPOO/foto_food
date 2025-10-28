@@ -454,11 +454,18 @@ async function updateRecipe(recipeId) {
     closeRecipeModal();
     setLoading(true);
 
+    const combinedTextIngredients = [...recipe.ingredientes_disponiveis, ...recipe.additionalTexts].join(', ');
     const payload = {
-        currentIngredients: recipe.ingredientes_disponiveis,
-        additionalImages: recipe.additionalImages.map(img => img.split(',')[1]), // Send all additional images (base64 part)
-        additionalTexts: recipe.additionalTexts.join(', ') // Send all additional texts as a combined string
+        currentIngredients: recipe.ingredientes_disponiveis, // Keep for context if API uses it
     };
+
+    if (recipe.additionalImages && recipe.additionalImages.length > 0) {
+        // Send the last added image if available
+        payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1];
+    } else {
+        // If no additional images, send combined text
+        payload.text = combinedTextIngredients;
+    }
 
     try {
         const response = await fetch('/api/receitas', {
