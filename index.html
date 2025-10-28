@@ -456,18 +456,9 @@ async function updateRecipe(recipeId) {
 
     const payload = {
         currentIngredients: recipe.ingredientes_disponiveis,
+        additionalImages: recipe.additionalImages.map(img => img.split(',')[1]), // Send all additional images (base64 part)
+        additionalTexts: recipe.additionalTexts.join(', ') // Send all additional texts as a combined string
     };
-
-    if (recipe.additionalImages && recipe.additionalImages.length > 0) {
-        // Send the last added image if available
-        payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1];
-    } else if (recipe.additionalTexts && recipe.additionalTexts.length > 0) {
-        // Combine all additional texts with current ingredients
-        payload.text = [...recipe.ingredientes_disponiveis, ...recipe.additionalTexts].join(', ');
-    } else {
-        // If no additional text or image, send currentIngredients as text
-        payload.text = recipe.ingredientes_disponiveis.join(', ');
-    }
 
     try {
         const response = await fetch('/api/receitas', {
@@ -488,6 +479,7 @@ async function updateRecipe(recipeId) {
                 additionalTexts: recipe.additionalTexts
             };
             sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+            displayResults({ receitas: state.recipes, observacoes_gerais: data.observacoes_gerais }); // Update main results and clear loading
             openRecipeModal(recipeId); // Re-open the modal with the updated recipe
         }
 
