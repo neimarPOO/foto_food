@@ -45,18 +45,21 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #modal-backdrop, #recipe-modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
-                #modal-content, #recipe-modal-content {
-                    background-color: #f9f2e3;
-                    padding: 30px 40px;
-                    border-radius: 15px;
-                    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-                    text-align: center;
-                    max-width: 550px;
-                    border: 2px solid #a68c6e;
-                    outline: 1px dashed #d1c0a8;
-                    outline-offset: -8px;
-                }
-        
+                        #modal-content, #recipe-modal-content {
+                            background-color: #f9f2e3;
+                            padding: 30px 40px;
+                            border-radius: 15px;
+                            /* Hand-drawn effect with multiple box-shadows */
+                            box-shadow:
+                                0 0 0 2px #a68c6e, /* Main border */
+                                2px 2px 0 2px #d1c0a8, /* Sketchy offset 1 */
+                                -2px -2px 0 2px #d1c0a8, /* Sketchy offset 2 */
+                                4px 4px 0 2px rgba(0, 0, 0, 0.1), /* Shadow effect */
+                                -4px -4px 0 2px rgba(0, 0, 0, 0.1); /* Shadow effect */
+                            text-align: center;
+                            max-width: 550px;
+                            /* Removed original border and outline */
+                        }        
                 @media (max-width: 640px) { /* Small screens */
                     #modal-content, #recipe-modal-content {
                         max-width: 90%; /* Adjust width for smaller screens */
