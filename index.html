@@ -344,14 +344,14 @@ function openRecipeModal(recipeId) {
     const doc = new jsPDF();
 
     ui.recipeModal.content.innerHTML = `
-        <div class="absolute top-4 right-4 flex space-x-2">
-            <button id="download-pdf-icon-btn" class="p-2 rounded-full hover:bg-gray-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="absolute top-2 right-2 flex space-x-2 z-10">
+            <button id="download-pdf-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
             </button>
-            <button id="close-recipe-modal-icon-btn" class="p-2 rounded-full hover:bg-gray-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button id="close-recipe-modal-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
@@ -454,17 +454,9 @@ async function updateRecipe(recipeId) {
 
     const payload = {
         currentIngredients: recipe.ingredientes_disponiveis,
+        additionalImages: recipe.additionalImages.map(img => img.split(',')[1]), // Send all additional images (base64 part)
+        additionalTexts: recipe.additionalTexts // Send all additional texts
     };
-
-    if (recipe.additionalTexts && recipe.additionalTexts.length > 0) {
-        payload.text = recipe.additionalTexts.join(', '); // Combine all additional texts
-    } else if (recipe.additionalImages && recipe.additionalImages.length > 0) {
-        // Assuming the API can handle one image at a time, or the last one added
-        payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1]; // Send the last added image
-    } else {
-        // If no additional text or image, send currentIngredients as text
-        payload.text = recipe.ingredientes_disponiveis.join(', ');
-    }
 
     try {
         const response = await fetch('/api/receitas', {
@@ -485,7 +477,7 @@ async function updateRecipe(recipeId) {
                 additionalTexts: recipe.additionalTexts
             };
             sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-            displayResults({ receitas: state.recipes, observacoes_gerais: data.observacoes_gerais });
+            openRecipeModal(recipeId); // Re-open the modal with the updated recipe
         }
 
     } catch (err) {
@@ -664,16 +656,65 @@ ui.addContentModal.imageSubmitBtn.addEventListener('click', () => {
     reader.readAsDataURL(file);
 });
 
-ui.addContentModal.textSubmitBtn.addEventListener('click', () => {
-    const text = ui.addContentModal.textInput.value;
-    if (!text.trim()) return;
-    const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
-    if (recipe) {
-        recipe.additionalTexts.push(text);
-        sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-        closeAddContentModal();
+ui.addContentModal.recordBtn.addEventListener('click', () => state.isRecording ? stopAddContentRecording() : startAddContentRecording());
+
+// New audio recording functions for addContentModal
+async function startAddContentRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        state.recorder = new MediaRecorder(stream);
+        let chunks = [];
+        let seconds = 0;
+
+        state.recorder.ondataavailable = e => chunks.push(e.data);
+        state.recorder.onstop = () => {
+            const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+            stream.getTracks().forEach(track => track.stop());
+            getAddContentTranscription(audioBlob);
+        };
+
+        state.recorder.start();
+        state.isRecording = true;
+        ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; // Stop icon
+        ui.addContentModal.audioStatus.textContent = 'Gravando: 0s';
+        state.timerInterval = setInterval(() => {
+            seconds++;
+            ui.addContentModal.audioStatus.textContent = `Gravando: ${seconds}s`;
+        }, 1000);
+
+    } catch (err) { showError('Não foi possível acessar o microfone para adicionar conteúdo.'); }
+}
+
+function stopAddContentRecording() {
+    if (state.recorder && state.isRecording) {
+        state.recorder.stop();
+        state.isRecording = false;
+        clearInterval(state.timerInterval);
+        ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>'; // Record icon
+        ui.addContentModal.audioStatus.textContent = 'Gravação parada.';
     }
-});
+}
+
+async function getAddContentTranscription(audioBlob) {
+    ui.addContentModal.audioStatus.textContent = 'Transcrevendo áudio...';
+
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'audio.webm');
+
+    try {
+        const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+
+        const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
+        if (recipe) {
+            recipe.additionalTexts.push(data.transcribedText);
+            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+            closeAddContentModal();
+        }
+
+    } catch (err) { showError(err.message); }
+}
 
 async function startRecording() {
     try {
