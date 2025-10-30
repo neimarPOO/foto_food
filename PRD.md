@@ -50,9 +50,22 @@ O usuário pode fornecer os ingredientes que possui de três maneiras diferentes
 
 ### 4.2. Backend (API)
 
--   **Endpoint de Receitas (`/api/receitas`):** Responsável por receber os ingredientes (em formato de texto ou imagem) e o estado atual dos ingredientes, e retornar as receitas geradas pela IA.
--   **Endpoint de Transcrição (`/api/transcribe`):** Responsável por receber um arquivo de áudio, transcrevê-lo para texto e retorná-lo.
--   **Integração com IA:** O backend deve se comunicar com um modelo de linguagem de grande porte para a lógica de geração de receitas.
+-   **Tecnologias:** Node.js com Express.js, `cors` para CORS, `multer` para upload de arquivos, `file-type` para detecção de tipo de arquivo, `axios` para requisições HTTP e `serverless-http` para compatibilidade com Netlify Functions.
+-   **Variáveis de Ambiente:** Utiliza `process.env.ASSEMBLYAI_API_KEY` para transcrição de áudio e `process.env.OPENAI_API_KEY` para geração de receitas.
+-   **Endpoint de Receitas (`/api/receitas`):** Responsável por receber os ingredientes (em formato de texto ou imagem) e o estado atual dos ingredientes.
+    -   **Geração de Receitas:** Integra-se com a API da OpenRouter (modelo `google/gemma-3-4b-it:free`) para gerar 3 sugestões de receitas.
+    -   **Processamento de Imagem:** Imagens são redimensionadas e convertidas para JPEG antes de serem enviadas à IA.
+    -   **Estrutura da Resposta:** Retorna um objeto JSON com as receitas geradas, incluindo nome, ingredientes (disponíveis e adicionais), modo de preparo e tempo estimado.
+-   **Endpoint de Transcrição (`/api/transcribe`):** Responsável por receber um arquivo de áudio.
+    -   **Transcrição de Áudio:** Integra-se com a API da AssemblyAI para transcrever o áudio para texto (idioma português).
+    -   **Validação:** Verifica se o texto transcrito contém uma lista de ingredientes válidos.
+-   **Tratamento de Erros:** Inclui tratamento de erros para falhas nas chamadas de API e problemas de parsing JSON.
+
+### 4.3. Funcionalidades Adicionais (Frontend)
+
+-   **Download de Receita:** Permite baixar a receita detalhada em formato PDF.
+-   **Compartilhamento Social:** Opções para compartilhar a receita via WhatsApp, Facebook, Twitter e Instagram.
+-   **Adicionar Conteúdo à Receita:** Possibilidade de adicionar imagens e textos adicionais a uma receita existente, que são armazenados no frontend e podem ser usados para atualizar a receita.
 
 ## 5. Fluxo do Usuário
 

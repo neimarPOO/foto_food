@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <!-- Shepherd.js Tutorial Library -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lacquer&display=swap" rel="stylesheet">
     <style>
         :root {
             --md-primary-color: #6a9c5a; /* Sober green from reference */
@@ -60,8 +63,8 @@ max-width: 450px;
                     }
                 }
         
-                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2 {
-                    font-family: 'Caprasimo', cursive;
+                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2, h2 {
+                    font-family: 'Lacquer', cursive;
                     color: #5a4b3f;
                     font-size: 2.2em;
                     margin: 0 0 15px 0;
@@ -904,7 +907,7 @@ function displayResults(data) {
         const recipeCard = document.createElement('div');
         recipeCard.className = 'p-4 recipe-card';
         recipeCard.innerHTML = `
-            <h3 class="text-xl sm:text-2xl font-bold text-center" style="font-family: 'Caprasimo', cursive;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
+            <h3 class="text-xl sm:text-2xl font-bold text-center" style="font-family: 'Lacquer', cursive;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
 
         `;
         
