@@ -63,7 +63,7 @@ max-width: 450px;
                     }
                 }
         
-                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2, h2 {
+                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2 {
                     font-family: 'Lacquer', cursive;
                     color: #5a4b3f;
                     font-size: 2.2em;
@@ -907,7 +907,7 @@ function displayResults(data) {
         const recipeCard = document.createElement('div');
         recipeCard.className = 'p-4 recipe-card';
         recipeCard.innerHTML = `
-            <h3 class="text-xl sm:text-2xl font-bold text-center" style="font-family: 'Lacquer', cursive;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
+            <h3 class="text-xl sm:text-2xl font-bold text-center" style="font-family: 'Caprasimo', cursive;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
 
         `;
         
