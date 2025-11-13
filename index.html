@@ -419,11 +419,33 @@ function capturePhoto() {
     const canvas = ui.inputs.webcamCanvas;
     const context = canvas.getContext('2d');
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // --- START Resizing Logic ---
+    let width = video.videoWidth;
+    let height = video.videoHeight;
+    const maxWidth = 1024; // Max width for resized image
+    const maxHeight = 768; // Max height for resized image
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+    if (width > height) {
+        if (width > maxWidth) {
+            height *= maxWidth / width;
+            width = maxWidth;
+        }
+    } else {
+        if (height > maxHeight) {
+            width *= maxHeight / height;
+            height = maxHeight;
+        }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    // Draw video frame to canvas with resizing
+    context.drawImage(video, 0, 0, width, height);
+    // --- END Resizing Logic ---
+
+    // Get resized image as JPEG with 70% quality (to match the other function)
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+    
     ui.inputs.imagePreview.src = dataUrl;
     ui.inputs.imagePreview.classList.remove('hidden');
     ui.inputs.uploadText.classList.add('hidden');
