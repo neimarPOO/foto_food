@@ -47,8 +47,8 @@
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--md-primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        #modal-backdrop, #recipe-modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
-                        #modal-content, #recipe-modal-content {
+        #modal-backdrop, #recipe-modal-backdrop, #auth-modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
+                        #modal-content, #recipe-modal-content, #auth-modal-content {
                             background-color: #f9f2e3;
                             padding: 30px 40px;
                             border-radius: 15px;
@@ -57,13 +57,13 @@ max-width: 450px;
                             /* Removed original border and outline */
                         }        
                 @media (max-width: 640px) { /* Small screens */
-                    #modal-content, #recipe-modal-content {
+                    #modal-content, #recipe-modal-content, #auth-modal-content {
                         max-width: 90%; /* Adjust width for smaller screens */
                         padding: 20px; /* Adjust padding */
                     }
                 }
         
-                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2 {
+                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2, #auth-modal-content h2 {
                     font-family: 'Fredericka the Great', cursive !important;
                     color: #5a4b3f;
                     font-size: 2.2em;
@@ -86,9 +86,9 @@ max-width: 450px;
         .modal-tab-btn { padding: 0.5rem 1rem; cursor: pointer; color: #7a6e60; font-weight: 600; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; font-family: 'Oswald', sans-serif; }
         .modal-tab-btn.active { color: var(--md-text-color); border-bottom-color: var(--md-text-color); }
 
-        /* Material Design Textarea (adapted) */
-        #text-input { border: 1px solid #a68c6e; border-radius: 8px; background-color: #fff; }
-        #text-input:focus { outline: none; border: 1px solid var(--md-text-color); }
+        /* Material Design Textarea/Input (adapted) */
+        #text-input, .auth-input { border: 1px solid #a68c6e; border-radius: 8px; background-color: #fff; padding: 0.75rem; width: 100%; }
+        #text-input:focus, .auth-input:focus { outline: none; border: 1px solid var(--md-text-color); }
 
         /* Recipe Card */
         .recipe-card { background-color: #fff; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; padding: 20px; text-align: center; border: 2px solid #a68c6e; margin-bottom: 20px; height: 250px; display: flex; flex-direction: column; justify-content: space-between; }
@@ -108,6 +108,19 @@ max-width: 450px;
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4" style="padding-bottom: 120px;">
     <div class="container w-full md:w-3/4 lg:w-2/3 mx-auto">
+        
+        <!-- Auth and User Info -->
+        <div class="absolute top-4 right-4 text-sm">
+            <div id="user-auth-section">
+                <button id="login-btn" class="font-semibold text-gray-700 hover:text-black">Login</button> |
+                <button id="signup-btn" class="font-semibold text-gray-700 hover:text-black">Cadastrar</button>
+            </div>
+            <div id="user-info-section" class="hidden">
+                <span id="user-email" class="font-semibold"></span>
+                <button id="logout-btn" class="ml-4 font-semibold text-red-600 hover:text-red-800">[Sair]</button>
+            </div>
+        </div>
+
         <!-- Conteúdo principal movido para dentro para o tutorial poder achar -->
         <div id="main-content">
             <div class="text-center mb-6">
@@ -117,6 +130,13 @@ max-width: 450px;
 
             <div id="start-section" class="text-center my-8">
                 <button id="start-btn" class="btn btn-primary text-lg">Começar a Criar Receitas</button>
+            </div>
+
+            <div id="pricing-section" class="hidden text-center my-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Gostando do serviço? Faça um upgrade!</h3>
+                <div id="pricing-buttons" class="flex justify-center items-center space-x-4">
+                    <!-- Botões de preço serão inseridos aqui pelo JS -->
+                </div>
             </div>
 
             <div id="top-buttons" class="hidden text-center my-8">
@@ -156,6 +176,26 @@ max-width: 450px;
             <img src="LogoRedeCalabria.png" alt="Logo Rede Calabria" class="h-12">
         </div>
     </footer>
+
+    <!-- Modal de Autenticação -->
+    <div id="auth-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div id="auth-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-1/3 lg:w-1/4 transform transition-all scale-95 opacity-0">
+            <h2 id="auth-modal-title" class="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
+            <div id="auth-error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
+            <form id="auth-form">
+                <div class="space-y-4">
+                    <input type="email" id="auth-email" class="auth-input" placeholder="Seu e-mail" required>
+                    <input type="password" id="auth-password" class="auth-input" placeholder="Sua senha" required>
+                </div>
+                <div class="text-center mt-6">
+                    <button type="submit" id="auth-submit-btn" class="btn btn-primary w-full">Entrar</button>
+                </div>
+            </form>
+            <div class="text-center mt-4">
+                <button id="close-auth-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal de Entrada -->
     <div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
@@ -257,7 +297,8 @@ max-width: 450px;
     </div>
 
 
-
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
 <script>
@@ -265,6 +306,9 @@ max-width: 450px;
 sessionStorage.removeItem('inputImages');
 sessionStorage.removeItem('recipes');
 let state = {
+    supabase: null,
+    user: null,
+    stripe: null, // Stripe instance
     currentIngredients: [],
     inputImages: [],
     isRecording: false,
@@ -274,7 +318,8 @@ let state = {
     loadingInterval: null,
     recipes: [],
     currentRecipeId: null,
-    webcamStream: null // To hold the webcam stream
+    webcamStream: null, // To hold the webcam stream
+    authMode: 'login' // 'login' or 'signup'
 };
 
 const loadingMessages = [
@@ -290,6 +335,8 @@ const ui = {
     main: document.getElementById('main-content'),
     startBtn: document.getElementById('start-btn'),
     startSection: document.getElementById('start-section'),
+    pricingSection: document.getElementById('pricing-section'),
+    pricingButtons: document.getElementById('pricing-buttons'),
     topButtons: document.getElementById('top-buttons'),
     addMoreBtn: document.getElementById('add-more-btn'),
     loading: document.getElementById('loading'),
@@ -313,13 +360,31 @@ const ui = {
         contentImage: document.getElementById('modal-content-image'),
         contentAudio: document.getElementById('modal-content-audio'),
         contentText: document.getElementById('modal-content-text'),
-        // New webcam/upload elements
         imageInputSelection: document.getElementById('image-input-selection'),
         useWebcamBtn: document.getElementById('use-webcam-btn'),
         useUploadBtn: document.getElementById('use-upload-btn'),
         webcamView: document.getElementById('webcam-view'),
         uploadView: document.getElementById('upload-view'),
         cancelWebcamBtn: document.getElementById('cancel-webcam-btn'),
+    },
+    auth: {
+        section: document.getElementById('user-auth-section'),
+        infoSection: document.getElementById('user-info-section'),
+        loginBtn: document.getElementById('login-btn'),
+        signupBtn: document.getElementById('signup-btn'),
+        logoutBtn: document.getElementById('logout-btn'),
+        userEmail: document.getElementById('user-email'),
+        modal: {
+            backdrop: document.getElementById('auth-modal-backdrop'),
+            content: document.getElementById('auth-modal-content'),
+            title: document.getElementById('auth-modal-title'),
+            form: document.getElementById('auth-form'),
+            emailInput: document.getElementById('auth-email'),
+            passwordInput: document.getElementById('auth-password'),
+            submitBtn: document.getElementById('auth-submit-btn'),
+            closeBtn: document.getElementById('close-auth-modal-btn'),
+            error: document.getElementById('auth-error-message')
+        }
     },
     recipeModal: {
         backdrop: document.getElementById('recipe-modal-backdrop'),
@@ -348,12 +413,149 @@ const ui = {
         audioStatus: document.getElementById('audio-status'),
         textInput: document.getElementById('text-input'),
         textSubmitBtn: document.getElementById('text-submit-btn'),
-        // New webcam elements
         webcamVideo: document.getElementById('webcam-video'),
         webcamCanvas: document.getElementById('webcam-canvas'),
         captureBtn: document.getElementById('capture-btn'),
     }
 };
+
+// --- STRIPE LOGIC ---
+
+function renderPricingButtons() {
+    // IDs de Preço (Price IDs) do Stripe
+    const plans = [
+        { name: 'Plano Básico', priceId: 'price_1SZH7kCweAPPqyx8oyf30gyS', price: 'R$10/mês' },
+        { name: 'Plano Pro', priceId: 'price_1SZHA1CweAPPqyx85E8PUoAe', price: 'R$30/mês' },
+        { name: 'Plano Premium', priceId: 'price_1SZHCFCweAPPqyx8J7tNYsV4', price: 'R$50/mês' }
+    ];
+
+    let buttonsHTML = '';
+    plans.forEach(plan => {
+        buttonsHTML += `
+            <button data-price-id="${plan.priceId}" class="btn btn-secondary upgrade-btn">
+                ${plan.name} (${plan.price})
+            </button>
+        `;
+    });
+
+    ui.pricingButtons.innerHTML = buttonsHTML;
+
+    // Add event listeners to the new buttons
+    document.querySelectorAll('.upgrade-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const priceId = event.currentTarget.dataset.priceId;
+            redirectToCheckout(priceId);
+        });
+    });
+}
+
+async function redirectToCheckout(priceId) {
+    setLoading(true);
+
+    const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
+    if (sessionError || !session) {
+        showError("Sua sessão expirou. Por favor, faça login novamente.");
+        handleLogout();
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ priceId: priceId })
+        });
+
+        const checkoutSession = await response.json();
+        if (!response.ok) {
+            throw new Error(checkoutSession.error);
+        }
+
+        const { error } = await state.stripe.redirectToCheckout({
+            sessionId: checkoutSession.id
+        });
+
+        if (error) {
+            throw new Error(`Erro ao redirecionar para o checkout: ${error.message}`);
+        }
+    } catch (err) {
+        showError(err.message);
+    }
+}
+
+
+// --- AUTH LOGIC ---
+
+function openAuthModal(mode) {
+    state.authMode = mode;
+    ui.auth.modal.title.textContent = mode === 'login' ? 'Login' : 'Cadastrar';
+    ui.auth.modal.submitBtn.textContent = mode === 'login' ? 'Entrar' : 'Criar Conta';
+    ui.auth.modal.error.classList.add('hidden');
+    ui.auth.modal.form.reset();
+    
+    ui.auth.modal.backdrop.classList.remove('hidden');
+    ui.auth.modal.backdrop.classList.add('flex');
+    setTimeout(() => { ui.auth.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+}
+
+function closeAuthModal() {
+    ui.auth.modal.content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        ui.auth.modal.backdrop.classList.add('hidden');
+        ui.auth.modal.backdrop.classList.remove('flex');
+    }, 200);
+}
+
+function showAuthError(message) {
+    ui.auth.modal.error.textContent = message;
+    ui.auth.modal.error.classList.remove('hidden');
+}
+
+async function handleSignUp(email, password) {
+    const { error } = await state.supabase.auth.signUp({ email, password });
+    if (error) {
+        showAuthError(error.message);
+    } else {
+        showAuthError("Verifique seu e-mail para confirmar o cadastro!");
+        setTimeout(closeAuthModal, 3000);
+    }
+}
+
+async function handleLogin(email, password) {
+    const { error } = await state.supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+        showAuthError(error.message);
+    } else {
+        closeAuthModal();
+    }
+}
+
+async function handleLogout() {
+    const { error } = await state.supabase.auth.signOut();
+    if (error) {
+        showError(`Erro ao sair: ${error.message}`);
+    }
+}
+
+function updateUIForAuthState(user) {
+    if (user) {
+        ui.auth.section.classList.add('hidden');
+        ui.auth.infoSection.classList.remove('hidden');
+        ui.auth.userEmail.textContent = user.email;
+        ui.startBtn.disabled = false;
+        ui.pricingSection.classList.remove('hidden'); // Show pricing on login
+    } else {
+        ui.auth.section.classList.remove('hidden');
+        ui.auth.infoSection.classList.add('hidden');
+        ui.auth.userEmail.textContent = '';
+        ui.startBtn.disabled = true; // Disable main button if not logged in
+        ui.pricingSection.classList.add('hidden'); // Hide pricing on logout
+    }
+}
+
 
 // --- WEBCAM LOGIC ---
 
@@ -471,6 +673,11 @@ function resetToImageSelection() {
 // --- LÓGICA DO MODAL, ESTADO E UI ---
 
 function openModal() {
+    if (!state.user) {
+        showError("Por favor, faça login ou cadastre-se para criar receitas.");
+        openAuthModal('login');
+        return;
+    }
     console.log('openModal() executed.');
     switchModalTab(state.modalMode);
     ui.modal.backdrop.classList.remove('hidden');
@@ -726,7 +933,10 @@ function showError(message) {
     setLoading(false);
     ui.error.textContent = message;
     ui.error.classList.remove('hidden');
-    ui.startBtn.classList.remove('hidden');
+    // Don't show the start button on error if it's an auth error
+    if (state.user) {
+        ui.startBtn.classList.remove('hidden');
+    }
 }
 
 async function processImageAndGetBase64(file) {
@@ -780,6 +990,23 @@ ui.modal.closeBtn.addEventListener('click', closeModal);
 ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
 ui.addContentModal.closeBtn.addEventListener('click', closeAddContentModal);
 ui.addContentModal.tabs.forEach(tab => tab.addEventListener('click', () => switchAddContentModalTab(tab.dataset.mode)));
+
+// Auth Listeners
+ui.auth.loginBtn.addEventListener('click', () => openAuthModal('login'));
+ui.auth.signupBtn.addEventListener('click', () => openAuthModal('signup'));
+ui.auth.logoutBtn.addEventListener('click', handleLogout);
+ui.auth.modal.closeBtn.addEventListener('click', closeAuthModal);
+ui.auth.modal.form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = ui.auth.modal.emailInput.value;
+    const password = ui.auth.modal.passwordInput.value;
+    if (state.authMode === 'login') {
+        handleLogin(email, password);
+    } else {
+        handleSignUp(email, password);
+    }
+});
+
 
 // New webcam/upload listeners
 ui.modal.useWebcamBtn.addEventListener('click', startWebcam);
@@ -999,8 +1226,19 @@ async function getTranscription(audioBlob) {
 // --- API CALL & DISPLAY RESULTS ---
 
 async function getRecipes(payload) {
+    if (!state.user) {
+        showError("Faça login para continuar.");
+        return;
+    }
     closeModal();
     setLoading(true);
+
+    const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
+    if (sessionError || !session) {
+        showError("Sua sessão expirou. Por favor, faça login novamente.");
+        handleLogout();
+        return;
+    }
 
     const body = {
         ...payload.type === 'text' ? { text: payload.data } : { image: payload.data },
@@ -1010,7 +1248,10 @@ async function getRecipes(payload) {
     try {
         const response = await fetch('/api/receitas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
             body: JSON.stringify(body)
         });
         const data = await response.json();
@@ -1075,26 +1316,24 @@ function startTutorial() {
 
     tour.addStep({
         id: 'step-1',
-        text: 'Bem-vindo ao Chef Pessoal IA! Clique aqui para começar a adicionar seus ingredientes.',
+        text: 'Bem-vindo ao Chef Pessoal IA! Faça login ou cadastre-se para começar.',
+        attachTo: { element: '#user-auth-section', on: 'bottom' },
+        buttons: [{ text: 'Entendi', action: tour.next }]
+    });
+
+    tour.addStep({
+        id: 'step-2',
+        text: 'Depois de logado, clique aqui para começar a adicionar seus ingredientes.',
         attachTo: { element: '#start-btn', on: 'bottom' },
         buttons: [{ text: 'Próximo', action: tour.next }]
     });
 
     tour.addStep({
-        id: 'step-2',
-        text: 'O modal de adição de ingredientes irá abrir.',
-        buttons: [{
-            text: 'Ok',
-            action: () => {
-                openModal();
-                tour.next();
-            }
-        }]
-    });
-
-    tour.addStep({
         id: 'step-3',
         text: 'Você pode adicionar ingredientes de três formas: enviando uma IMAGEM, gravando um ÁUDIO ou digitando TEXTO.',
+        when: {
+            show: () => { openModal(); }
+        },
         attachTo: { element: '#modal-tabs', on: 'bottom' },
         buttons: [{ text: 'Entendi', action: tour.next }]
     });
@@ -1120,13 +1359,48 @@ function startTutorial() {
 
 // --- INICIALIZAÇÃO ---
 
+async function initializeApp() {
+    try {
+        const configResponse = await fetch('/api/config');
+        if (!configResponse.ok) {
+            throw new Error('Não foi possível carregar a configuração do servidor.');
+        }
+        const { supabaseUrl, supabaseAnonKey, stripePublishableKey } = await configResponse.json();
 
+        // Initialize Supabase
+        state.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-switchModalTab('image');
-if (!localStorage.getItem('recipeAppTourCompleted')) {
-    // Atraso para garantir que a página esteja totalmente renderizada
-    setTimeout(startTutorial, 500);
+        // Initialize Stripe
+        if (!stripePublishableKey) {
+            console.error("Chave publicável do Stripe não foi encontrada. O upgrade de plano não funcionará.");
+        } else {
+            state.stripe = Stripe(stripePublishableKey);
+            renderPricingButtons();
+        }
+
+        // Check for initial session
+        const { data: { session } } = await state.supabase.auth.getSession();
+        state.user = session?.user;
+        updateUIForAuthState(state.user);
+
+        // Listen for auth state changes
+        state.supabase.auth.onAuthStateChange((_event, session) => {
+            state.user = session?.user;
+            updateUIForAuthState(state.user);
+        });
+
+        switchModalTab('image');
+        if (!localStorage.getItem('recipeAppTourCompleted')) {
+            setTimeout(startTutorial, 500);
+        }
+
+    } catch (error) {
+        showError(`Erro de inicialização: ${error.message}`);
+        console.error(error);
+    }
 }
+
+initializeApp();
 
 </script>
 </body>
