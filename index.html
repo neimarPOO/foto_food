@@ -112,8 +112,8 @@ max-width: 450px;
         <!-- Auth and User Info -->
         <div class="absolute top-4 right-4 text-sm">
             <div id="user-auth-section">
-                <button id="login-btn" class="font-semibold text-gray-700 hover:text-black">Login</button> |
-                <button id="signup-btn" class="font-semibold text-gray-700 hover:text-black">Cadastrar</button>
+                <button id="login-btn" class="font-semibold text-gray-700 hover:text-black" disabled>Login</button> |
+                <button id="signup-btn" class="font-semibold text-gray-700 hover:text-black" disabled>Cadastrar</button>
             </div>
             <div id="user-info-section" class="hidden">
                 <span id="user-email" class="font-semibold"></span>
@@ -1388,6 +1388,10 @@ async function initializeApp() {
             state.user = session?.user;
             updateUIForAuthState(state.user);
         });
+
+        // Enable auth buttons now that Supabase is initialized
+        ui.auth.loginBtn.disabled = false;
+        ui.auth.signupBtn.disabled = false;
 
         switchModalTab('image');
         if (!localStorage.getItem('recipeAppTourCompleted')) {
