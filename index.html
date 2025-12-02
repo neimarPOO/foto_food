@@ -104,6 +104,42 @@ max-width: 450px;
         .shepherd-button.shepherd-button-secondary { background: #757575; }
         .shepherd-element .shepherd-arrow::before { background: #f9f2e3; }
         .shepherd-element.shepherd-has-title .shepherd-arrow::before { background: #f9f2e3; }
+
+        /* Pricing Card */
+        .pricing-card {
+            background-color: #fff;
+            border: 2px solid #a68c6e;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 220px;
+        }
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .pricing-card h3 {
+            font-family: 'Fredericka the Great', cursive !important;
+            font-size: 1.8em;
+            color: var(--md-text-color);
+        }
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--md-primary-color);
+            margin: 10px 0;
+        }
+        .pricing-card .price-note {
+            font-size: 0.9rem;
+            color: #7a6e60;
+        }
+        .pricing-card .description {
+            margin: 20px 0;
+            color: #7a6e60;
+            min-height: 50px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4" style="padding-bottom: 120px;">
@@ -133,10 +169,7 @@ max-width: 450px;
             </div>
 
             <div id="pricing-section" class="hidden text-center my-8">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Gostando do serviço? Faça um upgrade!</h3>
-                <div id="pricing-buttons" class="flex justify-center items-center space-x-4">
-                    <!-- Botões de preço serão inseridos aqui pelo JS -->
-                </div>
+                <button id="open-pricing-modal-btn" class="btn btn-primary">Assine o Soborô</button>
             </div>
 
             <div id="top-buttons" class="hidden text-center my-8">
@@ -296,6 +329,19 @@ max-width: 450px;
         </div>
     </div>
 
+    <!-- Modal de Planos de Assinatura -->
+    <div id="pricing-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
+        <div id="pricing-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-3/4 lg:w-2/3 transform transition-all scale-95 opacity-0">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center" style="font-family: 'Fredericka the Great', cursive !important;">Nossos Planos</h2>
+            <div id="pricing-modal-plans-container" class="flex flex-col md:flex-row justify-center items-stretch gap-8">
+                <!-- Cards de planos serão inseridos aqui pelo JS -->
+            </div>
+            <div class="text-center mt-8">
+                <button id="close-pricing-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -336,7 +382,7 @@ const ui = {
     startBtn: document.getElementById('start-btn'),
     startSection: document.getElementById('start-section'),
     pricingSection: document.getElementById('pricing-section'),
-    pricingButtons: document.getElementById('pricing-buttons'),
+    openPricingModalBtn: document.getElementById('open-pricing-modal-btn'), // New
     topButtons: document.getElementById('top-buttons'),
     addMoreBtn: document.getElementById('add-more-btn'),
     loading: document.getElementById('loading'),
@@ -390,6 +436,12 @@ const ui = {
         backdrop: document.getElementById('recipe-modal-backdrop'),
         content: document.getElementById('recipe-modal-content')
     },
+    pricingModal: { // New
+        backdrop: document.getElementById('pricing-modal-backdrop'),
+        content: document.getElementById('pricing-modal-content'),
+        plansContainer: document.getElementById('pricing-modal-plans-container'),
+        closeBtn: document.getElementById('close-pricing-modal-btn')
+    },
     addContentModal: {
         backdrop: document.getElementById('add-content-modal-backdrop'),
         content: document.getElementById('add-content-modal-content'),
@@ -421,24 +473,27 @@ const ui = {
 
 // --- STRIPE LOGIC ---
 
-function renderPricingButtons() {
-    // IDs de Preço (Price IDs) do Stripe
+function renderPricingPlans() {
+    // IDs de Preço (Price IDs) do Stripe e descrições
     const plans = [
-        { name: 'Plano Básico', priceId: 'price_1SZH7kCweAPPqyx8oyf30gyS', price: 'R$10/mês' },
-        { name: 'Plano Pro', priceId: 'price_1SZHA1CweAPPqyx85E8PUoAe', price: 'R$30/mês' },
-        { name: 'Plano Premium', priceId: 'price_1SZHCFCweAPPqyx8J7tNYsV4', price: 'R$50/mês' }
+        { name: 'Plano Básico', priceId: 'price_1SZH7kCweAPPqyx8oyf30gyS', price: 'R$10', description: 'Até 10 gerações de receitas por dia.' },
+        { name: 'Plano Pro', priceId: 'price_1SZHA1CweAPPqyx85E8PUoAe', price: 'R$30', description: 'Até 30 gerações de receitas por dia e suporte prioritário.' },
+        { name: 'Plano Premium', priceId: 'price_1SZHCFCweAPPqyx8J7tNYsV4', price: 'R$50', description: 'Até 50 gerações de receitas por dia e acesso antecipado a novas funcionalidades.' }
     ];
 
-    let buttonsHTML = '';
+    let plansHTML = '';
     plans.forEach(plan => {
-        buttonsHTML += `
-            <button data-price-id="${plan.priceId}" class="btn btn-secondary upgrade-btn">
-                ${plan.name} (${plan.price})
-            </button>
+        plansHTML += `
+            <div class="pricing-card">
+                <h3>${plan.name}</h3>
+                <div class="price">${plan.price}<span class="price-note">/mês</span></div>
+                <p class="description">${plan.description}</p>
+                <button data-price-id="${plan.priceId}" class="btn btn-primary upgrade-btn w-full">Assinar</button>
+            </div>
         `;
     });
 
-    ui.pricingButtons.innerHTML = buttonsHTML;
+    ui.pricingModal.plansContainer.innerHTML = plansHTML;
 
     // Add event listeners to the new buttons
     document.querySelectorAll('.upgrade-btn').forEach(button => {
@@ -449,8 +504,23 @@ function renderPricingButtons() {
     });
 }
 
+function openPricingModal() {
+    ui.pricingModal.backdrop.classList.remove('hidden');
+    ui.pricingModal.backdrop.classList.add('flex');
+    setTimeout(() => { ui.pricingModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+}
+
+function closePricingModal() {
+    ui.pricingModal.content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        ui.pricingModal.backdrop.classList.add('hidden');
+        ui.pricingModal.backdrop.classList.remove('flex');
+    }, 200);
+}
+
 async function redirectToCheckout(priceId) {
     setLoading(true);
+    closePricingModal(); // Close modal before redirecting
 
     const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
     if (sessionError || !session) {
@@ -991,6 +1061,10 @@ ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(
 ui.addContentModal.closeBtn.addEventListener('click', closeAddContentModal);
 ui.addContentModal.tabs.forEach(tab => tab.addEventListener('click', () => switchAddContentModalTab(tab.dataset.mode)));
 
+// Pricing Modal Listeners
+ui.openPricingModalBtn.addEventListener('click', openPricingModal);
+ui.pricingModal.closeBtn.addEventListener('click', closePricingModal);
+
 // Auth Listeners
 ui.auth.loginBtn.addEventListener('click', () => openAuthModal('login'));
 ui.auth.signupBtn.addEventListener('click', () => openAuthModal('signup'));
@@ -1375,7 +1449,7 @@ async function initializeApp() {
             console.error("Chave publicável do Stripe não foi encontrada. O upgrade de plano não funcionará.");
         } else {
             state.stripe = Stripe(stripePublishableKey);
-            renderPricingButtons();
+            renderPricingPlans();
         }
 
         // Check for initial session
