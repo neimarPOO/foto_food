@@ -300,36 +300,47 @@ async function generateGeminiImages(prompt) {
 
         const images = [];
 
-        for (const p of finalPrompts) {
-            const response = await ai.models.generateContent({
-                model: "gemini-3-pro-image-preview",
-                contents: p,
-                config: {
-                    imageConfig: {
-                        imageSize: "1024x1024" // Requested size for good quality
+        // Generate images in parallel
+        const imagePromises = finalPrompts.map(async (p, index) => {
+            try {
+                console.log(`[Gemini] Generating image ${index + 1}/3 for prompt: "${p.substring(0, 30)}..."`);
+                const response = await ai.models.generateContent({
+                    model: "gemini-3-pro-image-preview",
+                    contents: p,
+                    config: {
+                        imageConfig: {
+                            imageSize: "1024x1024"
+                        }
                     }
-                }
-            });
+                });
 
-            let foundImage = false;
-            // Check for candidates and content parts
-            if (response.candidates && response.candidates.length > 0 && response.candidates[0].content && response.candidates[0].content.parts) {
-                for (const part of response.candidates[0].content.parts) {
-                    if (part.inlineData) {
-                        const base64Data = part.inlineData.data;
-                        // Determine mime type if possible, or assume png based on API defaults
-                        const mimeType = part.inlineData.mimeType || "image/png";
-                        images.push(`data:${mimeType};base64,${base64Data}`);
-                        foundImage = true;
-                        break;
+                if (response.candidates && response.candidates.length > 0 && response.candidates[0].content && response.candidates[0].content.parts) {
+                    for (const part of response.candidates[0].content.parts) {
+                        if (part.inlineData) {
+                            const base64Data = part.inlineData.data;
+                            const mimeType = part.inlineData.mimeType || "image/png";
+                            console.log(`[Gemini] Image ${index + 1} generated successfully.`);
+                            return `data:${mimeType};base64,${base64Data}`;
+                        }
                     }
                 }
+                console.warn(`[Gemini] No image data found for prompt: "${p}"`);
+                return null;
+            } catch (err) {
+                console.error(`[Gemini] Error generating image for prompt "${p}":`, err.message);
+                return null;
             }
+        });
 
-            if (!foundImage) {
-                console.warn("No image found in Gemini response for prompt:", p);
-                // Fallback to placeholder if generation fails for one image
-                images.push(`https://placehold.co/512x512?text=${encodeURIComponent(p.substring(0, 20))}`);
+        const results = await Promise.all(imagePromises);
+
+        // Process results and add fallbacks for failed requests
+        for (let i = 0; i < results.length; i++) {
+            if (results[i]) {
+                images.push(results[i]);
+            } else {
+                const fallbackPrompt = finalPrompts[i] || "food";
+                images.push(`https://placehold.co/512x512?text=${encodeURIComponent(fallbackPrompt.substring(0, 20))}`);
             }
         }
 
