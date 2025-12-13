@@ -392,12 +392,14 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
                 return res.status(400).json({ error: "A imagem não parece conter ingredientes culinários. Por favor, envie uma foto mais clara." });
             }
         } else {
-            return res.status(400).json({ error: 'Requisição inválida. Forneça texto ou imagem.' });
+            console.error("Invalid Request to /api/receitas. Body keys:", Object.keys(req.body));
+            return res.status(400).json({ error: `Requisição inválida. Forneça texto ou imagem. Recebido: ${Object.keys(req.body).join(', ')}` });
         }
 
         if (recipeJson) {
             // Fallback for image_prompts if missing data
             const prompts = recipeJson.image_prompts || (recipeJson.receitas ? recipeJson.receitas.map(r => r.nome).join('; ') : "Comida deliciosa");
+
 
             console.log("Gerando imagens com prompt:", prompts);
             const imageUrls = await generateGeminiImages(prompts);
