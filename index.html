@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +8,35 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Oswald:wght@200..700&display=swap"
+        rel="stylesheet">
     <!-- Shepherd.js Tutorial Library -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
     <style>
         :root {
-            --md-primary-color: #6a9c5a; /* Sober green from reference */
+            --md-primary-color: #6a9c5a;
+            /* Sober green from reference */
             --md-primary-dark-color: #5a874d;
-            --md-text-color: #5a4b3f; /* Dark brown from reference */
+            --md-text-color: #5a4b3f;
+            /* Dark brown from reference */
         }
-                body { font-family: 'Oswald', 'Roboto', 'Inter', sans-serif; background-image: url('fundo.png'); background-size: cover; background-position: center; background-color: rgba(0, 0, 0, 0.5); color: var(--md-text-color); }
-        .font-grand-hotel { font-family: 'Grand Hotel', cursive; }
+
+        body {
+            font-family: 'Oswald', 'Roboto', 'Inter', sans-serif;
+            background-image: url('fundo.png');
+            background-size: cover;
+            background-position: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--md-text-color);
+        }
+
+        .font-grand-hotel {
+            font-family: 'Grand Hotel', cursive;
+        }
+
         .container {
             background-color: #f9f2e3;
             padding: 30px 40px;
@@ -33,44 +49,116 @@
             outline-offset: -8px;
             margin: auto;
         }
-        
-        /* Material Design Buttons (adapted with new colors) */
-        .btn { text-transform: uppercase; font-weight: bold; border-radius: 8px; padding: 15px 30px; transition: all 0.2s ease-in-out; letter-spacing: 0.5px; font-family: 'Oswald', sans-serif; }
-        .btn-primary { background-color: var(--md-primary-color); color: white; border: 2px solid #5a874d; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--md-primary-dark-color); transform: translateY(-2px); }
-        .btn-primary:active:not(:disabled) { background-color: #4a753f; transform: translateY(0); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
-        .btn-primary:disabled { background-color: #BDBDBD; color: #757575; box-shadow: none; cursor: not-allowed; border: none; }
-        
-        .btn-secondary { background-color: transparent; color: var(--md-primary-color); border: 2px solid var(--md-primary-color); }
-        .btn-secondary:hover { background-color: rgba(106, 156, 90, 0.1); transform: translateY(-2px); }
 
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--md-primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        #modal-backdrop, #recipe-modal-backdrop, #auth-modal-backdrop { background-color: rgba(0, 0, 0, 0.7); }
-                        #modal-content, #recipe-modal-content, #auth-modal-content {
-                            background-color: #f9f2e3;
-                            padding: 30px 40px;
-                            border-radius: 15px;
-                            /* Hand-drawn effect with multiple box-shadows */
-max-width: 450px;
-                            /* Removed original border and outline */
-                        }        
-                @media (max-width: 640px) { /* Small screens */
-                    #modal-content, #recipe-modal-content, #auth-modal-content {
-                        max-width: 90%; /* Adjust width for smaller screens */
-                        padding: 20px; /* Adjust padding */
-                    }
-                }
-        
-                #modal-content h2, #recipe-modal-content h2, #add-content-modal-content h2, #auth-modal-content h2 {
-                    font-family: 'Fredericka the Great', cursive !important;
-                    color: #5a4b3f;
-                    font-size: 2.2em;
-                    margin: 0 0 15px 0;
-                    line-height: 1;
-                }
-        #add-content-modal-content { 
+        /* Material Design Buttons (adapted with new colors) */
+        .btn {
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 15px 30px;
+            transition: all 0.2s ease-in-out;
+            letter-spacing: 0.5px;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--md-primary-color);
+            color: white;
+            border: 2px solid #5a874d;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--md-primary-dark-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            background-color: #4a753f;
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:disabled {
+            background-color: #BDBDBD;
+            color: #757575;
+            box-shadow: none;
+            cursor: not-allowed;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--md-primary-color);
+            border: 2px solid var(--md-primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(106, 156, 90, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--md-primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #modal-backdrop,
+        #recipe-modal-backdrop,
+        #auth-modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #modal-content,
+        #recipe-modal-content,
+        #auth-modal-content {
+            background-color: #f9f2e3;
+            padding: 30px 40px;
+            border-radius: 15px;
+            /* Hand-drawn effect with multiple box-shadows */
+            max-width: 450px;
+            /* Removed original border and outline */
+        }
+
+        @media (max-width: 640px) {
+
+            /* Small screens */
+            #modal-content,
+            #recipe-modal-content,
+            #auth-modal-content {
+                max-width: 90%;
+                /* Adjust width for smaller screens */
+                padding: 20px;
+                /* Adjust padding */
+            }
+        }
+
+        #modal-content h2,
+        #recipe-modal-content h2,
+        #add-content-modal-content h2,
+        #auth-modal-content h2 {
+            font-family: 'Fredericka the Great', cursive !important;
+            color: #5a4b3f;
+            font-size: 2.2em;
+            margin: 0 0 15px 0;
+            line-height: 1;
+        }
+
+        #add-content-modal-content {
             background-color: #f9f2e3;
             padding: 30px 40px;
             border-radius: 15px;
@@ -83,27 +171,113 @@ max-width: 450px;
         }
 
         /* Material Design Tabs (adapted) */
-        .modal-tab-btn { padding: 0.5rem 1rem; cursor: pointer; color: #7a6e60; font-weight: 600; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; font-family: 'Oswald', sans-serif; }
-        .modal-tab-btn.active { color: var(--md-text-color); border-bottom-color: var(--md-text-color); }
+        .modal-tab-btn {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #7a6e60;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .modal-tab-btn.active {
+            color: var(--md-text-color);
+            border-bottom-color: var(--md-text-color);
+        }
 
         /* Material Design Textarea/Input (adapted) */
-        #text-input, .auth-input { border: 1px solid #a68c6e; border-radius: 8px; background-color: #fff; padding: 0.75rem; width: 100%; }
-        #text-input:focus, .auth-input:focus { outline: none; border: 1px solid var(--md-text-color); }
+        #text-input,
+        .auth-input {
+            border: 1px solid #a68c6e;
+            border-radius: 8px;
+            background-color: #fff;
+            padding: 0.75rem;
+            width: 100%;
+        }
+
+        #text-input:focus,
+        .auth-input:focus {
+            outline: none;
+            border: 1px solid var(--md-text-color);
+        }
 
         /* Recipe Card */
-        .recipe-card { background-color: #fff; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; padding: 20px; text-align: center; border: 2px solid #a68c6e; margin-bottom: 20px; height: 250px; display: flex; flex-direction: column; justify-content: space-between; }
-        .recipe-card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.2); transform: translateY(-5px); }
+        .recipe-card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #a68c6e;
+            margin-bottom: 20px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
 
         /* Custom Shepherd Styles (to match new theme) */
-        .shepherd-element { background: #f9f2e3; color: var(--md-text-color); border-radius: 15px; max-width: 350px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); border: 2px solid #a68c6e; }
-        .shepherd-header { background: transparent; padding: 1rem 1rem 0.5rem; border-bottom: 1px solid #d1c0a8; }
-        .shepherd-title { color: var(--md-text-color); font-family: 'Caprasimo', cursive; font-weight: 700; font-size: 1.5rem; }
-        .shepherd-text { padding: 1rem; font-size: 1rem; line-height: 1.6; color: #7a6e60; }
-        .shepherd-button { background: var(--md-primary-color); color: white; border-radius: 8px; padding: 0.75rem 1.5rem; text-transform: uppercase; border: 2px solid #5a874d; }
-        .shepherd-button:not(:disabled):hover { background: var(--md-primary-dark-color); }
-        .shepherd-button.shepherd-button-secondary { background: #757575; }
-        .shepherd-element .shepherd-arrow::before { background: #f9f2e3; }
-        .shepherd-element.shepherd-has-title .shepherd-arrow::before { background: #f9f2e3; }
+        .shepherd-element {
+            background: #f9f2e3;
+            color: var(--md-text-color);
+            border-radius: 15px;
+            max-width: 350px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #a68c6e;
+        }
+
+        .shepherd-header {
+            background: transparent;
+            padding: 1rem 1rem 0.5rem;
+            border-bottom: 1px solid #d1c0a8;
+        }
+
+        .shepherd-title {
+            color: var(--md-text-color);
+            font-family: 'Caprasimo', cursive;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .shepherd-text {
+            padding: 1rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #7a6e60;
+        }
+
+        .shepherd-button {
+            background: var(--md-primary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            text-transform: uppercase;
+            border: 2px solid #5a874d;
+        }
+
+        .shepherd-button:not(:disabled):hover {
+            background: var(--md-primary-dark-color);
+        }
+
+        .shepherd-button.shepherd-button-secondary {
+            background: #757575;
+        }
+
+        .shepherd-element .shepherd-arrow::before {
+            background: #f9f2e3;
+        }
+
+        .shepherd-element.shepherd-has-title .shepherd-arrow::before {
+            background: #f9f2e3;
+        }
 
         /* Pricing Card */
         .pricing-card {
@@ -116,25 +290,30 @@ max-width: 450px;
             flex: 1;
             min-width: 220px;
         }
+
         .pricing-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
+
         .pricing-card h3 {
             font-family: 'Fredericka the Great', cursive !important;
             font-size: 1.8em;
             color: var(--md-text-color);
         }
+
         .pricing-card .price {
             font-size: 2.5rem;
             font-weight: bold;
             color: var(--md-primary-color);
             margin: 10px 0;
         }
+
         .pricing-card .price-note {
             font-size: 0.9rem;
             color: #7a6e60;
         }
+
         .pricing-card .description {
             margin: 20px 0;
             color: #7a6e60;
@@ -145,21 +324,25 @@ max-width: 450px;
         /* New Image Styles */
         .recipe-image-container {
             width: 100%;
-            height: 180px; /* Fixed height for consistency */
+            height: 180px;
+            /* Fixed height for consistency */
             overflow: hidden;
             border-bottom: 2px solid #a68c6e;
             position: relative;
         }
+
         .recipe-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
+
         .recipe-card:hover .recipe-image {
-            transform: scale(1.05); /* Zoom effect on hover */
+            transform: scale(1.05);
+            /* Zoom effect on hover */
         }
-        
+
         /* Lightbox Styles */
         .lightbox-backdrop {
             position: fixed;
@@ -173,18 +356,21 @@ max-width: 450px;
             align-items: center;
             justify-content: center;
         }
+
         .lightbox-content {
             max-width: 90%;
             max-height: 90%;
             position: relative;
         }
+
         .lightbox-image {
             max-width: 100%;
             max-height: 90vh;
             border: 4px solid #fff;
             border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
+
         .lightbox-close {
             position: absolute;
             top: -40px;
@@ -196,9 +382,10 @@ max-width: 450px;
         }
     </style>
 </head>
+
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4" style="padding-bottom: 120px;">
     <div class="container w-full md:w-3/4 lg:w-2/3 mx-auto">
-        
+
         <!-- Auth and User Info -->
         <div class="absolute top-4 right-4 text-sm">
             <div id="user-auth-section">
@@ -215,7 +402,8 @@ max-width: 450px;
         <div id="main-content">
             <div class="text-center mb-6">
                 <img src="logo01.png" alt="Logo Chef Pessoal IA" class="mx-auto mb-4" style="max-width: 250px;">
-                <p class="text-gray-600 font-grand-hotel text-2xl">Seu assistente para criar magia com os ingredientes que você tem em mãos.</p>
+                <p class="text-gray-600 font-grand-hotel text-2xl">Seu assistente para criar magia com os ingredientes
+                    que você tem em mãos.</p>
             </div>
 
             <div id="start-section" class="text-center my-8">
@@ -239,10 +427,11 @@ max-width: 450px;
                 <p id="loading-text" class="mt-2 h-10">Analisando...</p>
             </div>
 
-            <div id="error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
+            <div id="error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4">
+            </div>
 
             <div id="results" class="hidden">
-                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Receitas Sugeridas</h2>
                 <div id="current-ingredients-display" class="mb-4 p-3 bg-green-50 rounded-lg">
                     <p class="font-semibold">Ingredientes na sua lista:</p>
                     <div id="current-ingredients-list" class="flex flex-wrap gap-2 mt-2"></div>
@@ -267,16 +456,18 @@ max-width: 450px;
     <!-- Lightbox Container (Hidden by default) -->
     <div id="lightbox" class="lightbox-backdrop hidden" onclick="closeLightbox()">
         <div class="lightbox-content" onclick="event.stopPropagation()">
-             <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-             <img id="lightbox-img" class="lightbox-image" src="" alt="Imagem ampliada">
+            <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+            <img id="lightbox-img" class="lightbox-image" src="" alt="Imagem ampliada">
         </div>
     </div>
 
     <!-- Modal de Autenticação -->
     <div id="auth-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div id="auth-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-1/3 lg:w-1/4 transform transition-all scale-95 opacity-0">
+        <div id="auth-modal-content"
+            class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-1/3 lg:w-1/4 transform transition-all scale-95 opacity-0">
             <h2 id="auth-modal-title" class="text-2xl font-bold text-gray-800 mb-6 text-center">Login</h2>
-            <div id="auth-error-message" class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
+            <div id="auth-error-message"
+                class="hidden text-center text-red-500 font-medium p-3 bg-red-100 rounded-lg my-4"></div>
             <form id="auth-form">
                 <div class="space-y-4">
                     <input type="email" id="auth-email" class="auth-input" placeholder="Seu e-mail" required>
@@ -287,14 +478,16 @@ max-width: 450px;
                 </div>
             </form>
             <div class="text-center mt-4">
-                <button id="close-auth-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
+                <button id="close-auth-modal-btn"
+                    class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
             </div>
         </div>
     </div>
 
     <!-- Modal de Entrada -->
     <div id="modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div id="modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+        <div id="modal-content"
+            class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Adicionar Ingredientes</h2>
             <div id="modal-tabs" class="flex justify-center gap-4 mb-6 border-b pb-4">
                 <button data-mode="image" class="modal-tab-btn">Imagem</button>
@@ -321,12 +514,15 @@ max-width: 450px;
 
                 <!-- Existing File Upload View -->
                 <div id="upload-view" class="hidden">
-                    <div id="image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
-                        <input type="file" id="image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div id="image-preview-container"
+                        class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+                        <input type="file" id="image-upload" accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         <img id="image-preview" src="#" class="hidden max-w-full max-h-full rounded-md">
                         <span id="upload-text">Clique para enviar uma imagem</span>
                     </div>
-                    <div class="text-center mt-4"><button id="image-submit-btn" class="btn btn-primary" disabled>Adicionar da Imagem</button></div>
+                    <div class="text-center mt-4"><button id="image-submit-btn" class="btn btn-primary"
+                            disabled>Adicionar da Imagem</button></div>
                 </div>
             </div>
             <div id="modal-content-audio" class="hidden text-center">
@@ -334,10 +530,13 @@ max-width: 450px;
                 <div id="audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
             </div>
             <div id="modal-content-text" class="hidden">
-                <textarea id="text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Digite os ingredientes separados por vírgula..."></textarea>
-                <div class="text-center mt-4"><button id="text-submit-btn" class="btn btn-primary">Adicionar do Texto</button></div>
+                <textarea id="text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3"
+                    placeholder="Digite os ingredientes separados por vírgula..."></textarea>
+                <div class="text-center mt-4"><button id="text-submit-btn" class="btn btn-primary">Adicionar do
+                        Texto</button></div>
             </div>
-            <div class="text-center mt-6"><button id="close-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
+            <div class="text-center mt-6"><button id="close-modal-btn"
+                    class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
         </div>
     </div>
 
@@ -345,14 +544,16 @@ max-width: 450px;
 
     <!-- Modal de Detalhes da Receita -->
     <div id="recipe-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div id="recipe-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+        <div id="recipe-modal-content"
+            class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
             <!-- O conteúdo da receita será inserido aqui dinamicamente -->
         </div>
     </div>
 
     <!-- Modal de Adicionar Conteúdo -->
     <div id="add-content-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div id="add-content-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
+        <div id="add-content-modal-content"
+            class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-2/3 lg:w-1/2 transform transition-all scale-95 opacity-0">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Adicionar à Receita</h2>
             <div id="add-content-modal-tabs" class="flex justify-center gap-4 mb-6 border-b pb-4">
                 <button data-mode="image" class="add-content-modal-tab-btn">Imagem</button>
@@ -360,46 +561,62 @@ max-width: 450px;
                 <button data-mode="text" class="add-content-modal-tab-btn">Texto</button>
             </div>
             <div id="add-content-modal-content-image" class="hidden">
-                 <div id="add-content-image-preview-container" class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
-                    <input type="file" id="add-content-image-upload" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
+                <div id="add-content-image-preview-container"
+                    class="relative h-48 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md cursor-pointer">
+                    <input type="file" id="add-content-image-upload" accept="image/*"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" capture="environment">
                     <img id="add-content-image-preview" src="#" class="hidden max-w-full max-h-full rounded-md">
                     <span id="add-content-upload-text">Clique para enviar ou tirar uma foto</span>
                 </div>
-                <div class="text-center mt-4"><button id="add-content-image-submit-btn" class="btn btn-primary p-2" disabled title="Adicionar Imagem">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </button></div>
+                <div class="text-center mt-4"><button id="add-content-image-submit-btn" class="btn btn-primary p-2"
+                        disabled title="Adicionar Imagem">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </button></div>
             </div>
             <div id="add-content-modal-content-audio" class="hidden text-center">
                 <button id="add-content-record-btn" class="btn btn-primary p-2" title="Iniciar Gravação">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                     </svg>
                 </button>
                 <div id="add-content-audio-status" class="mt-2 text-gray-600 font-medium h-6"></div>
             </div>
             <div id="add-content-modal-content-text" class="hidden">
-                <textarea id="add-content-text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3" placeholder="Digite o texto..."></textarea>
-                <div class="text-center mt-4"><button id="add-content-text-submit-btn" class="btn btn-primary p-2" title="Adicionar Texto">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </button></div>
+                <textarea id="add-content-text-input" class="w-full p-2 border border-gray-300 rounded-md" rows="3"
+                    placeholder="Digite o texto..."></textarea>
+                <div class="text-center mt-4"><button id="add-content-text-submit-btn" class="btn btn-primary p-2"
+                        title="Adicionar Texto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </button></div>
             </div>
-            <div class="text-center mt-6"><button id="close-add-content-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
+            <div class="text-center mt-6"><button id="close-add-content-modal-btn"
+                    class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button></div>
         </div>
     </div>
 
     <!-- Modal de Planos de Assinatura -->
     <div id="pricing-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
-        <div id="pricing-modal-content" class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-3/4 lg:w-2/3 transform transition-all scale-95 opacity-0">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center" style="font-family: 'Fredericka the Great', cursive !important;">Nossos Planos</h2>
-            <div id="pricing-modal-plans-container" class="flex flex-col md:flex-row justify-center items-stretch gap-8">
+        <div id="pricing-modal-content"
+            class="bg-white p-8 rounded-lg shadow-2xl w-11/12 md:w-3/4 lg:w-2/3 transform transition-all scale-95 opacity-0">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center"
+                style="font-family: 'Fredericka the Great', cursive !important;">Nossos Planos</h2>
+            <div id="pricing-modal-plans-container"
+                class="flex flex-col md:flex-row justify-center items-stretch gap-8">
                 <!-- Cards de planos serão inseridos aqui pelo JS -->
             </div>
             <div class="text-center mt-8">
-                <button id="close-pricing-modal-btn" class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
+                <button id="close-pricing-modal-btn"
+                    class="text-gray-500 hover:text-gray-700 font-semibold">Fechar</button>
             </div>
         </div>
     </div>
@@ -409,143 +626,143 @@ max-width: 450px;
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
-<script>
-// --- ESTADO GLOBAL & CONSTANTES ---
-sessionStorage.removeItem('inputImages');
-sessionStorage.removeItem('recipes');
-let state = {
-    supabase: null,
-    user: null,
-    stripe: null, // Stripe instance
-    currentIngredients: [],
-    inputImages: [],
-    isRecording: false,
-    recorder: null,
-    timerInterval: null,
-    modalMode: 'image',
-    loadingInterval: null,
-    recipes: [],
-    currentRecipeId: null,
-    webcamStream: null, // To hold the webcam stream
-    authMode: 'login' // 'login' or 'signup'
-};
+    <script>
+        // --- ESTADO GLOBAL & CONSTANTES ---
+        sessionStorage.removeItem('inputImages');
+        sessionStorage.removeItem('recipes');
+        let state = {
+            supabase: null,
+            user: null,
+            stripe: null, // Stripe instance
+            currentIngredients: [],
+            inputImages: [],
+            isRecording: false,
+            recorder: null,
+            timerInterval: null,
+            modalMode: 'image',
+            loadingInterval: null,
+            recipes: [],
+            currentRecipeId: null,
+            webcamStream: null, // To hold the webcam stream
+            authMode: 'login' // 'login' or 'signup'
+        };
 
-const loadingMessages = [
-    "Procurando as combinações mais saborosas...",
-    "Despertando a criatividade na sua cozinha...",
-    "Um momento, o chef está pensando...",
-    "Transformando ingredientes em obras de arte.",
-    "Seu assistente para criar magia com os ingredientes que você tem em mãos."
-];
+        const loadingMessages = [
+            "Procurando as combinações mais saborosas...",
+            "Despertando a criatividade na sua cozinha...",
+            "Um momento, o chef está pensando...",
+            "Transformando ingredientes em obras de arte.",
+            "Seu assistente para criar magia com os ingredientes que você tem em mãos."
+        ];
 
-// --- ELEMENTOS DA UI ---
-const ui = {
-    main: document.getElementById('main-content'),
-    startBtn: document.getElementById('start-btn'),
-    startSection: document.getElementById('start-section'),
-    pricingSection: document.getElementById('pricing-section'),
-    openPricingModalBtn: document.getElementById('open-pricing-modal-btn'), // New
-    topButtons: document.getElementById('top-buttons'),
-    addMoreBtn: document.getElementById('add-more-btn'),
-    loading: document.getElementById('loading'),
-    loadingText: document.getElementById('loading-text'),
-    error: document.getElementById('error-message'),
-    results: {
-        container: document.getElementById('results'),
-        list: document.getElementById('recipe-list'),
-        notes: document.getElementById('general-notes'),
-        ingredientsDisplay: document.getElementById('current-ingredients-display'),
-        ingredientsList: document.getElementById('current-ingredients-list'),
-        inputImagesDisplay: document.getElementById('input-images-display'),
-        inputImagesList: document.getElementById('input-images-list')
-    },
-    modal: {
-        backdrop: document.getElementById('modal-backdrop'),
-        content: document.getElementById('modal-content'),
-        closeBtn: document.getElementById('close-modal-btn'),
-        tabsContainer: document.getElementById('modal-tabs'),
-        tabs: document.querySelectorAll('.modal-tab-btn'),
-        contentImage: document.getElementById('modal-content-image'),
-        contentAudio: document.getElementById('modal-content-audio'),
-        contentText: document.getElementById('modal-content-text'),
-        imageInputSelection: document.getElementById('image-input-selection'),
-        useWebcamBtn: document.getElementById('use-webcam-btn'),
-        useUploadBtn: document.getElementById('use-upload-btn'),
-        webcamView: document.getElementById('webcam-view'),
-        uploadView: document.getElementById('upload-view'),
-        cancelWebcamBtn: document.getElementById('cancel-webcam-btn'),
-    },
-    auth: {
-        section: document.getElementById('user-auth-section'),
-        infoSection: document.getElementById('user-info-section'),
-        loginBtn: document.getElementById('login-btn'),
-        signupBtn: document.getElementById('signup-btn'),
-        logoutBtn: document.getElementById('logout-btn'),
-        userEmail: document.getElementById('user-email'),
-        modal: {
-            backdrop: document.getElementById('auth-modal-backdrop'),
-            content: document.getElementById('auth-modal-content'),
-            title: document.getElementById('auth-modal-title'),
-            form: document.getElementById('auth-form'),
-            emailInput: document.getElementById('auth-email'),
-            passwordInput: document.getElementById('auth-password'),
-            submitBtn: document.getElementById('auth-submit-btn'),
-            closeBtn: document.getElementById('close-auth-modal-btn'),
-            error: document.getElementById('auth-error-message')
-        }
-    },
-    recipeModal: {
-        backdrop: document.getElementById('recipe-modal-backdrop'),
-        content: document.getElementById('recipe-modal-content')
-    },
-    pricingModal: { // New
-        backdrop: document.getElementById('pricing-modal-backdrop'),
-        content: document.getElementById('pricing-modal-content'),
-        plansContainer: document.getElementById('pricing-modal-plans-container'),
-        closeBtn: document.getElementById('close-pricing-modal-btn')
-    },
-    addContentModal: {
-        backdrop: document.getElementById('add-content-modal-backdrop'),
-        content: document.getElementById('add-content-modal-content'),
-        closeBtn: document.getElementById('close-add-content-modal-btn'),
-        tabs: document.querySelectorAll('.add-content-modal-tab-btn'),
-        imagePreview: document.getElementById('add-content-image-preview'),
-        uploadText: document.getElementById('add-content-upload-text'),
-        imageUpload: document.getElementById('add-content-image-upload'),
-        imageSubmitBtn: document.getElementById('add-content-image-submit-btn'),
-        recordBtn: document.getElementById('add-content-record-btn'),
-        audioStatus: document.getElementById('add-content-audio-status'),
-        textInput: document.getElementById('add-content-text-input'),
-        textSubmitBtn: document.getElementById('add-content-text-submit-btn')
-    },
-    inputs: {
-        imageUpload: document.getElementById('image-upload'),
-        imagePreview: document.getElementById('image-preview'),
-        uploadText: document.getElementById('upload-text'),
-        imageSubmitBtn: document.getElementById('image-submit-btn'),
-        recordBtn: document.getElementById('record-btn'),
-        audioStatus: document.getElementById('audio-status'),
-        textInput: document.getElementById('text-input'),
-        textSubmitBtn: document.getElementById('text-submit-btn'),
-        webcamVideo: document.getElementById('webcam-video'),
-        webcamCanvas: document.getElementById('webcam-canvas'),
-        captureBtn: document.getElementById('capture-btn'),
-    }
-};
+        // --- ELEMENTOS DA UI ---
+        const ui = {
+            main: document.getElementById('main-content'),
+            startBtn: document.getElementById('start-btn'),
+            startSection: document.getElementById('start-section'),
+            pricingSection: document.getElementById('pricing-section'),
+            openPricingModalBtn: document.getElementById('open-pricing-modal-btn'), // New
+            topButtons: document.getElementById('top-buttons'),
+            addMoreBtn: document.getElementById('add-more-btn'),
+            loading: document.getElementById('loading'),
+            loadingText: document.getElementById('loading-text'),
+            error: document.getElementById('error-message'),
+            results: {
+                container: document.getElementById('results'),
+                list: document.getElementById('recipe-list'),
+                notes: document.getElementById('general-notes'),
+                ingredientsDisplay: document.getElementById('current-ingredients-display'),
+                ingredientsList: document.getElementById('current-ingredients-list'),
+                inputImagesDisplay: document.getElementById('input-images-display'),
+                inputImagesList: document.getElementById('input-images-list')
+            },
+            modal: {
+                backdrop: document.getElementById('modal-backdrop'),
+                content: document.getElementById('modal-content'),
+                closeBtn: document.getElementById('close-modal-btn'),
+                tabsContainer: document.getElementById('modal-tabs'),
+                tabs: document.querySelectorAll('.modal-tab-btn'),
+                contentImage: document.getElementById('modal-content-image'),
+                contentAudio: document.getElementById('modal-content-audio'),
+                contentText: document.getElementById('modal-content-text'),
+                imageInputSelection: document.getElementById('image-input-selection'),
+                useWebcamBtn: document.getElementById('use-webcam-btn'),
+                useUploadBtn: document.getElementById('use-upload-btn'),
+                webcamView: document.getElementById('webcam-view'),
+                uploadView: document.getElementById('upload-view'),
+                cancelWebcamBtn: document.getElementById('cancel-webcam-btn'),
+            },
+            auth: {
+                section: document.getElementById('user-auth-section'),
+                infoSection: document.getElementById('user-info-section'),
+                loginBtn: document.getElementById('login-btn'),
+                signupBtn: document.getElementById('signup-btn'),
+                logoutBtn: document.getElementById('logout-btn'),
+                userEmail: document.getElementById('user-email'),
+                modal: {
+                    backdrop: document.getElementById('auth-modal-backdrop'),
+                    content: document.getElementById('auth-modal-content'),
+                    title: document.getElementById('auth-modal-title'),
+                    form: document.getElementById('auth-form'),
+                    emailInput: document.getElementById('auth-email'),
+                    passwordInput: document.getElementById('auth-password'),
+                    submitBtn: document.getElementById('auth-submit-btn'),
+                    closeBtn: document.getElementById('close-auth-modal-btn'),
+                    error: document.getElementById('auth-error-message')
+                }
+            },
+            recipeModal: {
+                backdrop: document.getElementById('recipe-modal-backdrop'),
+                content: document.getElementById('recipe-modal-content')
+            },
+            pricingModal: { // New
+                backdrop: document.getElementById('pricing-modal-backdrop'),
+                content: document.getElementById('pricing-modal-content'),
+                plansContainer: document.getElementById('pricing-modal-plans-container'),
+                closeBtn: document.getElementById('close-pricing-modal-btn')
+            },
+            addContentModal: {
+                backdrop: document.getElementById('add-content-modal-backdrop'),
+                content: document.getElementById('add-content-modal-content'),
+                closeBtn: document.getElementById('close-add-content-modal-btn'),
+                tabs: document.querySelectorAll('.add-content-modal-tab-btn'),
+                imagePreview: document.getElementById('add-content-image-preview'),
+                uploadText: document.getElementById('add-content-upload-text'),
+                imageUpload: document.getElementById('add-content-image-upload'),
+                imageSubmitBtn: document.getElementById('add-content-image-submit-btn'),
+                recordBtn: document.getElementById('add-content-record-btn'),
+                audioStatus: document.getElementById('add-content-audio-status'),
+                textInput: document.getElementById('add-content-text-input'),
+                textSubmitBtn: document.getElementById('add-content-text-submit-btn')
+            },
+            inputs: {
+                imageUpload: document.getElementById('image-upload'),
+                imagePreview: document.getElementById('image-preview'),
+                uploadText: document.getElementById('upload-text'),
+                imageSubmitBtn: document.getElementById('image-submit-btn'),
+                recordBtn: document.getElementById('record-btn'),
+                audioStatus: document.getElementById('audio-status'),
+                textInput: document.getElementById('text-input'),
+                textSubmitBtn: document.getElementById('text-submit-btn'),
+                webcamVideo: document.getElementById('webcam-video'),
+                webcamCanvas: document.getElementById('webcam-canvas'),
+                captureBtn: document.getElementById('capture-btn'),
+            }
+        };
 
-// --- STRIPE LOGIC ---
+        // --- STRIPE LOGIC ---
 
-function renderPricingPlans() {
-    // IDs de Preço (Price IDs) do Stripe e descrições
-    const plans = [
-        { name: 'Plano Básico', priceId: 'price_1SZH7kCweAPPqyx8oyf30gyS', price: 'R$10', description: 'Até 10 gerações de receitas por dia.' },
-        { name: 'Plano Pro', priceId: 'price_1SZHA1CweAPPqyx85E8PUoAe', price: 'R$30', description: 'Até 30 gerações de receitas por dia e suporte prioritário.' },
-        { name: 'Plano Premium', priceId: 'price_1SZHCFCweAPPqyx8J7tNYsV4', price: 'R$50', description: 'Até 50 gerações de receitas por dia e acesso antecipado a novas funcionalidades.' }
-    ];
+        function renderPricingPlans() {
+            // IDs de Preço (Price IDs) do Stripe e descrições
+            const plans = [
+                { name: 'Plano Básico', priceId: 'price_1SZH7kCweAPPqyx8oyf30gyS', price: 'R$10', description: 'Até 10 gerações de receitas por dia.' },
+                { name: 'Plano Pro', priceId: 'price_1SZHA1CweAPPqyx85E8PUoAe', price: 'R$30', description: 'Até 30 gerações de receitas por dia e suporte prioritário.' },
+                { name: 'Plano Premium', priceId: 'price_1SZHCFCweAPPqyx8J7tNYsV4', price: 'R$50', description: 'Até 50 gerações de receitas por dia e acesso antecipado a novas funcionalidades.' }
+            ];
 
-    let plansHTML = '';
-    plans.forEach(plan => {
-        plansHTML += `
+            let plansHTML = '';
+            plans.forEach(plan => {
+                plansHTML += `
             <div class="pricing-card">
                 <h3>${plan.name}</h3>
                 <div class="price">${plan.price}<span class="price-note">/mês</span></div>
@@ -553,333 +770,289 @@ function renderPricingPlans() {
                 <button data-price-id="${plan.priceId}" class="btn btn-primary upgrade-btn w-full">Assinar</button>
             </div>
         `;
-    });
+            });
 
-    ui.pricingModal.plansContainer.innerHTML = plansHTML;
+            ui.pricingModal.plansContainer.innerHTML = plansHTML;
 
-    // Add event listeners to the new buttons
-    document.querySelectorAll('.upgrade-btn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const priceId = event.currentTarget.dataset.priceId;
-            redirectToCheckout(priceId);
-        });
-    });
-}
-
-function openPricingModal() {
-    ui.pricingModal.backdrop.classList.remove('hidden');
-    ui.pricingModal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.pricingModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-}
-
-function closePricingModal() {
-    ui.pricingModal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.pricingModal.backdrop.classList.add('hidden');
-        ui.pricingModal.backdrop.classList.remove('flex');
-    }, 200);
-}
-
-async function redirectToCheckout(priceId) {
-    setLoading(true);
-    closePricingModal(); // Close modal before redirecting
-
-    const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
-    if (sessionError || !session) {
-        showError("Sua sessão expirou. Por favor, faça login novamente.");
-        handleLogout();
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/create-checkout-session', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`
-            },
-            body: JSON.stringify({ priceId: priceId })
-        });
-
-        const checkoutSession = await response.json();
-        if (!response.ok) {
-            throw new Error(checkoutSession.error);
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.upgrade-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const priceId = event.currentTarget.dataset.priceId;
+                    redirectToCheckout(priceId);
+                });
+            });
         }
 
-        const { error } = await state.stripe.redirectToCheckout({
-            sessionId: checkoutSession.id
-        });
-
-        if (error) {
-            throw new Error(`Erro ao redirecionar para o checkout: ${error.message}`);
+        function openPricingModal() {
+            ui.pricingModal.backdrop.classList.remove('hidden');
+            ui.pricingModal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.pricingModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
         }
-    } catch (err) {
-        showError(err.message);
-    }
-}
+
+        function closePricingModal() {
+            ui.pricingModal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.pricingModal.backdrop.classList.add('hidden');
+                ui.pricingModal.backdrop.classList.remove('flex');
+            }, 200);
+        }
+
+        async function redirectToCheckout(priceId) {
+            setLoading(true);
+            closePricingModal(); // Close modal before redirecting
+
+            const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
+            if (sessionError || !session) {
+                showError("Sua sessão expirou. Por favor, faça login novamente.");
+                handleLogout();
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ priceId: priceId })
+                });
+
+                const checkoutSession = await response.json();
+                if (!response.ok) {
+                    throw new Error(checkoutSession.error);
+                }
+
+                const { error } = await state.stripe.redirectToCheckout({
+                    sessionId: checkoutSession.id
+                });
+
+                if (error) {
+                    throw new Error(`Erro ao redirecionar para o checkout: ${error.message}`);
+                }
+            } catch (err) {
+                showError(err.message);
+            }
+        }
 
 
-// --- AUTH LOGIC ---
+        // --- AUTH LOGIC ---
 
-function openAuthModal(mode) {
-    state.authMode = mode;
-    ui.auth.modal.title.textContent = mode === 'login' ? 'Login' : 'Cadastrar';
-    ui.auth.modal.submitBtn.textContent = mode === 'login' ? 'Entrar' : 'Criar Conta';
-    ui.auth.modal.error.classList.add('hidden');
-    ui.auth.modal.form.reset();
-    
-    ui.auth.modal.backdrop.classList.remove('hidden');
-    ui.auth.modal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.auth.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-}
+        function openAuthModal(mode) {
+            state.authMode = mode;
+            ui.auth.modal.title.textContent = mode === 'login' ? 'Login' : 'Cadastrar';
+            ui.auth.modal.submitBtn.textContent = mode === 'login' ? 'Entrar' : 'Criar Conta';
+            ui.auth.modal.error.classList.add('hidden');
+            ui.auth.modal.form.reset();
 
-function closeAuthModal() {
-    ui.auth.modal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.auth.modal.backdrop.classList.add('hidden');
-        ui.auth.modal.backdrop.classList.remove('flex');
-    }, 200);
-}
+            ui.auth.modal.backdrop.classList.remove('hidden');
+            ui.auth.modal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.auth.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+        }
 
-function showAuthError(message) {
-    ui.auth.modal.error.textContent = message;
-    ui.auth.modal.error.classList.remove('hidden');
-}
+        function closeAuthModal() {
+            ui.auth.modal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.auth.modal.backdrop.classList.add('hidden');
+                ui.auth.modal.backdrop.classList.remove('flex');
+            }, 200);
+        }
 
-async function handleSignUp(email, password) {
-    const { error } = await state.supabase.auth.signUp({ email, password });
-    if (error) {
-        showAuthError(error.message);
-    } else {
-        showAuthError("Verifique seu e-mail para confirmar o cadastro!");
-        setTimeout(closeAuthModal, 3000);
-    }
-}
+        function showAuthError(message) {
+            ui.auth.modal.error.textContent = message;
+            ui.auth.modal.error.classList.remove('hidden');
+        }
 
-async function handleLogin(email, password) {
-    const { error } = await state.supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-        showAuthError(error.message);
-    } else {
-        closeAuthModal();
-    }
-}
+        async function handleSignUp(email, password) {
+            const { error } = await state.supabase.auth.signUp({ email, password });
+            if (error) {
+                showAuthError(error.message);
+            } else {
+                showAuthError("Verifique seu e-mail para confirmar o cadastro!");
+                setTimeout(closeAuthModal, 3000);
+            }
+        }
 
-async function handleLogout() {
-    const { error } = await state.supabase.auth.signOut();
-    if (error) {
-        showError(`Erro ao sair: ${error.message}`);
-    }
-}
+        async function handleLogin(email, password) {
+            const { error } = await state.supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                showAuthError(error.message);
+            } else {
+                closeAuthModal();
+            }
+        }
 
-function updateUIForAuthState(user) {
-    if (user) {
-        ui.auth.section.classList.add('hidden');
-        ui.auth.infoSection.classList.remove('hidden');
-        ui.auth.userEmail.textContent = user.email;
-        ui.startBtn.disabled = false;
-        ui.pricingSection.classList.remove('hidden'); // Show pricing on login
-    } else {
-        ui.auth.section.classList.remove('hidden');
-        ui.auth.infoSection.classList.add('hidden');
-        ui.auth.userEmail.textContent = '';
-        ui.startBtn.disabled = true; // Disable main button if not logged in
-        ui.pricingSection.classList.add('hidden'); // Hide pricing on logout
-    }
-}
+        async function handleLogout() {
+            const { error } = await state.supabase.auth.signOut();
+            if (error) {
+                showError(`Erro ao sair: ${error.message}`);
+            }
+        }
+
+        function updateUIForAuthState(user) {
+            if (user) {
+                ui.auth.section.classList.add('hidden');
+                ui.auth.infoSection.classList.remove('hidden');
+                ui.auth.userEmail.textContent = user.email;
+                ui.startBtn.disabled = false;
+                ui.pricingSection.classList.remove('hidden'); // Show pricing on login
+            } else {
+                ui.auth.section.classList.remove('hidden');
+                ui.auth.infoSection.classList.add('hidden');
+                ui.auth.userEmail.textContent = '';
+                ui.startBtn.disabled = true; // Disable main button if not logged in
+                ui.pricingSection.classList.add('hidden'); // Hide pricing on logout
+            }
+        }
 
 
-// --- WEBCAM LOGIC ---
+        // --- WEBCAM LOGIC ---
 
-function stopWebcam() {
-    if (state.webcamStream) {
-        state.webcamStream.getTracks().forEach(track => track.stop());
-        state.webcamStream = null;
-        ui.inputs.webcamVideo.srcObject = null;
-    }
-    ui.modal.webcamView.classList.add('hidden');
-}
+        function stopWebcam() {
+            if (state.webcamStream) {
+                state.webcamStream.getTracks().forEach(track => track.stop());
+                state.webcamStream = null;
+                ui.inputs.webcamVideo.srcObject = null;
+            }
+            ui.modal.webcamView.classList.add('hidden');
+        }
 
-async function setupImageInputMode() {
-    // Reset views
-    ui.modal.imageInputSelection.classList.add('hidden');
-    ui.modal.webcamView.classList.add('hidden');
-    ui.modal.uploadView.classList.add('hidden');
-    stopWebcam();
+        async function setupImageInputMode() {
+            // Reset views
+            ui.modal.imageInputSelection.classList.add('hidden');
+            ui.modal.webcamView.classList.add('hidden');
+            ui.modal.uploadView.classList.add('hidden');
+            stopWebcam();
 
-    // Check for webcam support
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const hasWebcam = devices.some(device => device.kind === 'videoinput');
+            // Check for webcam support
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    const hasWebcam = devices.some(device => device.kind === 'videoinput');
 
-            if (hasWebcam) {
-                ui.modal.imageInputSelection.classList.remove('hidden');
+                    if (hasWebcam) {
+                        ui.modal.imageInputSelection.classList.remove('hidden');
+                    } else {
+                        ui.modal.uploadView.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    console.error("Error checking for webcam:", err);
+                    ui.modal.uploadView.classList.remove('hidden');
+                }
             } else {
                 ui.modal.uploadView.classList.remove('hidden');
             }
-        } catch (err) {
-            console.error("Error checking for webcam:", err);
+        }
+
+        async function startWebcam() {
+            stopWebcam();
+            ui.modal.imageInputSelection.classList.add('hidden');
+            ui.modal.uploadView.classList.add('hidden');
+            ui.modal.webcamView.classList.remove('hidden');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                state.webcamStream = stream;
+                ui.inputs.webcamVideo.srcObject = stream;
+                ui.inputs.imagePreview.src = '#';
+                ui.inputs.imagePreview.classList.add('hidden');
+                ui.inputs.uploadText.classList.remove('hidden');
+                ui.inputs.imageSubmitBtn.disabled = true;
+            } catch (err) {
+                console.error("Error starting webcam:", err);
+                showError("Não foi possível acessar a webcam. Por favor, verifique as permissões.");
+                resetToImageSelection();
+            }
+        }
+
+        function capturePhoto() {
+            const video = ui.inputs.webcamVideo;
+            const canvas = ui.inputs.webcamCanvas;
+            const context = canvas.getContext('2d');
+
+            // --- START Resizing Logic ---
+            let width = video.videoWidth;
+            let height = video.videoHeight;
+            const maxWidth = 1024; // Max width for resized image
+            const maxHeight = 768; // Max height for resized image
+
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            // Draw video frame to canvas with resizing
+            context.drawImage(video, 0, 0, width, height);
+            // --- END Resizing Logic ---
+
+            // Get resized image as JPEG with 70% quality (to match the other function)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+            ui.inputs.imagePreview.src = dataUrl;
+            ui.inputs.imagePreview.classList.remove('hidden');
+            ui.inputs.uploadText.classList.add('hidden');
+            ui.inputs.imageSubmitBtn.disabled = false;
+
+            stopWebcam();
+            ui.modal.webcamView.classList.add('hidden');
             ui.modal.uploadView.classList.remove('hidden');
         }
-    } else {
-        ui.modal.uploadView.classList.remove('hidden');
-    }
-}
 
-async function startWebcam() {
-    stopWebcam();
-    ui.modal.imageInputSelection.classList.add('hidden');
-    ui.modal.uploadView.classList.add('hidden');
-    ui.modal.webcamView.classList.remove('hidden');
-
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-        state.webcamStream = stream;
-        ui.inputs.webcamVideo.srcObject = stream;
-        ui.inputs.imagePreview.src = '#';
-        ui.inputs.imagePreview.classList.add('hidden');
-        ui.inputs.uploadText.classList.remove('hidden');
-        ui.inputs.imageSubmitBtn.disabled = true;
-    } catch (err) {
-        console.error("Error starting webcam:", err);
-        showError("Não foi possível acessar a webcam. Por favor, verifique as permissões.");
-        resetToImageSelection();
-    }
-}
-
-function capturePhoto() {
-    const video = ui.inputs.webcamVideo;
-    const canvas = ui.inputs.webcamCanvas;
-    const context = canvas.getContext('2d');
-
-    // --- START Resizing Logic ---
-    let width = video.videoWidth;
-    let height = video.videoHeight;
-    const maxWidth = 1024; // Max width for resized image
-    const maxHeight = 768; // Max height for resized image
-
-    if (width > height) {
-        if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
+        function resetToImageSelection() {
+            stopWebcam();
+            ui.modal.webcamView.classList.add('hidden');
+            ui.modal.uploadView.classList.add('hidden');
+            ui.modal.imageInputSelection.classList.remove('hidden');
+            ui.inputs.imagePreview.src = '#';
+            ui.inputs.imagePreview.classList.add('hidden');
+            ui.inputs.uploadText.classList.remove('hidden');
+            ui.inputs.imageSubmitBtn.disabled = true;
+            ui.inputs.imageUpload.value = '';
         }
-    } else {
-        if (height > maxHeight) {
-            width *= maxHeight / height;
-            height = maxHeight;
+
+        // --- LÓGICA DO MODAL, ESTADO E UI ---
+
+        function openModal() {
+            if (!state.user) {
+                showError("Por favor, faça login ou cadastre-se para criar receitas.");
+                openAuthModal('login');
+                return;
+            }
+            console.log('openModal() executed.');
+            switchModalTab(state.modalMode);
+            ui.modal.backdrop.classList.remove('hidden');
+            ui.modal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
         }
-    }
 
-    canvas.width = width;
-    canvas.height = height;
-    // Draw video frame to canvas with resizing
-    context.drawImage(video, 0, 0, width, height);
-    // --- END Resizing Logic ---
-
-    // Get resized image as JPEG with 70% quality (to match the other function)
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-    
-    ui.inputs.imagePreview.src = dataUrl;
-    ui.inputs.imagePreview.classList.remove('hidden');
-    ui.inputs.uploadText.classList.add('hidden');
-    ui.inputs.imageSubmitBtn.disabled = false;
-
-    stopWebcam();
-    ui.modal.webcamView.classList.add('hidden');
-    ui.modal.uploadView.classList.remove('hidden');
-}
-
-function resetToImageSelection() {
-    stopWebcam();
-    ui.modal.webcamView.classList.add('hidden');
-    ui.modal.uploadView.classList.add('hidden');
-    ui.modal.imageInputSelection.classList.remove('hidden');
-    ui.inputs.imagePreview.src = '#';
-    ui.inputs.imagePreview.classList.add('hidden');
-    ui.inputs.uploadText.classList.remove('hidden');
-    ui.inputs.imageSubmitBtn.disabled = true;
-    ui.inputs.imageUpload.value = '';
-}
-
-// --- LÓGICA DO MODAL, ESTADO E UI ---
-
-function openModal() {
-    if (!state.user) {
-        showError("Por favor, faça login ou cadastre-se para criar receitas.");
-        openAuthModal('login');
-        return;
-    }
-    console.log('openModal() executed.');
-    switchModalTab(state.modalMode);
-    ui.modal.backdrop.classList.remove('hidden');
-    ui.modal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.modal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-}
-
-function closeModal() {
-    stopWebcam();
-    ui.modal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.modal.backdrop.classList.add('hidden');
-        ui.modal.backdrop.classList.remove('flex');
-    }, 200);
-}
+        function closeModal() {
+            stopWebcam();
+            ui.modal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.modal.backdrop.classList.add('hidden');
+                ui.modal.backdrop.classList.remove('flex');
+            }, 200);
+        }
 
 
-function renderRecipes(recipes) {
-    state.recipes = recipes;
-    ui.results.list.innerHTML = '';
-    
-    // Check if recipes array is empty or undefined
-    if (!recipes || recipes.length === 0) {
-        ui.results.list.innerHTML = '<p class="col-span-full text-center text-gray-600">Nenhuma receita encontrada. Tente com outros ingredientes.</p>';
-        return;
-    }
 
-    recipes.forEach(recipe => {
-        // Fallback for image if URL is missing or broken
-        const imageUrl = recipe.image_url || 'logo01.png'; // Use logo as default fallback
-        
-        // Generate a unique ID for the recipe (using name + random if no ID provided)
-        if (!recipe.id) recipe.id = Math.random().toString(36).substr(2, 9);
-        
-        const card = document.createElement('div');
-        card.className = 'recipe-card';
-        card.onclick = (e) => {
-            // Prevent opening modal if clicking directly on a specific button if we had one
-            openRecipeModal(recipe.id);
-        };
-        
-        card.innerHTML = `
-            <div class="recipe-image-container mb-3 relative">
-                <img src="${imageUrl}" alt="${recipe.nome}" class="recipe-image" loading="lazy" onerror="this.src='logo01.png'">
-                 ${recipe.tempo_preparo ? `<span class="absolute bottom-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-bold text-green-700 shadow-sm shadow-black/20 ">⏱ ${recipe.tempo_preparo}</span>` : ''}
-            </div>
-            <div class="p-2 flex-grow flex flex-col justify-between">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2 truncate" style="font-family: 'Oswald', sans-serif;">${recipe.nome}</h3>
-                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-                        ${recipe.ingredientes_disponiveis ? recipe.ingredientes_disponiveis.join(', ') : 'Ingredientes variados'}
-                    </p>
-                </div>
-                <button class="btn btn-primary w-full text-sm py-2 mt-2">Ver Receita</button>
-            </div>
-        `;
-        ui.results.list.appendChild(card);
-    });
-    
-    // Update general notes
-    // ...
-}
 
-function openRecipeModal(recipeId) {
-    const recipe = state.recipes.find(r => r.id === recipeId);
-    const { jsPDF } = window.jspdf;
-    
-    const imageUrl = recipe.image_url || 'logo01.png';
+        function openRecipeModal(recipeId) {
+            const recipe = state.recipes.find(r => r.id === recipeId);
+            const { jsPDF } = window.jspdf;
 
-    ui.recipeModal.content.innerHTML = `
+            const imageUrl = recipe.image_url || 'logo01.png';
+
+            ui.recipeModal.content.innerHTML = `
         <div class="absolute top-2 right-2 flex space-x-2 z-10">
             <button id="download-pdf-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none" title="Baixar PDF">
                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -917,87 +1090,19 @@ function openRecipeModal(recipeId) {
            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
            Tempo estimado: ${recipe.tempo_preparo}
        </div>` : ''}
-    `;
-
-    ui.recipeModal.backdrop.classList.remove('hidden');
-    ui.recipeModal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.recipeModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-
-    // Re-attach event listeners
-    document.getElementById('close-recipe-modal-icon-btn').addEventListener('click', closeRecipeModal);
-    
-    document.getElementById('download-pdf-icon-btn').addEventListener('click', () => {
-        // PDF Generation Logic (Expanded for Image)
-        const doc = new jsPDF();
-        
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(106, 156, 90); // Brand Green
-        doc.text("Chef Pessoal IA", 105, 20, null, null, "center");
-        
-        doc.setFontSize(18);
-        doc.setTextColor(0, 0, 0);
-        doc.text(recipe.nome, 105, 35, null, null, "center");
-
-        let yPos = 50;
-        
-        doc.setFontSize(14);
-        doc.setTextColor(0, 0, 0);
-        doc.text("Ingredientes:", 20, yPos);
-        yPos += 10;
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        const ingredients = [...(recipe.ingredientes_disponiveis || []), ...(recipe.ingredientes_adicionais || [])];
-        ingredients.forEach(ing => {
-            doc.text(`• ${ing}`, 25, yPos);
-            yPos += 7;
-        });
-        
-        yPos += 10;
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.text("Modo de Preparo:", 20, yPos);
-        yPos += 10;
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(12);
-        const steps = recipe.modo_preparo || [];
-        const splitText = doc.splitTextToSize(steps.join('\n\n'), 170);
-        doc.text(splitText, 20, yPos);
-        
-        doc.save(`${recipe.nome.replace(/\s+/g, '_')}_receita.pdf`);
-    });
-}
-
-function openLightbox(src) {
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    lightboxImg.src = src;
-    lightbox.classList.remove('hidden');
-}
-
-function closeLightbox() {
-    const lightbox = document.getElementById('lightbox');
-    lightbox.classList.add('hidden');
-    document.getElementById('lightbox-img').src = '';
-}
-
-        
         <!-- Additional Content -->
         <div class="text-left mt-4">
-            ${recipe.additionalImages.length > 0 ? '<p class="font-semibold">Imagens Adicionais:</p>' : ''}
+            ${recipe.additionalImages && recipe.additionalImages.length > 0 ? '<p class="font-semibold">Imagens Adicionais:</p>' : ''}
             <div class="flex flex-wrap gap-2 mt-1">
-                ${recipe.additionalImages.map(img => `<img src="${img}" class="w-24 h-24 object-cover rounded-md shadow-md">`).join('')}
+                ${(recipe.additionalImages || []).map(img => `<img src="${img}" class="w-24 h-24 object-cover rounded-md shadow-md">`).join('')}
             </div>
         </div>
         <div class="text-left mt-4">
-            ${recipe.additionalTexts.length > 0 ? '<p class="font-semibold">Textos Adicionais:</p>' : ''}
+            ${recipe.additionalTexts && recipe.additionalTexts.length > 0 ? '<p class="font-semibold">Textos Adicionais:</p>' : ''}
             <div class="space-y-2 mt-1">
-                ${recipe.additionalTexts.map(txt => `<p class="text-gray-600 p-2 bg-gray-100 rounded-md">${txt}</p>`).join('')}
+                ${(recipe.additionalTexts || []).map(txt => `<p class="text-gray-600 p-2 bg-gray-100 rounded-md">${txt}</p>`).join('')}
             </div>
         </div>
-
 
         <div class="flex justify-center items-center space-x-4 mt-4">
             <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(recipe.nome + ' - ' + window.location.href)}" target="_blank" class="text-green-500 hover:text-green-700">
@@ -1019,653 +1124,710 @@ function closeLightbox() {
         </div>
     `;
 
-    ui.recipeModal.backdrop.classList.remove('hidden');
-    ui.recipeModal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.recipeModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+            ui.recipeModal.backdrop.classList.remove('hidden');
+            ui.recipeModal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.recipeModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
 
-    document.getElementById('close-recipe-modal-icon-btn').addEventListener('click', closeRecipeModal);
-    document.getElementById('download-pdf-icon-btn').addEventListener('click', () => {
-        doc.text(recipe.nome, 10, 10);
-        doc.text('Ingredientes:', 10, 20);
-        let y = 30;
-        (recipe.ingredientes_disponiveis || []).forEach(ing => {
-            doc.text('- ' + ing, 10, y);
-            y += 10;
-        });
-        (recipe.ingredientes_adicionais || []).forEach(ing => {
-            doc.text('- ' + ing, 10, y);
-            y += 10;
-        });
-        doc.text('Modo de Preparo:', 10, y);
-        y += 10;
-        (recipe.modo_preparo || []).forEach(step => {
-            doc.text('- ' + step, 10, y);
-            y += 10;
-        });
-        if (recipe.tempo_preparo) {
-            doc.text('Tempo: ' + recipe.tempo_preparo, 10, y);
+            // Re-attach event listeners
+            document.getElementById('close-recipe-modal-icon-btn').addEventListener('click', closeRecipeModal);
+
+            document.getElementById('download-pdf-icon-btn').addEventListener('click', () => {
+                // PDF Generation Logic (Expanded for Image)
+                const doc = new jsPDF();
+
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(22);
+                doc.setTextColor(106, 156, 90); // Brand Green
+                doc.text("Chef Pessoal IA", 105, 20, null, null, "center");
+
+                doc.setFontSize(18);
+                doc.setTextColor(0, 0, 0);
+                doc.text(recipe.nome, 105, 35, null, null, "center");
+
+                let yPos = 50;
+
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 0);
+                doc.text("Ingredientes:", 20, yPos);
+                yPos += 10;
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                const ingredients = [...(recipe.ingredientes_disponiveis || []), ...(recipe.ingredientes_adicionais || [])];
+                ingredients.forEach(ing => {
+                    doc.text(`• ${ing}`, 25, yPos);
+                    yPos += 7;
+                });
+
+                yPos += 10;
+                doc.setFont("helvetica", "bold");
+                doc.setFontSize(14);
+                doc.text("Modo de Preparo:", 20, yPos);
+                yPos += 10;
+
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(12);
+                const steps = recipe.modo_preparo || [];
+                const splitText = doc.splitTextToSize(steps.join('\n\n'), 170);
+                doc.text(splitText, 20, yPos);
+
+                doc.save(`${recipe.nome.replace(/\s+/g, '_')}_receita.pdf`);
+            });
         }
-        doc.save(recipe.nome + '.pdf');
-    });
 
-    document.getElementById('update-recipe-btn').addEventListener('click', () => updateRecipe(recipe.id));
-}
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.remove('hidden');
+        }
 
-function closeRecipeModal() {
-    ui.recipeModal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.recipeModal.backdrop.classList.add('hidden');
-        ui.recipeModal.backdrop.classList.remove('flex');
-    }, 200);
-}
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            document.getElementById('lightbox-img').src = '';
+        }
 
-async function updateRecipe(recipeId) {
-    const recipe = state.recipes.find(r => r.id === recipeId);
-    if (!recipe) return;
 
-    closeRecipeModal();
-    setLoading(true);
 
-    const combinedTextIngredients = [...recipe.ingredientes_disponiveis, ...recipe.additionalTexts].join(', ');
-    const payload = {
-        currentIngredients: recipe.ingredientes_disponiveis, // Keep for context if API uses it
-    };
 
-    if (recipe.additionalImages && recipe.additionalImages.length > 0) {
-        // Send the last added image if available
-        payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1];
-    } else {
-        // If no additional images, send combined text
-        payload.text = combinedTextIngredients;
-    }
 
-    try {
-        const response = await fetch('/api/receitas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
 
-        // Update the specific recipe in the state
-        const updatedRecipeIndex = state.recipes.findIndex(r => r.id === recipeId);
-        if (updatedRecipeIndex !== -1) {
-            state.recipes[updatedRecipeIndex] = {
-                ...data.receitas[0], // Assuming the API returns one updated recipe
-                id: recipeId, // Keep the original ID
-                additionalImages: recipe.additionalImages,
-                additionalTexts: recipe.additionalTexts
+        function closeRecipeModal() {
+            ui.recipeModal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.recipeModal.backdrop.classList.add('hidden');
+                ui.recipeModal.backdrop.classList.remove('flex');
+            }, 200);
+        }
+
+        async function updateRecipe(recipeId) {
+            const recipe = state.recipes.find(r => r.id === recipeId);
+            if (!recipe) return;
+
+            closeRecipeModal();
+            setLoading(true);
+
+            const combinedTextIngredients = [...recipe.ingredientes_disponiveis, ...recipe.additionalTexts].join(', ');
+            const payload = {
+                currentIngredients: recipe.ingredientes_disponiveis, // Keep for context if API uses it
             };
-            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-            displayResults({ receitas: state.recipes, observacoes_gerais: data.observacoes_gerais }); // Update main results and clear loading
-            openRecipeModal(recipeId); // Re-open the modal with the updated recipe
-        }
 
-    } catch (err) {
-        showError(err.message);
-    }
-}
+            if (recipe.additionalImages && recipe.additionalImages.length > 0) {
+                // Send the last added image if available
+                payload.image = recipe.additionalImages[recipe.additionalImages.length - 1].split(',')[1];
+            } else {
+                // If no additional images, send combined text
+                payload.text = combinedTextIngredients;
+            }
 
-function openAddContentModal(recipeId, mode) {
-    state.currentRecipeId = recipeId;
-    switchAddContentModalTab(mode);
-    ui.addContentModal.backdrop.classList.remove('hidden');
-    ui.addContentModal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.addContentModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-}
+            try {
+                const response = await fetch('/api/receitas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
 
-function closeAddContentModal() {
-    ui.addContentModal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.addContentModal.backdrop.classList.add('hidden');
-        ui.addContentModal.backdrop.classList.remove('flex');
-    }, 200);
-}
-
-function switchAddContentModalTab(mode) {
-    ui.addContentModal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
-    ['image', 'audio', 'text'].forEach(m => {
-        document.getElementById(`add-content-modal-content-${m}`).classList.toggle('hidden', m !== mode);
-    });
-}
-
-function openAddContentModal(recipeId, mode) {
-    state.currentRecipeId = recipeId;
-    switchAddContentModalTab(mode);
-    ui.addContentModal.backdrop.classList.remove('hidden');
-    ui.addContentModal.backdrop.classList.add('flex');
-    setTimeout(() => { ui.addContentModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
-}
-
-function closeAddContentModal() {
-    ui.addContentModal.content.classList.add('scale-95', 'opacity-0');
-    setTimeout(() => {
-        ui.addContentModal.backdrop.classList.add('hidden');
-        ui.addContentModal.backdrop.classList.remove('flex');
-    }, 200);
-}
-
-function switchAddContentModalTab(mode) {
-    ui.addContentModal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
-    ['image', 'audio', 'text'].forEach(m => {
-        document.getElementById(`add-content-modal-content-${m}`).classList.toggle('hidden', m !== mode);
-    });
-}
-
-function switchModalTab(mode) {
-    state.modalMode = mode;
-    ui.modal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
-    Object.values(ui.modal).forEach(el => {
-        if (el.id && el.id.startsWith('modal-content-')) el.classList.add('hidden');
-    });
-    document.getElementById(`modal-content-${mode}`).classList.remove('hidden');
-
-    if (mode === 'image') {
-        setupImageInputMode();
-    } else {
-        stopWebcam();
-    }
-}
-
-function setLoading(isLoading) {
-    clearInterval(state.loadingInterval);
-    ui.startBtn.classList.toggle('hidden', isLoading);
-    ui.results.container.classList.add('hidden');
-    ui.error.classList.add('hidden');
-    ui.loading.classList.toggle('hidden', !isLoading);
-
-    if (isLoading) {
-        let msgIndex = 0;
-        ui.loadingText.textContent = loadingMessages[msgIndex];
-        state.loadingInterval = setInterval(() => {
-            msgIndex = (msgIndex + 1) % loadingMessages.length;
-            ui.loadingText.textContent = loadingMessages[msgIndex];
-        }, 3000);
-    } 
-}
-
-function showError(message) {
-    setLoading(false);
-    ui.error.textContent = message;
-    ui.error.classList.remove('hidden');
-    // Don't show the start button on error if it's an auth error
-    if (state.user) {
-        ui.startBtn.classList.remove('hidden');
-    }
-}
-
-async function processImageAndGetBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const dataUrl = e.target.result;
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-
-                let width = img.width;
-                let height = img.height;
-                const maxWidth = 1024; // Max width for resized image
-                const maxHeight = 768; // Max height for resized image
-
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height *= maxWidth / width;
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width *= maxHeight / height;
-                        height = maxHeight;
-                    }
+                // Update the specific recipe in the state
+                const updatedRecipeIndex = state.recipes.findIndex(r => r.id === recipeId);
+                if (updatedRecipeIndex !== -1) {
+                    state.recipes[updatedRecipeIndex] = {
+                        ...data.receitas[0], // Assuming the API returns one updated recipe
+                        id: recipeId, // Keep the original ID
+                        additionalImages: recipe.additionalImages,
+                        additionalTexts: recipe.additionalTexts
+                    };
+                    sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+                    displayResults({ receitas: state.recipes, observacoes_gerais: data.observacoes_gerais }); // Update main results and clear loading
+                    openRecipeModal(recipeId); // Re-open the modal with the updated recipe
                 }
 
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
+            } catch (err) {
+                showError(err.message);
+            }
+        }
 
-                // Get resized image as JPEG with 70% quality
-                const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                resolve(resizedDataUrl);
+        function openAddContentModal(recipeId, mode) {
+            state.currentRecipeId = recipeId;
+            switchAddContentModalTab(mode);
+            ui.addContentModal.backdrop.classList.remove('hidden');
+            ui.addContentModal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.addContentModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+        }
+
+        function closeAddContentModal() {
+            ui.addContentModal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.addContentModal.backdrop.classList.add('hidden');
+                ui.addContentModal.backdrop.classList.remove('flex');
+            }, 200);
+        }
+
+        function switchAddContentModalTab(mode) {
+            ui.addContentModal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+            ['image', 'audio', 'text'].forEach(m => {
+                document.getElementById(`add-content-modal-content-${m}`).classList.toggle('hidden', m !== mode);
+            });
+        }
+
+        function openAddContentModal(recipeId, mode) {
+            state.currentRecipeId = recipeId;
+            switchAddContentModalTab(mode);
+            ui.addContentModal.backdrop.classList.remove('hidden');
+            ui.addContentModal.backdrop.classList.add('flex');
+            setTimeout(() => { ui.addContentModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+        }
+
+        function closeAddContentModal() {
+            ui.addContentModal.content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                ui.addContentModal.backdrop.classList.add('hidden');
+                ui.addContentModal.backdrop.classList.remove('flex');
+            }, 200);
+        }
+
+        function switchAddContentModalTab(mode) {
+            ui.addContentModal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+            ['image', 'audio', 'text'].forEach(m => {
+                document.getElementById(`add-content-modal-content-${m}`).classList.toggle('hidden', m !== mode);
+            });
+        }
+
+        function switchModalTab(mode) {
+            state.modalMode = mode;
+            ui.modal.tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+            Object.values(ui.modal).forEach(el => {
+                if (el.id && el.id.startsWith('modal-content-')) el.classList.add('hidden');
+            });
+            document.getElementById(`modal-content-${mode}`).classList.remove('hidden');
+
+            if (mode === 'image') {
+                setupImageInputMode();
+            } else {
+                stopWebcam();
+            }
+        }
+
+        function setLoading(isLoading) {
+            clearInterval(state.loadingInterval);
+            ui.startBtn.classList.toggle('hidden', isLoading);
+            ui.results.container.classList.add('hidden');
+            ui.error.classList.add('hidden');
+            ui.loading.classList.toggle('hidden', !isLoading);
+
+            if (isLoading) {
+                let msgIndex = 0;
+                ui.loadingText.textContent = loadingMessages[msgIndex];
+                state.loadingInterval = setInterval(() => {
+                    msgIndex = (msgIndex + 1) % loadingMessages.length;
+                    ui.loadingText.textContent = loadingMessages[msgIndex];
+                }, 3000);
+            }
+        }
+
+        function showError(message) {
+            setLoading(false);
+            ui.error.textContent = message;
+            ui.error.classList.remove('hidden');
+            // Don't show the start button on error if it's an auth error
+            if (state.user) {
+                ui.startBtn.classList.remove('hidden');
+            }
+        }
+
+        async function processImageAndGetBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        let width = img.width;
+                        let height = img.height;
+                        const maxWidth = 1024; // Max width for resized image
+                        const maxHeight = 768; // Max height for resized image
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Get resized image as JPEG with 70% quality
+                        const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(resizedDataUrl);
+                    };
+                    img.onerror = (error) => reject(error);
+                    img.src = dataUrl;
+                };
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // --- EVENT LISTENERS ---
+
+        ui.startBtn.addEventListener('click', () => { console.log('Botão Começar clicado.'); openModal(); });
+        ui.addMoreBtn.addEventListener('click', openModal);
+        ui.modal.closeBtn.addEventListener('click', closeModal);
+        ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
+        ui.addContentModal.closeBtn.addEventListener('click', closeAddContentModal);
+        ui.addContentModal.tabs.forEach(tab => tab.addEventListener('click', () => switchAddContentModalTab(tab.dataset.mode)));
+
+        // Pricing Modal Listeners
+        ui.openPricingModalBtn.addEventListener('click', openPricingModal);
+        ui.pricingModal.closeBtn.addEventListener('click', closePricingModal);
+
+        // Auth Listeners
+        ui.auth.loginBtn.addEventListener('click', () => openAuthModal('login'));
+        ui.auth.signupBtn.addEventListener('click', () => openAuthModal('signup'));
+        ui.auth.logoutBtn.addEventListener('click', handleLogout);
+        ui.auth.modal.closeBtn.addEventListener('click', closeAuthModal);
+        ui.auth.modal.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = ui.auth.modal.emailInput.value;
+            const password = ui.auth.modal.passwordInput.value;
+            if (state.authMode === 'login') {
+                handleLogin(email, password);
+            } else {
+                handleSignUp(email, password);
+            }
+        });
+
+
+        // New webcam/upload listeners
+        ui.modal.useWebcamBtn.addEventListener('click', startWebcam);
+        ui.modal.useUploadBtn.addEventListener('click', () => {
+            ui.modal.imageInputSelection.classList.add('hidden');
+            ui.modal.uploadView.classList.remove('hidden');
+        });
+        ui.modal.cancelWebcamBtn.addEventListener('click', resetToImageSelection);
+        ui.inputs.captureBtn.addEventListener('click', capturePhoto);
+
+
+        // New: Start New Recipe Button
+        document.getElementById('start-new-recipe-btn').addEventListener('click', () => {
+            state.currentIngredients = [];
+            state.inputImages = [];
+            state.recipes = [];
+            sessionStorage.removeItem('inputImages');
+            sessionStorage.removeItem('recipes');
+            ui.results.ingredientsList.innerHTML = '';
+            ui.results.inputImagesList.innerHTML = '';
+            ui.results.inputImagesDisplay.classList.add('hidden');
+            ui.results.container.classList.add('hidden');
+            ui.startSection.classList.remove('hidden');
+            ui.topButtons.classList.add('hidden');
+            openModal();
+        });
+
+        // Image
+        ui.inputs.imageUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const resizedDataUrl = await processImageAndGetBase64(file);
+                ui.inputs.imagePreview.src = resizedDataUrl;
+                ui.inputs.imagePreview.classList.remove('hidden');
+                ui.inputs.uploadText.classList.add('hidden');
+                ui.inputs.imageSubmitBtn.disabled = false;
+            } catch (error) {
+                console.error("Error processing image for preview:", error);
+                showError("Erro ao processar imagem para pré-visualização.");
+                ui.inputs.imageSubmitBtn.disabled = true;
+            }
+        });
+
+        ui.inputs.imageSubmitBtn.addEventListener('click', async () => {
+            let imageDataUrl = ui.inputs.imagePreview.src;
+
+            if (!imageDataUrl || imageDataUrl.endsWith('#')) {
+                showError("Nenhuma imagem selecionada.");
+                return;
+            }
+
+            state.inputImages.push(imageDataUrl);
+            sessionStorage.setItem('inputImages', JSON.stringify(state.inputImages));
+            getRecipes({ type: 'image', data: imageDataUrl.split(',')[1] });
+        });
+
+        // Text
+        ui.inputs.textSubmitBtn.addEventListener('click', () => {
+            const text = ui.inputs.textInput.value;
+            if (!text.trim()) return;
+            getRecipes({ type: 'text', data: text });
+        });
+
+        // Audio
+        ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
+
+        // Add Content Modal
+        ui.addContentModal.imageUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const resizedDataUrl = await processImageAndGetBase64(file);
+                ui.addContentModal.imagePreview.src = resizedDataUrl;
+                ui.addContentModal.imagePreview.classList.remove('hidden');
+                ui.addContentModal.uploadText.classList.add('hidden');
+            } catch (error) {
+                console.error("Error processing image for add content preview:", error);
+                showError("Erro ao processar imagem para pré-visualização de conteúdo adicional.");
+                ui.addContentModal.imageSubmitBtn.disabled = true;
+            }
+        });
+
+        ui.addContentModal.imageSubmitBtn.addEventListener('click', async () => {
+            const file = ui.addContentModal.imageUpload.files[0];
+            if (!file) return;
+
+            try {
+                const resizedDataUrl = await processImageAndGetBase64(file);
+                const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
+                if (recipe) {
+                    recipe.additionalImages.push(resizedDataUrl);
+                    sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+                    closeAddContentModal();
+                }
+            } catch (error) {
+                console.error("Error processing image for add content submission:", error);
+                showError("Erro ao processar imagem para envio de conteúdo adicional.");
+            }
+        });
+
+        ui.addContentModal.recordBtn.addEventListener('click', () => state.isRecording ? stopAddContentRecording() : startAddContentRecording());
+
+        // New audio recording functions for addContentModal
+        async function startAddContentRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                state.recorder = new MediaRecorder(stream);
+                let chunks = [];
+                let seconds = 0;
+
+                state.recorder.ondataavailable = e => chunks.push(e.data);
+                state.recorder.onstop = () => {
+                    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+                    getAddContentTranscription(audioBlob);
+                };
+
+                state.recorder.start();
+                state.isRecording = true;
+                ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; // Stop icon
+                ui.addContentModal.audioStatus.textContent = 'Gravando: 0s';
+                state.timerInterval = setInterval(() => {
+                    seconds++;
+                    ui.addContentModal.audioStatus.textContent = `Gravando: ${seconds}s`;
+                }, 1000);
+
+            } catch (err) { showError('Não foi possível acessar o microfone para adicionar conteúdo.'); }
+        }
+
+        function stopAddContentRecording() {
+            if (state.recorder && state.isRecording) {
+                state.recorder.stop();
+                state.isRecording = false;
+                clearInterval(state.timerInterval);
+                ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>'; // Record icon
+                ui.addContentModal.audioStatus.textContent = 'Gravação parada.';
+            }
+        }
+
+        async function getAddContentTranscription(audioBlob) {
+            ui.addContentModal.audioStatus.textContent = 'Transcrevendo áudio...';
+
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'audio.webm');
+
+            try {
+                const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
+                if (recipe) {
+                    recipe.additionalTexts.push(data.transcribedText);
+                    sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+                    closeAddContentModal();
+                }
+
+            } catch (err) { showError(err.message); }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                state.recorder = new MediaRecorder(stream);
+                let chunks = [];
+                let seconds = 0;
+
+                state.recorder.ondataavailable = e => chunks.push(e.data);
+                state.recorder.onstop = () => {
+                    const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+                    getTranscription(audioBlob);
+                };
+
+                state.recorder.start();
+                state.isRecording = true;
+                ui.inputs.recordBtn.textContent = 'Parar Gravação';
+                ui.inputs.audioStatus.textContent = 'Gravando: 0s';
+                state.timerInterval = setInterval(() => {
+                    seconds++;
+                    ui.inputs.audioStatus.textContent = `Gravando: ${seconds}s`;
+                }, 1000);
+
+            } catch (err) { showError('Não foi possível acessar o microfone.'); }
+        }
+
+        function stopRecording() {
+            if (state.recorder && state.isRecording) {
+                state.recorder.stop();
+                state.isRecording = false;
+                clearInterval(state.timerInterval);
+                ui.inputs.recordBtn.textContent = 'Iniciar Gravação';
+                ui.inputs.audioStatus.textContent = 'Gravação parada.';
+            }
+        }
+
+        async function getTranscription(audioBlob) {
+            closeModal();
+            setLoading(true);
+
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'audio.webm');
+
+            try {
+                const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
+
+                getRecipes({ type: 'text', data: data.transcribedText });
+
+            } catch (err) { showError(err.message); }
+        }
+
+        // --- API CALL & DISPLAY RESULTS ---
+
+        async function getRecipes(payload) {
+            if (!state.user) {
+                showError("Faça login para continuar.");
+                return;
+            }
+            closeModal();
+            setLoading(true);
+
+            const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
+            if (sessionError || !session) {
+                showError("Sua sessão expirou. Por favor, faça login novamente.");
+                handleLogout();
+                return;
+            }
+
+            const body = {
+                ...payload.type === 'text' ? { text: payload.data } : { image: payload.data },
+                currentIngredients: state.currentIngredients
             };
-            img.onerror = (error) => reject(error);
-            img.src = dataUrl;
-        };
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-    });
-}
 
-// --- EVENT LISTENERS ---
+            try {
+                const response = await fetch('/api/receitas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error);
 
-ui.startBtn.addEventListener('click', () => { console.log('Botão Começar clicado.'); openModal(); });
-ui.addMoreBtn.addEventListener('click', openModal);
-ui.modal.closeBtn.addEventListener('click', closeModal);
-ui.modal.tabs.forEach(tab => tab.addEventListener('click', () => switchModalTab(tab.dataset.mode)));
-ui.addContentModal.closeBtn.addEventListener('click', closeAddContentModal);
-ui.addContentModal.tabs.forEach(tab => tab.addEventListener('click', () => switchAddContentModalTab(tab.dataset.mode)));
+                state.recipes = data.receitas.map((recipe, index) => ({
+                    ...recipe,
+                    id: Date.now() + index, // Simple unique ID
+                    additionalImages: [],
+                    additionalTexts: [],
+                    additionalAudios: []
+                }));
+                sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
+                displayResults({ ...data, receitas: state.recipes });
 
-// Pricing Modal Listeners
-ui.openPricingModalBtn.addEventListener('click', openPricingModal);
-ui.pricingModal.closeBtn.addEventListener('click', closePricingModal);
-
-// Auth Listeners
-ui.auth.loginBtn.addEventListener('click', () => openAuthModal('login'));
-ui.auth.signupBtn.addEventListener('click', () => openAuthModal('signup'));
-ui.auth.logoutBtn.addEventListener('click', handleLogout);
-ui.auth.modal.closeBtn.addEventListener('click', closeAuthModal);
-ui.auth.modal.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = ui.auth.modal.emailInput.value;
-    const password = ui.auth.modal.passwordInput.value;
-    if (state.authMode === 'login') {
-        handleLogin(email, password);
-    } else {
-        handleSignUp(email, password);
-    }
-});
-
-
-// New webcam/upload listeners
-ui.modal.useWebcamBtn.addEventListener('click', startWebcam);
-ui.modal.useUploadBtn.addEventListener('click', () => {
-    ui.modal.imageInputSelection.classList.add('hidden');
-    ui.modal.uploadView.classList.remove('hidden');
-});
-ui.modal.cancelWebcamBtn.addEventListener('click', resetToImageSelection);
-ui.inputs.captureBtn.addEventListener('click', capturePhoto);
-
-
-// New: Start New Recipe Button
-document.getElementById('start-new-recipe-btn').addEventListener('click', () => {
-    state.currentIngredients = [];
-    state.inputImages = [];
-    state.recipes = [];
-    sessionStorage.removeItem('inputImages');
-    sessionStorage.removeItem('recipes');
-    ui.results.ingredientsList.innerHTML = '';
-    ui.results.inputImagesList.innerHTML = '';
-    ui.results.inputImagesDisplay.classList.add('hidden');
-    ui.results.container.classList.add('hidden');
-    ui.startSection.classList.remove('hidden');
-    ui.topButtons.classList.add('hidden');
-    openModal();
-});
-
-// Image
-ui.inputs.imageUpload.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-        const resizedDataUrl = await processImageAndGetBase64(file);
-        ui.inputs.imagePreview.src = resizedDataUrl;
-        ui.inputs.imagePreview.classList.remove('hidden');
-        ui.inputs.uploadText.classList.add('hidden');
-        ui.inputs.imageSubmitBtn.disabled = false;
-    } catch (error) {
-        console.error("Error processing image for preview:", error);
-        showError("Erro ao processar imagem para pré-visualização.");
-        ui.inputs.imageSubmitBtn.disabled = true;
-    }
-});
-
-ui.inputs.imageSubmitBtn.addEventListener('click', async () => {
-    let imageDataUrl = ui.inputs.imagePreview.src;
-
-    if (!imageDataUrl || imageDataUrl.endsWith('#')) {
-        showError("Nenhuma imagem selecionada.");
-        return;
-    }
-
-    state.inputImages.push(imageDataUrl);
-    sessionStorage.setItem('inputImages', JSON.stringify(state.inputImages));
-    getRecipes({ type: 'image', data: imageDataUrl.split(',')[1] });
-});
-
-// Text
-ui.inputs.textSubmitBtn.addEventListener('click', () => {
-    const text = ui.inputs.textInput.value;
-    if (!text.trim()) return;
-    getRecipes({ type: 'text', data: text });
-});
-
-// Audio
-ui.inputs.recordBtn.addEventListener('click', () => state.isRecording ? stopRecording() : startRecording());
-
-// Add Content Modal
-ui.addContentModal.imageUpload.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-        const resizedDataUrl = await processImageAndGetBase64(file);
-        ui.addContentModal.imagePreview.src = resizedDataUrl;
-        ui.addContentModal.imagePreview.classList.remove('hidden');
-        ui.addContentModal.uploadText.classList.add('hidden');
-    } catch (error) {
-        console.error("Error processing image for add content preview:", error);
-        showError("Erro ao processar imagem para pré-visualização de conteúdo adicional.");
-        ui.addContentModal.imageSubmitBtn.disabled = true;
-    }
-});
-
-ui.addContentModal.imageSubmitBtn.addEventListener('click', async () => {
-    const file = ui.addContentModal.imageUpload.files[0];
-    if (!file) return;
-
-    try {
-        const resizedDataUrl = await processImageAndGetBase64(file);
-        const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
-        if (recipe) {
-            recipe.additionalImages.push(resizedDataUrl);
-            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-            closeAddContentModal();
-        }
-    } catch (error) {
-        console.error("Error processing image for add content submission:", error);
-        showError("Erro ao processar imagem para envio de conteúdo adicional.");
-    }
-});
-
-ui.addContentModal.recordBtn.addEventListener('click', () => state.isRecording ? stopAddContentRecording() : startAddContentRecording());
-
-// New audio recording functions for addContentModal
-async function startAddContentRecording() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.recorder = new MediaRecorder(stream);
-        let chunks = [];
-        let seconds = 0;
-
-        state.recorder.ondataavailable = e => chunks.push(e.data);
-        state.recorder.onstop = () => {
-            const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-            stream.getTracks().forEach(track => track.stop());
-            getAddContentTranscription(audioBlob);
-        };
-
-        state.recorder.start();
-        state.isRecording = true;
-        ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'; // Stop icon
-        ui.addContentModal.audioStatus.textContent = 'Gravando: 0s';
-        state.timerInterval = setInterval(() => {
-            seconds++;
-            ui.addContentModal.audioStatus.textContent = `Gravando: ${seconds}s`;
-        }, 1000);
-
-    } catch (err) { showError('Não foi possível acessar o microfone para adicionar conteúdo.'); }
-}
-
-function stopAddContentRecording() {
-    if (state.recorder && state.isRecording) {
-        state.recorder.stop();
-        state.isRecording = false;
-        clearInterval(state.timerInterval);
-        ui.addContentModal.recordBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>'; // Record icon
-        ui.addContentModal.audioStatus.textContent = 'Gravação parada.';
-    }
-}
-
-async function getAddContentTranscription(audioBlob) {
-    ui.addContentModal.audioStatus.textContent = 'Transcrevendo áudio...';
-
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'audio.webm');
-
-    try {
-        const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-
-        const recipe = state.recipes.find(r => r.id === state.currentRecipeId);
-        if (recipe) {
-            recipe.additionalTexts.push(data.transcribedText);
-            sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-            closeAddContentModal();
+            } catch (err) { showError(err.message); }
         }
 
-    } catch (err) { showError(err.message); }
-}
+        function displayResults(data) {
+            setLoading(false);
+            ui.startSection.classList.add('hidden');
+            ui.topButtons.classList.remove('hidden');
+            ui.results.container.classList.remove('hidden');
+            ui.results.list.innerHTML = '';
 
-async function startRecording() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.recorder = new MediaRecorder(stream);
-        let chunks = [];
-        let seconds = 0;
+            const newIngredients = data.receitas.flatMap(r => r.ingredientes_disponiveis || []);
+            state.currentIngredients = [...new Set([...state.currentIngredients, ...newIngredients])];
+            ui.results.ingredientsList.innerHTML = state.currentIngredients.map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('');
+            ui.results.ingredientsDisplay.classList.remove('hidden');
 
-        state.recorder.ondataavailable = e => chunks.push(e.data);
-        state.recorder.onstop = () => {
-            const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-            stream.getTracks().forEach(track => track.stop());
-            getTranscription(audioBlob);
-        };
+            // Display input image thumbnails
+            if (state.inputImages.length > 0) {
+                ui.results.inputImagesList.innerHTML = state.inputImages.map(img => `<img src="${img}" class="w-24 h-24 object-cover rounded-md shadow-md">`).join('');
+                ui.results.inputImagesDisplay.classList.remove('hidden');
+            } else {
+                ui.results.inputImagesDisplay.classList.add('hidden');
+            }
 
-        state.recorder.start();
-        state.isRecording = true;
-        ui.inputs.recordBtn.textContent = 'Parar Gravação';
-        ui.inputs.audioStatus.textContent = 'Gravando: 0s';
-        state.timerInterval = setInterval(() => {
-            seconds++;
-            ui.inputs.audioStatus.textContent = `Gravando: ${seconds}s`;
-        }, 1000);
+            // --- Updated Rendering Logic with Images ---
+            data.receitas.forEach(recipe => {
+                // Fallback for image if URL is missing or broken
+                const imageUrl = recipe.image_url || 'logo01.png'; // Use logo as default fallback
 
-    } catch (err) { showError('Não foi possível acessar o microfone.'); }
-}
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.onclick = (e) => {
+                    // Pass logic mainly handled by modal opening
+                    openRecipeModal(recipe.id);
+                };
 
-function stopRecording() {
-    if (state.recorder && state.isRecording) {
-        state.recorder.stop();
-        state.isRecording = false;
-        clearInterval(state.timerInterval);
-        ui.inputs.recordBtn.textContent = 'Iniciar Gravação';
-        ui.inputs.audioStatus.textContent = 'Gravação parada.';
-    }
-}
-
-async function getTranscription(audioBlob) {
-    closeModal();
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append('audio', audioBlob, 'audio.webm');
-
-    try {
-        const response = await fetch('/api/transcribe', { method: 'POST', body: formData });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-        
-        getRecipes({ type: 'text', data: data.transcribedText });
-
-    } catch (err) { showError(err.message); }
-}
-
-// --- API CALL & DISPLAY RESULTS ---
-
-async function getRecipes(payload) {
-    if (!state.user) {
-        showError("Faça login para continuar.");
-        return;
-    }
-    closeModal();
-    setLoading(true);
-
-    const { data: { session }, error: sessionError } = await state.supabase.auth.getSession();
-    if (sessionError || !session) {
-        showError("Sua sessão expirou. Por favor, faça login novamente.");
-        handleLogout();
-        return;
-    }
-
-    const body = {
-        ...payload.type === 'text' ? { text: payload.data } : { image: payload.data },
-        currentIngredients: state.currentIngredients
-    };
-
-    try {
-        const response = await fetch('/api/receitas', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.access_token}`
-            },
-            body: JSON.stringify(body)
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error);
-
-        state.recipes = data.receitas.map((recipe, index) => ({
-            ...recipe,
-            id: Date.now() + index, // Simple unique ID
-            additionalImages: [],
-            additionalTexts: [],
-            additionalAudios: []
-        }));
-        sessionStorage.setItem('recipes', JSON.stringify(state.recipes));
-        displayResults({ ...data, receitas: state.recipes });
-
-    } catch (err) { showError(err.message); }
-}
-
-function displayResults(data) {
-    setLoading(false);
-    ui.startSection.classList.add('hidden');
-    ui.topButtons.classList.remove('hidden');
-    ui.results.container.classList.remove('hidden');
-    ui.results.list.innerHTML = '';
-
-    const newIngredients = data.receitas.flatMap(r => r.ingredientes_disponiveis || []);
-    state.currentIngredients = [...new Set([...state.currentIngredients, ...newIngredients])];
-    ui.results.ingredientsList.innerHTML = state.currentIngredients.map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('');
-    ui.results.ingredientsDisplay.classList.remove('hidden');
-
-    // Display input image thumbnails
-    if (state.inputImages.length > 0) {
-        ui.results.inputImagesList.innerHTML = state.inputImages.map(img => `<img src="${img}" class="w-24 h-24 object-cover rounded-md shadow-md">`).join('');
-        ui.results.inputImagesDisplay.classList.remove('hidden');
-    } else {
-        ui.results.inputImagesDisplay.classList.add('hidden');
-    }
-
-    data.receitas.forEach(recipe => {
-        const recipeCard = document.createElement('div');
-        recipeCard.className = 'p-4 recipe-card';
-        recipeCard.innerHTML = `
-            <h3 class="text-xl sm:text-2xl font-bold text-center" style="font-family: 'Fredericka the Great', cursive !important;" onclick="openRecipeModal(${recipe.id})">${recipe.nome}</h3>
-
+                card.innerHTML = `
+            <div class="recipe-image-container mb-3 relative">
+                <img src="${imageUrl}" alt="${recipe.nome}" class="recipe-image" loading="lazy" onerror="this.src='logo01.png'">
+                 ${recipe.tempo_preparo ? `<span class="absolute bottom-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-bold text-green-700 shadow-sm shadow-black/20 ">⏱ ${recipe.tempo_preparo}</span>` : ''}
+            </div>
+            <div class="p-2 flex-grow flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 truncate" style="font-family: 'Oswald', sans-serif;">${recipe.nome}</h3>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                        ${recipe.ingredientes_disponiveis ? recipe.ingredientes_disponiveis.join(', ') : 'Ingredientes variados'}
+                    </p>
+                </div>
+                <button class="btn btn-primary w-full text-sm py-2 mt-2">Ver Receita</button>
+            </div>
         `;
-        
-        ui.results.list.appendChild(recipeCard);
-    });
+                ui.results.list.appendChild(card);
+            });
 
-    ui.results.notes.innerHTML = data.observacoes_gerais ? `<p class="font-semibold">Observações Gerais:</p><p>${data.observacoes_gerais}</p>` : '';
-}
-
-// --- TUTORIAL ---
-function startTutorial() {
-    const tour = new Shepherd.Tour({
-        useModalOverlay: true,
-        defaultStepOptions: {
-            classes: 'shadow-md bg-purple-900',
-            scrollTo: true
-        }
-    });
-
-    tour.addStep({
-        id: 'step-1',
-        text: 'Bem-vindo ao Chef Pessoal IA! Faça login ou cadastre-se para começar.',
-        attachTo: { element: '#user-auth-section', on: 'bottom' },
-        buttons: [{ text: 'Entendi', action: tour.next }]
-    });
-
-    tour.addStep({
-        id: 'step-2',
-        text: 'Depois de logado, clique aqui para começar a adicionar seus ingredientes.',
-        attachTo: { element: '#start-btn', on: 'bottom' },
-        buttons: [{ text: 'Próximo', action: tour.next }]
-    });
-
-    tour.addStep({
-        id: 'step-3',
-        text: 'Você pode adicionar ingredientes de três formas: enviando uma IMAGEM, gravando um ÁUDIO ou digitando TEXTO.',
-        when: {
-            show: () => { openModal(); }
-        },
-        attachTo: { element: '#modal-tabs', on: 'bottom' },
-        buttons: [{ text: 'Entendi', action: tour.next }]
-    });
-    
-    tour.addStep({
-        id: 'step-4',
-        text: 'Depois de gerar uma receita, você pode adicionar mais ingredientes para refinar os resultados. Divirta-se!',
-        attachTo: { element: '#close-modal-btn', on: 'bottom' },
-        buttons: [{ text: 'Concluir', action: tour.complete }]
-    });
-
-    tour.on('complete', () => {
-        localStorage.setItem('recipeAppTourCompleted', 'true');
-        closeModal();
-    });
-    tour.on('cancel', () => {
-        localStorage.setItem('recipeAppTourCompleted', 'true');
-        closeModal();
-    });
-
-    tour.start();
-}
-
-// --- INICIALIZAÇÃO ---
-
-async function initializeApp() {
-    try {
-        const configResponse = await fetch('/api/config');
-        if (!configResponse.ok) {
-            throw new Error('Não foi possível carregar a configuração do servidor.');
-        }
-        const { supabaseUrl, supabaseAnonKey, stripePublishableKey } = await configResponse.json();
-
-        // Initialize Supabase
-        state.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-        // Initialize Stripe
-        if (!stripePublishableKey) {
-            console.error("Chave publicável do Stripe não foi encontrada. O upgrade de plano não funcionará.");
-        } else {
-            state.stripe = Stripe(stripePublishableKey);
-            renderPricingPlans();
+            ui.results.notes.innerHTML = data.observacoes_gerais ? `<p class="font-semibold">Observações Gerais:</p><p>${data.observacoes_gerais}</p>` : '';
         }
 
-        // Check for initial session
-        const { data: { session } } = await state.supabase.auth.getSession();
-        state.user = session?.user;
-        updateUIForAuthState(state.user);
+        // --- TUTORIAL ---
+        function startTutorial() {
+            const tour = new Shepherd.Tour({
+                useModalOverlay: true,
+                defaultStepOptions: {
+                    classes: 'shadow-md bg-purple-900',
+                    scrollTo: true
+                }
+            });
 
-        // Listen for auth state changes
-        state.supabase.auth.onAuthStateChange((_event, session) => {
-            state.user = session?.user;
-            updateUIForAuthState(state.user);
-        });
+            tour.addStep({
+                id: 'step-1',
+                text: 'Bem-vindo ao Chef Pessoal IA! Faça login ou cadastre-se para começar.',
+                attachTo: { element: '#user-auth-section', on: 'bottom' },
+                buttons: [{ text: 'Entendi', action: tour.next }]
+            });
 
-        // Enable auth buttons now that Supabase is initialized
-        ui.auth.loginBtn.disabled = false;
-        ui.auth.signupBtn.disabled = false;
+            tour.addStep({
+                id: 'step-2',
+                text: 'Depois de logado, clique aqui para começar a adicionar seus ingredientes.',
+                attachTo: { element: '#start-btn', on: 'bottom' },
+                buttons: [{ text: 'Próximo', action: tour.next }]
+            });
 
-        switchModalTab('image');
-        if (!localStorage.getItem('recipeAppTourCompleted')) {
-            setTimeout(startTutorial, 500);
+            tour.addStep({
+                id: 'step-3',
+                text: 'Você pode adicionar ingredientes de três formas: enviando uma IMAGEM, gravando um ÁUDIO ou digitando TEXTO.',
+                when: {
+                    show: () => { openModal(); }
+                },
+                attachTo: { element: '#modal-tabs', on: 'bottom' },
+                buttons: [{ text: 'Entendi', action: tour.next }]
+            });
+
+            tour.addStep({
+                id: 'step-4',
+                text: 'Depois de gerar uma receita, você pode adicionar mais ingredientes para refinar os resultados. Divirta-se!',
+                attachTo: { element: '#close-modal-btn', on: 'bottom' },
+                buttons: [{ text: 'Concluir', action: tour.complete }]
+            });
+
+            tour.on('complete', () => {
+                localStorage.setItem('recipeAppTourCompleted', 'true');
+                closeModal();
+            });
+            tour.on('cancel', () => {
+                localStorage.setItem('recipeAppTourCompleted', 'true');
+                closeModal();
+            });
+
+            tour.start();
         }
 
-    } catch (error) {
-        showError(`Erro de inicialização: ${error.message}`);
-        console.error(error);
-    }
-}
+        // --- INICIALIZAÇÃO ---
 
-initializeApp();
+        async function initializeApp() {
+            try {
+                const configResponse = await fetch('/api/config');
+                if (!configResponse.ok) {
+                    throw new Error('Não foi possível carregar a configuração do servidor.');
+                }
+                const { supabaseUrl, supabaseAnonKey, stripePublishableKey } = await configResponse.json();
 
-</script>
+                // Initialize Supabase
+                state.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+                // Initialize Stripe
+                if (!stripePublishableKey) {
+                    console.error("Chave publicável do Stripe não foi encontrada. O upgrade de plano não funcionará.");
+                } else {
+                    state.stripe = Stripe(stripePublishableKey);
+                    renderPricingPlans();
+                }
+
+                // Check for initial session
+                const { data: { session } } = await state.supabase.auth.getSession();
+                state.user = session?.user;
+                updateUIForAuthState(state.user);
+
+                // Listen for auth state changes
+                state.supabase.auth.onAuthStateChange((_event, session) => {
+                    state.user = session?.user;
+                    updateUIForAuthState(state.user);
+                });
+
+                // Enable auth buttons now that Supabase is initialized
+                ui.auth.loginBtn.disabled = false;
+                ui.auth.signupBtn.disabled = false;
+
+                switchModalTab('image');
+                if (!localStorage.getItem('recipeAppTourCompleted')) {
+                    setTimeout(startTutorial, 500);
+                }
+
+            } catch (error) {
+                showError(`Erro de inicialização: ${error.message}`);
+                console.error(error);
+            }
+        }
+
+        initializeApp();
+
+    </script>
 </body>
+
 </html>
