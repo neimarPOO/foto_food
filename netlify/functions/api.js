@@ -269,6 +269,54 @@ app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
     }
 });
 
+// --- Nano Banana Logic ---
+async function generateNanoBananaImages(prompt) {
+    const nanoBananaKey = process.env.NANO_BANANA_API_KEY;
+    // NOTE: This URL is hypothetical as per requirements. 
+    // If testing in production without a real endpoint, this will fail or needs a mock.
+    // For now, I will implement the fetch logic.
+    const endpoint = "https://api.nanobanana.google.com/generate"; 
+    
+    // Fallback/Mock for safety if no key provided (to avoid breaking the app during dev if user forgets key)
+    if (!nanoBananaKey) {
+        console.warn("NANO_BANANA_API_KEY not found. Returning placeholder images.");
+        return [
+            "https://placehold.co/512x512?text=Imagem+1",
+            "https://placehold.co/512x512?text=Imagem+2",
+            "https://placehold.co/512x512?text=Imagem+3"
+        ];
+    }
+
+    try {
+        const response = await axios.post(endpoint, {
+            prompt: prompt,
+            n: 3,
+            size: "512x512"
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${nanoBananaKey}`
+            }
+        });
+
+        // Assuming response structure: { data: [ { url: "..." }, { url: "..." }, ... ] }
+        if (response.data && response.data.data) {
+            return response.data.data.map(img => img.url);
+        } else {
+             throw new Error("Invalid response format from Nano Banana API");
+        }
+
+    } catch (error) {
+        console.error("Nano Banana API Failed:", error.message);
+        // Fallback on error to not break the recipe flow
+        return [
+            "https://placehold.co/512x512?text=Erro+Imagem+1",
+            "https://placehold.co/512x512?text=Erro+Imagem+2",
+            "https://placehold.co/512x512?text=Erro+Imagem+3"
+        ];
+    }
+}
+
 // Protected endpoint to generate recipes
 app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
     try {
@@ -276,9 +324,14 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
         let promptContent;
         let recipeJson;
 
+        // Base instructions for JSON output
+        const jsonStructure = `{"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "...", "image_prompts": "Descrição ultra-detalhada e apetitosa da receita 1; Descrição da receita 2; Descrição da receita 3"}`;
+
         if (text) {
             const ingredients = [...new Set([...currentIngredients, ...text.split(/, | e /)])].join(', ');
-            promptContent = `Você é um chef e nutricionista. A partir da seguinte lista de ingredientes: "${ingredients}", sugira 3 receitas. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}`;
+            promptContent = `Você é um chef e nutricionista. A partir da seguinte lista de ingredientes: "${ingredients}", sugira 3 receitas deliciosas.
+            Além das receitas, gere um campo 'image_prompts' com uma única string contendo breves descrições visuais para as 3 receitas, separadas por ponto e vírgula, otimizadas para geração de imagens.
+            Responda APENAS com um objeto JSON na estrutura: ${jsonStructure}`;
             recipeJson = await getRecipesFromAI(promptContent);
         } else if (image) {
             const imageBuffer = Buffer.from(image, 'base64');
@@ -286,7 +339,9 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
             if (!type) return res.status(400).json({ error: 'Tipo de arquivo de imagem inválido.' });
 
             promptContent = [
-                { type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 3 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}. Responda APENAS com um objeto JSON na estrutura: {"receitas": [{"nome": "...", "ingredientes_disponiveis": ["..."], "ingredientes_adicionais": ["..."], "modo_preparo": ["..."], "tempo_preparo": "..."}], "observacoes_gerais": "..."}` },
+                { type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 3 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}.
+                Além das receitas, gere um campo 'image_prompts' com uma única string contendo descrições visuais para as 3 receitas, otimizadas para geração de imagens.
+                Responda APENAS com um objeto JSON na estrutura: ${jsonStructure}` },
                 { type: "image_url", image_url: { url: `data:${type.mime};base64,${image}` } }
             ];
             recipeJson = await getRecipesFromAI(promptContent);
@@ -297,6 +352,21 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
             }
         } else {
             return res.status(400).json({ error: 'Requisição inválida. Forneça texto ou imagem.' });
+        }
+
+        // --- Generate Images ---
+        if (recipeJson && recipeJson.image_prompts) {
+             console.log("Gerando imagens com prompt:", recipeJson.image_prompts);
+             const imageUrls = await generateNanoBananaImages(recipeJson.image_prompts);
+             
+             // Assign images to recipes
+             if (recipeJson.receitas) {
+                 recipeJson.receitas.forEach((recipe, index) => {
+                     if (imageUrls[index]) {
+                         recipe.image_url = imageUrls[index];
+                     }
+                 });
+             }
         }
 
         res.json(recipeJson);

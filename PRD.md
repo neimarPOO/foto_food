@@ -1,80 +1,101 @@
-# PRD - Documento de Requisitos do Produto: Chef Pessoal IA
+# Documento de Requisitos do Produto (PRD) - Soborô: Chef Pessoal IA
 
 ## 1. Introdução
 
-O "Chef Pessoal IA" é uma aplicação web que atua como um assistente de cozinha inteligente. Ele permite que os usuários descubram receitas com base nos ingredientes que possuem em casa, utilizando inteligência artificial para gerar sugestões criativas e práticas.
+### 1.1 Visão do Produto
+O **Soborô** (também referido como "Chef Pessoal IA") é uma aplicação web inteligente projetada para transformar ingredientes disponíveis em casa em receitas deliciosas. Atuando como um assistente de cozinha pessoal, o aplicativo utiliza Inteligência Artificial para combater o desperdício de alimentos e inspirar a criatividade culinária.
 
-## 2. Objetivo
+### 1.2 Objetivos Principais
+*   **Reduzir desperdício alimentar**: Incentivar o uso de ingredientes que o usuário já possui.
+*   **Facilitar a decisão culinária**: Eliminar a dúvida do "o que cozinhar hoje".
+*   **Simplicidade e Acessibilidade**: Oferecer múltiplas formas de entrada (texto, áudio, câmera) para ser inclusivo e prático.
+*   **Monetização**: Implementar um modelo sustentável via planos de assinatura (Stripe).
 
-O principal objetivo do projeto é reduzir o desperdício de alimentos e inspirar a criatividade na cozinha, ajudando os usuários a cozinhar com o que já têm disponível. A aplicação visa fornecer uma experiência de usuário simples e intuitiva para a descoberta de receitas.
+## 2. Funcionalidades Principais
 
-## 3. Funcionalidades
+### 2.1 Autenticação e Perfil
+*   **Login/Cadastro**: Sistema de autenticação via e-mail e senha utilizando **Supabase Auth**.
+*   **Gerenciamento de Sessão**: Persistência de login e opção de logout segura.
+*   **Proteção de Rotas**: Funcionalidades de geração de receitas restritas a usuários autenticados.
 
-### 3.1. Input de Ingredientes
+### 2.2 Entrada de Ingredientes (Multimodal)
+O usuário pode informar os ingredientes através de três métodos distintos:
+1.  **Imagem (Visão Computacional)**:
+    *   Upload de arquivo de imagem local.
+    *   Captura direta via **Webcam** integrada no navegador.
+    *   Pré-visualização e confirmação da imagem antes do envio.
+2.  **Áudio (Reconhecimento de Voz)**:
+    *   Gravação de voz diretamente no navegador.
+    *   Transcrição automática de áudio para texto via API (AssemblyAI ou similar).
+3.  **Texto Manual**:
+    *   Campo de texto livre para digitação de ingredientes separados por vírgula.
 
-O usuário pode fornecer os ingredientes que possui de três maneiras diferentes:
+### 2.3 Geração de Receitas (IA)
+*   **Processamento Inteligente**: Envio dos ingredientes (texto ou descrição visual) para um modelo de linguagem (LLM) via API (`/api/receitas`).
+*   **Saída Estruturada**: Geração de sugestões contendo:
+    *   Nome criativo do prato.
+    *   Lista de ingredientes (categorizados em 'disponíveis' e 'adicionais necessários').
+    *   Modo de preparo passo a passo.
+    *   Tempo estimado de preparo.
+*   **Refinamento**: Opção de "Adicionar e Refazer" para incluir mais ingredientes à busca atual.
 
--   **Imagem:** Tirando ou enviando uma foto dos ingredientes.
--   **Áudio:** Gravando um áudio e listando os ingredientes em voz alta.
--   **Texto:** Digitando uma lista de ingredientes, separados por vírgula.
+### 2.4 Visualização e Interação
+*   **Cards de Receitas**: Exibição das sugestões em formato de cards interativos.
+*   **Detalhamento (Modal)**: Visualização completa da receita em um modal focado.
+*   **Exportação em PDF**: Funcionalidade para baixar a receita formatada em PDF (`jsPDF`).
+*   **Tutorial Interativo**: Guia passo a passo para novos usuários utilizando a biblioteca **Shepherd.js**.
 
-### 3.2. Geração de Receitas
+### 2.5 Planos e Assinaturas (Monetização)
+Integração com **Stripe** para gestão de assinaturas com três níveis de serviço:
+*   **Plano Básico (R$10/mês)**: Até 10 gerações/dia.
+*   **Plano Pro (R$30/mês)**: Até 30 gerações/dia + suporte.
+*   **Plano Premium (R$50/mês)**: Até 50 gerações/dia + acesso antecipado.
 
--   Após o input do usuário, a aplicação envia os ingredientes para uma API de IA.
--   A API processa a informação e retorna uma ou mais sugestões de receitas.
--   Cada receita contém:
-    -   Nome da receita.
-    -   Lista de ingredientes (disponíveis e adicionais).
-    -   Modo de preparo detalhado.
-    -   Tempo estimado de preparo.
+## 3. Especificações Técnicas
 
-### 3.3. Visualização de Receitas
+### 3.1 Frontend
+*   **Linguagens**: HTML5, JavaScript (Vanilla ES6+), CSS3.
+*   **Framework CSS**: **Tailwind CSS** (via CDN) para estilização responsiva e utilitária.
+*   **Bibliotecas Auxiliares**:
+    *   `Shepherd.js`: Tutoriais guiados (Onboarding).
+    *   `jspdf`: Geração de arquivos PDF no cliente.
+    *   `supabase-js`: Cliente para interação com Auth e Banco de Dados.
+    *   `stripe-js`: Integração com checkout do Stripe.
+*   **Estética Visual**:
+    *   Tema "Sober Green" (Verde Sóbrio) e Cores Terrosas.
+    *   Tipografia rica: *Oswald*, *Roboto*, *Inter*, *Grand Hotel* (títulos cursivos), *Fredericka the Great*.
+    *   Design Responsivo (Mobile-first).
 
--   As receitas geradas são exibidas em cards individuais e de fácil leitura.
--   A interface mostra claramente os ingredientes que foram utilizados na busca.
+### 3.2 Backend e Infraestrutura
+*   **Hospedagem**: Compatível com **Netlify** (estrutura pronta para Netlify Functions).
+*   **API Functions** (Node.js/Express-style):
+    *   `/api/receitas`: Orquestração da IA para geração de receitas.
+    *   `/api/transcribe`: Serviço de transcrição de áudio.
+    *   `/api/create-checkout-session`: Criação de sessões de pagamento no Stripe.
+*   **Serviços Externos**:
+    *   **Supabase**: Autenticação e Banco de Dados (PostgreSQL).
+    *   **Stripe**: Processamento de pagamentos.
+    *   **OpenRouter / OpenAI / Google Gemini**: Modelos de IA para geração de texto (receitas).
+    *   **AssemblyAI**: Transcrição de áudio (STT).
 
-### 3.4. Funcionalidades Adicionais
+## 4. Requisitos Não-Funcionais
+*   **Performance**: Carregamento rápido de assets e feedback visual imediato (spinners) durante requisições de IA.
+*   **Usabilidade**: Interface intuitiva com feedback claro de erros e sucessos.
+*   **Responsividade**: Layout adaptável a qualquer tamanho de tela (Desktop, Tablet, Mobile).
+*   **Segurança**: Proteção de chaves de API no backend (Netlify Functions) e uso de HTTPS.
 
--   **Adicionar mais ingredientes:** O usuário pode adicionar mais ingredientes a qualquer momento para refinar a busca e gerar novas receitas.
--   **Começar Nova Receita:** Permite ao usuário limpar a busca atual e iniciar uma nova consulta do zero.
--   **Tutorial Interativo:** Um guia passo-a-passo (usando Shepherd.js) é apresentado aos novos usuários para explicar o funcionamento da aplicação.
+## 5. Estrutura de Arquivos (Resumo)
+*   `index.html`: Ponto de entrada da aplicação (SPA - Single Page Application).
+*   `styles.css` (ou inline): Regras de estilo personalizadas e sobrescritas do Tailwind.
+*   `netlify.toml`: Configuração de build e funções serverless.
+*   `functions/`: Diretório contendo a lógica de backend (API endpoints).
 
-## 4. Requisitos Técnicos
-
-### 4.1. Frontend
-
--   **Estrutura:** HTML5.
--   **Estilização:** Tailwind CSS para um design moderno e responsivo.
--   **Lógica:** JavaScript puro para manipular o DOM e interagir com a API.
--   **Design:** Responsivo, garantindo uma boa experiência em desktops, tablets e smartphones.
-
-### 4.2. Backend (API)
-
--   **Tecnologias:** Node.js com Express.js, `cors` para CORS, `multer` para upload de arquivos, `file-type` para detecção de tipo de arquivo, `axios` para requisições HTTP e `serverless-http` para compatibilidade com Netlify Functions.
--   **Variáveis de Ambiente:** Utiliza `process.env.ASSEMBLYAI_API_KEY` para transcrição de áudio e `process.env.OPENAI_API_KEY` para geração de receitas.
--   **Endpoint de Receitas (`/api/receitas`):** Responsável por receber os ingredientes (em formato de texto ou imagem) e o estado atual dos ingredientes.
-    -   **Geração de Receitas:** Integra-se com a API da OpenRouter (modelo `google/gemma-3-4b-it:free`) para gerar 3 sugestões de receitas.
-    -   **Processamento de Imagem:** Imagens são redimensionadas e convertidas para JPEG antes de serem enviadas à IA.
-    -   **Estrutura da Resposta:** Retorna um objeto JSON com as receitas geradas, incluindo nome, ingredientes (disponíveis e adicionais), modo de preparo e tempo estimado.
--   **Endpoint de Transcrição (`/api/transcribe`):** Responsável por receber um arquivo de áudio.
-    -   **Transcrição de Áudio:** Integra-se com a API da AssemblyAI para transcrever o áudio para texto (idioma português).
-    -   **Validação:** Verifica se o texto transcrito contém uma lista de ingredientes válidos.
--   **Tratamento de Erros:** Inclui tratamento de erros para falhas nas chamadas de API e problemas de parsing JSON.
-
-### 4.3. Funcionalidades Adicionais (Frontend)
-
--   **Download de Receita:** Permite baixar a receita detalhada em formato PDF.
--   **Compartilhamento Social:** Opções para compartilhar a receita via WhatsApp, Facebook, Twitter e Instagram.
--   **Adicionar Conteúdo à Receita:** Possibilidade de adicionar imagens e textos adicionais a uma receita existente, que são armazenados no frontend e podem ser usados para atualizar a receita.
-
-## 5. Fluxo do Usuário
-
-1.  **Início:** O usuário acessa a página inicial e clica no botão "Começar a Criar Receitas".
-2.  **Seleção de Input:** Um modal é exibido, permitindo que o usuário escolha entre os métodos de entrada: Imagem, Áudio ou Texto.
-3.  **Fornecimento de Ingredientes:** O usuário fornece os ingredientes usando o método escolhido.
-4.  **Carregamento:** A aplicação exibe uma tela de carregamento com mensagens dinâmicas enquanto aguarda a resposta da API.
-5.  **Exibição dos Resultados:** As receitas geradas são exibidas na tela. A seção inicial é substituída pelos botões "Adicionar e Refazer Receitas" e "Começar Nova Receita".
-6.  **Interação com Resultados:**
-    -   O usuário pode analisar as receitas.
-    -   Ao clicar em "Adicionar e Refazer Receitas", o modal de input é reaberto para adicionar mais ingredientes à busca atual.
-    -   Ao clicar em "Começar Nova Receita", o estado da aplicação é reiniciado, a tela de resultados é limpa e o usuário é levado de volta ao fluxo inicial.
+## 6. Fluxo do Usuário Típico
+1.  Usuário acessa a Home.
+2.  (Se novo) Visualiza tutorial Shepherd.js.
+3.  Faz Login/Cadastro.
+4.  Escolhe método de entrada (Ex: "Usar Webcam").
+5.  Tira foto dos ingredientes.
+6.  Sistema analisa e retorna 3 opções de receitas.
+7.  Usuário visualiza detalhes de uma receita.
+8.  Usuário baixa PDF da receita para salvar.

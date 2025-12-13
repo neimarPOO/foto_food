@@ -141,6 +141,60 @@ max-width: 450px;
             min-height: 50px;
         }
     </style>
+    <style>
+        /* New Image Styles */
+        .recipe-image-container {
+            width: 100%;
+            height: 180px; /* Fixed height for consistency */
+            overflow: hidden;
+            border-bottom: 2px solid #a68c6e;
+            position: relative;
+        }
+        .recipe-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .recipe-card:hover .recipe-image {
+            transform: scale(1.05); /* Zoom effect on hover */
+        }
+        
+        /* Lightbox Styles */
+        .lightbox-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 90vh;
+            border: 4px solid #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+        }
+    </style>
 </head>
 <body class="min-h-screen flex items-center justify-center py-10 sm:py-4" style="padding-bottom: 120px;">
     <div class="container w-full md:w-3/4 lg:w-2/3 mx-auto">
@@ -209,6 +263,14 @@ max-width: 450px;
             <img src="LogoRedeCalabria.png" alt="Logo Rede Calabria" class="h-12">
         </div>
     </footer>
+
+    <!-- Lightbox Container (Hidden by default) -->
+    <div id="lightbox" class="lightbox-backdrop hidden" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+             <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+             <img id="lightbox-img" class="lightbox-image" src="" alt="Imagem ampliada">
+        </div>
+    </div>
 
     <!-- Modal de Autenticação -->
     <div id="auth-modal-backdrop" class="fixed inset-0 z-50 hidden items-center justify-center">
@@ -764,39 +826,163 @@ function closeModal() {
     }, 200);
 }
 
+
+function renderRecipes(recipes) {
+    state.recipes = recipes;
+    ui.results.list.innerHTML = '';
+    
+    // Check if recipes array is empty or undefined
+    if (!recipes || recipes.length === 0) {
+        ui.results.list.innerHTML = '<p class="col-span-full text-center text-gray-600">Nenhuma receita encontrada. Tente com outros ingredientes.</p>';
+        return;
+    }
+
+    recipes.forEach(recipe => {
+        // Fallback for image if URL is missing or broken
+        const imageUrl = recipe.image_url || 'logo01.png'; // Use logo as default fallback
+        
+        // Generate a unique ID for the recipe (using name + random if no ID provided)
+        if (!recipe.id) recipe.id = Math.random().toString(36).substr(2, 9);
+        
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.onclick = (e) => {
+            // Prevent opening modal if clicking directly on a specific button if we had one
+            openRecipeModal(recipe.id);
+        };
+        
+        card.innerHTML = `
+            <div class="recipe-image-container mb-3 relative">
+                <img src="${imageUrl}" alt="${recipe.nome}" class="recipe-image" loading="lazy" onerror="this.src='logo01.png'">
+                 ${recipe.tempo_preparo ? `<span class="absolute bottom-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded text-xs font-bold text-green-700 shadow-sm shadow-black/20 ">⏱ ${recipe.tempo_preparo}</span>` : ''}
+            </div>
+            <div class="p-2 flex-grow flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 truncate" style="font-family: 'Oswald', sans-serif;">${recipe.nome}</h3>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                        ${recipe.ingredientes_disponiveis ? recipe.ingredientes_disponiveis.join(', ') : 'Ingredientes variados'}
+                    </p>
+                </div>
+                <button class="btn btn-primary w-full text-sm py-2 mt-2">Ver Receita</button>
+            </div>
+        `;
+        ui.results.list.appendChild(card);
+    });
+    
+    // Update general notes
+    // ...
+}
+
 function openRecipeModal(recipeId) {
     const recipe = state.recipes.find(r => r.id === recipeId);
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+    
+    const imageUrl = recipe.image_url || 'logo01.png';
 
     ui.recipeModal.content.innerHTML = `
         <div class="absolute top-2 right-2 flex space-x-2 z-10">
-            <button id="download-pdf-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button id="download-pdf-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none" title="Baixar PDF">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
             </button>
-            <button id="close-recipe-modal-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none">
+            <button id="close-recipe-modal-icon-btn" class="p-2 rounded-full bg-white border border-gray-300 shadow-sm hover:bg-gray-100 focus:outline-none" title="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <h2 class="text-3xl font-bold text-center mb-4" style="font-family: 'Caprasimo', cursive;">${recipe.nome}</h2>
+        
+        <div class="mb-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2" style="font-family: 'Caprasimo', cursive;">${recipe.nome}</h2>
+             <img src="${imageUrl}" alt="${recipe.nome}" class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-white shadow-lg mx-auto object-cover cursor-pointer hover:opacity-90 transition-opacity" onclick="openLightbox('${imageUrl}')" title="Clique para ampliar">
+        </div>
+
         <div class="mb-4 text-left">
-            <p class="font-semibold">Ingredientes:</p>
-            <div class="flex flex-wrap gap-2 mt-1">
-                ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-2 py-1 text-sm bg-green-100 text-green-800 rounded-full">${ing}</span>`).join('')}
-                ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded-full">${ing}</span>`).join('')}
+            <p class="font-semibold text-lg border-b border-gray-300 pb-1 mb-2">Ingredientes</p>
+            <div class="flex flex-wrap gap-2">
+                ${(recipe.ingredientes_disponiveis || []).map(ing => `<span class="px-3 py-1 text-sm bg-green-100 text-green-800 rounded-full border border-green-200">${ing}</span>`).join('')}
+                ${(recipe.ingredientes_adicionais || []).map(ing => `<span class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full border border-gray-300">${ing}</span>`).join('')}
             </div>
         </div>
-        <div class="text-left">
-            <p class="font-semibold">Modo de Preparo:</p>
-            <ul class="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                ${(recipe.modo_preparo || []).map(step => `<li>${step}</li>`).join('')}
-            </ul>
+        
+        <div class="text-left mb-6">
+            <p class="font-semibold text-lg border-b border-gray-300 pb-1 mb-2">Modo de Preparo</p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                ${(recipe.modo_preparo || []).map(step => `<li class="pl-1">${step}</li>`).join('')}
+            </ol>
         </div>
-        ${recipe.tempo_preparo ? `<p class="text-sm text-gray-500 mt-3 text-left"><b>Tempo:</b> ${recipe.tempo_preparo}</p>` : ''}
+        
+       ${recipe.tempo_preparo ? `<div class="text-center mt-4 pt-4 border-t border-gray-200 text-gray-500 text-sm font-semibold flex items-center justify-center gap-2">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+           Tempo estimado: ${recipe.tempo_preparo}
+       </div>` : ''}
+    `;
+
+    ui.recipeModal.backdrop.classList.remove('hidden');
+    ui.recipeModal.backdrop.classList.add('flex');
+    setTimeout(() => { ui.recipeModal.content.classList.remove('scale-95', 'opacity-0'); }, 50);
+
+    // Re-attach event listeners
+    document.getElementById('close-recipe-modal-icon-btn').addEventListener('click', closeRecipeModal);
+    
+    document.getElementById('download-pdf-icon-btn').addEventListener('click', () => {
+        // PDF Generation Logic (Expanded for Image)
+        const doc = new jsPDF();
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(106, 156, 90); // Brand Green
+        doc.text("Chef Pessoal IA", 105, 20, null, null, "center");
+        
+        doc.setFontSize(18);
+        doc.setTextColor(0, 0, 0);
+        doc.text(recipe.nome, 105, 35, null, null, "center");
+
+        let yPos = 50;
+        
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text("Ingredientes:", 20, yPos);
+        yPos += 10;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        const ingredients = [...(recipe.ingredientes_disponiveis || []), ...(recipe.ingredientes_adicionais || [])];
+        ingredients.forEach(ing => {
+            doc.text(`• ${ing}`, 25, yPos);
+            yPos += 7;
+        });
+        
+        yPos += 10;
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.text("Modo de Preparo:", 20, yPos);
+        yPos += 10;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+        const steps = recipe.modo_preparo || [];
+        const splitText = doc.splitTextToSize(steps.join('\n\n'), 170);
+        doc.text(splitText, 20, yPos);
+        
+        doc.save(`${recipe.nome.replace(/\s+/g, '_')}_receita.pdf`);
+    });
+}
+
+function openLightbox(src) {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    lightboxImg.src = src;
+    lightbox.classList.remove('hidden');
+}
+
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    lightbox.classList.add('hidden');
+    document.getElementById('lightbox-img').src = '';
+}
+
         
         <!-- Additional Content -->
         <div class="text-left mt-4">
