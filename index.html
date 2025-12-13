@@ -352,7 +352,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.9);
             z-index: 100;
-            display: flex;
+            /* display: flex; Removed to allow 'hidden' class to work */
             align-items: center;
             justify-content: center;
         }
@@ -1180,11 +1180,13 @@
             const lightboxImg = document.getElementById('lightbox-img');
             lightboxImg.src = src;
             lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
         }
 
         function closeLightbox() {
             const lightbox = document.getElementById('lightbox');
             lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
             document.getElementById('lightbox-img').src = '';
         }
 
