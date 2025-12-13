@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 
 // --- Stripe Webhook Endpoint (MUST BE BEFORE express.json()) ---
-app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/api/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -39,7 +39,7 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
         const customerId = session.customer;
-        
+
         // Para obter o priceId, precisamos expandir o line_items na chamada da API ou buscá-lo
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
         const priceId = lineItems.data[0].price.id;
@@ -73,8 +73,8 @@ app.post('/api/stripe-webhook', express.raw({type: 'application/json'}), async (
 app.use(express.json({ limit: '10mb' }));
 
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 // --- Plan Limits ---
@@ -121,7 +121,7 @@ const limitMiddleware = async (req, res, next) => {
         }
 
         let { plan, daily_generation_count, last_generation_date } = profile;
-        
+
         // Reset count if it's a new day
         if (last_generation_date !== today) {
             daily_generation_count = 0;
@@ -136,9 +136,9 @@ const limitMiddleware = async (req, res, next) => {
         // Increment count and update date
         const { error: updateError } = await supabaseAdmin
             .from('profiles')
-            .update({ 
+            .update({
                 daily_generation_count: daily_generation_count + 1,
-                last_generation_date: today 
+                last_generation_date: today
             })
             .eq('id', id);
 
@@ -177,29 +177,29 @@ function getExpandedIngredientList() {
 }
 
 function isIngredientList(text) {
-  if (!text || text.trim().length < 3) return false;
-  const keywords = getExpandedIngredientList();
-  const lowerText = text.toLowerCase();
-  return keywords.some(keyword => lowerText.includes(keyword));
+    if (!text || text.trim().length < 3) return false;
+    const keywords = getExpandedIngredientList();
+    const lowerText = text.toLowerCase();
+    return keywords.some(keyword => lowerText.includes(keyword));
 }
 
 async function transcribeAudio(audioBuffer) {
-  const assemblyai_key = process.env.ASSEMBLYAI_API_KEY;
-  if (!assemblyai_key) throw new Error('Chave da API do AssemblyAI não configurada.');
+    const assemblyai_key = process.env.ASSEMBLYAI_API_KEY;
+    if (!assemblyai_key) throw new Error('Chave da API do AssemblyAI não configurada.');
 
-  const assemblyai_api = axios.create({ baseURL: "https://api.assemblyai.com/v2", headers: { "authorization": assemblyai_key } });
+    const assemblyai_api = axios.create({ baseURL: "https://api.assemblyai.com/v2", headers: { "authorization": assemblyai_key } });
 
-  const uploadResponse = await assemblyai_api.post("/upload", audioBuffer);
-  const transcriptResponse = await assemblyai_api.post("/transcript", { audio_url: uploadResponse.data.upload_url, language_code: "pt" });
+    const uploadResponse = await assemblyai_api.post("/upload", audioBuffer);
+    const transcriptResponse = await assemblyai_api.post("/transcript", { audio_url: uploadResponse.data.upload_url, language_code: "pt" });
 
-  const transcriptId = transcriptResponse.data.id;
-  while (true) {
-    const pollResponse = await assemblyai_api.get(`/transcript/${transcriptId}`);
-    const result = pollResponse.data;
-    if (result.status === "completed") return result.text;
-    if (result.status === "error") throw new Error(`Falha na transcrição: ${result.error}`);
-    await sleep(2000);
-  }
+    const transcriptId = transcriptResponse.data.id;
+    while (true) {
+        const pollResponse = await assemblyai_api.get(`/transcript/${transcriptId}`);
+        const result = pollResponse.data;
+        if (result.status === "completed") return result.text;
+        if (result.status === "error") throw new Error(`Falha na transcrição: ${result.error}`);
+        await sleep(2000);
+    }
 }
 
 async function getRecipesFromAI(promptContent) {
@@ -226,7 +226,7 @@ async function getRecipesFromAI(promptContent) {
             throw new Error("OpenRouter API Error: " + axiosError.message);
         }
     }
-    
+
     const content = response.data.choices[0].message.content;
     if (!content) throw new Error("A resposta da IA estava vazia.");
 
@@ -235,7 +235,7 @@ async function getRecipesFromAI(promptContent) {
     if (startIndex === -1 || endIndex === -1) {
         throw new Error("Nenhum JSON válido encontrado na resposta da IA. Resposta completa: " + content);
     }
-    
+
     try {
         return JSON.parse(content.substring(startIndex, endIndex + 1));
     } catch (jsonError) {
@@ -270,16 +270,12 @@ app.post('/api/transcribe', upload.single('audio'), async (req, res) => {
 });
 
 // --- Nano Banana Logic ---
-async function generateNanoBananaImages(prompt) {
-    const nanoBananaKey = process.env.NANO_BANANA_API_KEY;
-    // NOTE: This URL is hypothetical as per requirements. 
-    // If testing in production without a real endpoint, this will fail or needs a mock.
-    // For now, I will implement the fetch logic.
-    const endpoint = "https://api.nanobanana.google.com/generate"; 
-    
-    // Fallback/Mock for safety if no key provided (to avoid breaking the app during dev if user forgets key)
-    if (!nanoBananaKey) {
-        console.warn("NANO_BANANA_API_KEY not found. Returning placeholder images.");
+// --- Gemini Image Logic ---
+async function generateGeminiImages(prompt) {
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.NANO_BANANA_API_KEY; // Support both for now
+
+    if (!apiKey) {
+        console.warn("GOOGLE_API_KEY not found. Returning placeholder images.");
         return [
             "https://placehold.co/512x512?text=Imagem+1",
             "https://placehold.co/512x512?text=Imagem+2",
@@ -288,27 +284,59 @@ async function generateNanoBananaImages(prompt) {
     }
 
     try {
-        const response = await axios.post(endpoint, {
-            prompt: prompt,
-            n: 3,
-            size: "512x512"
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${nanoBananaKey}`
-            }
-        });
+        // Dynamic import for ESM package
+        const { GoogleGenAI } = await import("@google/genai");
+        const ai = new GoogleGenAI({ apiKey });
 
-        // Assuming response structure: { data: [ { url: "..." }, { url: "..." }, ... ] }
-        if (response.data && response.data.data) {
-            return response.data.data.map(img => img.url);
-        } else {
-             throw new Error("Invalid response format from Nano Banana API");
+        // Split prompt into 3 separate prompts to generate 3 images
+        // Since the prompt string comes joined by semicolons, we split it.
+        const prompts = prompt.split(';').map(p => p.trim()).filter(p => p.length > 0);
+
+        // Ensure we have at least 3 prompts or reuse the main one
+        const finalPrompts = [];
+        for (let i = 0; i < 3; i++) {
+            finalPrompts.push(prompts[i] || prompts[0] || "Delicious food");
         }
 
+        const images = [];
+
+        for (const p of finalPrompts) {
+            const response = await ai.models.generateContent({
+                model: "gemini-3-pro-image-preview",
+                contents: p,
+                config: {
+                    imageConfig: {
+                        imageSize: "1024x1024" // Requested size for good quality
+                    }
+                }
+            });
+
+            let foundImage = false;
+            // Check for candidates and content parts
+            if (response.candidates && response.candidates.length > 0 && response.candidates[0].content && response.candidates[0].content.parts) {
+                for (const part of response.candidates[0].content.parts) {
+                    if (part.inlineData) {
+                        const base64Data = part.inlineData.data;
+                        // Determine mime type if possible, or assume png based on API defaults
+                        const mimeType = part.inlineData.mimeType || "image/png";
+                        images.push(`data:${mimeType};base64,${base64Data}`);
+                        foundImage = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!foundImage) {
+                console.warn("No image found in Gemini response for prompt:", p);
+                // Fallback to placeholder if generation fails for one image
+                images.push(`https://placehold.co/512x512?text=${encodeURIComponent(p.substring(0, 20))}`);
+            }
+        }
+
+        return images;
+
     } catch (error) {
-        console.error("Nano Banana API Failed:", error.message);
-        // Fallback on error to not break the recipe flow
+        console.error("Gemini Image API Failed:", error);
         return [
             "https://placehold.co/512x512?text=Erro+Imagem+1",
             "https://placehold.co/512x512?text=Erro+Imagem+2",
@@ -339,9 +367,11 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
             if (!type) return res.status(400).json({ error: 'Tipo de arquivo de imagem inválido.' });
 
             promptContent = [
-                { type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 3 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}.
+                {
+                    type: "text", text: `Você é um chef e nutricionista. Analise a imagem e sugira 3 receitas. Considere também estes ingredientes já disponíveis: ${currentIngredients.join(', ')}.
                 Além das receitas, gere um campo 'image_prompts' com uma única string contendo descrições visuais para as 3 receitas, otimizadas para geração de imagens.
-                Responda APENAS com um objeto JSON na estrutura: ${jsonStructure}` },
+                Responda APENAS com um objeto JSON na estrutura: ${jsonStructure}`
+                },
                 { type: "image_url", image_url: { url: `data:${type.mime};base64,${image}` } }
             ];
             recipeJson = await getRecipesFromAI(promptContent);
@@ -354,19 +384,20 @@ app.post('/api/receitas', authMiddleware, limitMiddleware, async (req, res) => {
             return res.status(400).json({ error: 'Requisição inválida. Forneça texto ou imagem.' });
         }
 
-        // --- Generate Images ---
-        if (recipeJson && recipeJson.image_prompts) {
-             console.log("Gerando imagens com prompt:", recipeJson.image_prompts);
-             const imageUrls = await generateNanoBananaImages(recipeJson.image_prompts);
-             
-             // Assign images to recipes
-             if (recipeJson.receitas) {
-                 recipeJson.receitas.forEach((recipe, index) => {
-                     if (imageUrls[index]) {
-                         recipe.image_url = imageUrls[index];
-                     }
-                 });
-             }
+        if (recipeJson) {
+            // Fallback for image_prompts if missing data
+            const prompts = recipeJson.image_prompts || (recipeJson.receitas ? recipeJson.receitas.map(r => r.nome).join('; ') : "Comida deliciosa");
+
+            console.log("Gerando imagens com prompt:", prompts);
+            const imageUrls = await generateGeminiImages(prompts);
+
+            // Assign images to recipes
+            if (recipeJson.receitas) {
+                recipeJson.receitas.forEach((recipe, index) => {
+                    // Ensure we have an image URL, fallback to placeholder if array is short
+                    recipe.image_url = imageUrls[index] || `https://placehold.co/512x512?text=${encodeURIComponent(recipe.nome || 'Receita')}`;
+                });
+            }
         }
 
         res.json(recipeJson);
